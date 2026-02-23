@@ -858,14 +858,18 @@ function ForexDemo({ onNavigate, t }) {
   return (
     <div style={{ minHeight:"100vh", background:C.bg, padding:"40px 24px" }}>
       <div style={{ maxWidth:1100, margin:"0 auto" }}>
+        {/* Header with clickable logo */}
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:32, flexWrap:"wrap", gap:12 }}>
           <div>
+            <div onClick={() => onNavigate("landing")} style={{ fontWeight:800, fontSize:18, fontFamily:"monospace", color:"#ffffff", letterSpacing:"0.04em", cursor:"pointer", marginBottom:10 }}>
+              SIGNAL<span style={{ color:C.accent }}>BOSS</span>
+            </div>
             <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:8 }}>FOREX SIGNAL DEMO</div>
             <h2 style={{ fontSize:24, fontWeight:700, letterSpacing:"-0.02em" }}>Live Signal Intelligence · Forex</h2>
             <p style={{ color:C.textMid, fontSize:13, marginTop:6 }}>Signals derived from exchange-traded currency futures. Institutional positioning, retail execution.</p>
           </div>
           <div style={{ display:"flex", gap:10 }}>
-            <button onClick={() => onNavigate("dashboard")} style={{ padding:"10px 20px", background:"transparent", border:`1px solid ${C.border}`, borderRadius:7, color:C.textMid, cursor:"pointer", fontSize:13 }}>← Futures Demo</button>
+            <button onClick={() => onNavigate("landing")} style={{ padding:"10px 20px", background:"transparent", border:`1px solid ${C.border}`, borderRadius:7, color:C.textMid, cursor:"pointer", fontSize:13 }}>← Home</button>
             <button onClick={() => onNavigate("signup")} style={{ padding:"10px 20px", background:C.accent, border:"none", borderRadius:7, color:"#080909", fontWeight:600, fontSize:13, cursor:"pointer" }}>Start Free Trial</button>
           </div>
         </div>
@@ -923,7 +927,23 @@ function ForexDemo({ onNavigate, t }) {
             </div>
           ))}
         </div>
-        <div style={{ textAlign:"center", marginTop:40 }}>
+        {/* CTA Banner */}
+        <div style={{ margin:"48px 0 24px", background:`linear-gradient(135deg, ${C.surface}, #0d0a1a)`, border:`1px solid ${C.accent}33`, borderRadius:16, padding:"32px 40px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:20 }}>
+          <div>
+            <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:8 }}>READY TO TRADE WITH THE EDGE?</div>
+            <h3 style={{ fontSize:22, fontWeight:700, marginBottom:8, letterSpacing:"-0.02em" }}>What you just saw — that's every session.</h3>
+            <p style={{ fontSize:14, color:C.textMid, lineHeight:1.7, maxWidth:480 }}>
+              Real-time IV inflection signals across all major forex pairs and crosses. Built from currency futures. Delivered the moment conditions align.
+            </p>
+          </div>
+          <div style={{ display:"flex", flexDirection:"column", gap:10, alignItems:"flex-start" }}>
+            <button onClick={() => onNavigate("signup")} style={{ padding:"14px 32px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:14, cursor:"pointer", whiteSpace:"nowrap" }}>
+              Start Free Trial →
+            </button>
+            <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", textAlign:"center", width:"100%" }}>14-day trial · No credit card required</div>
+          </div>
+        </div>
+        <div style={{ textAlign:"center", marginTop:16 }}>
           <p style={{ fontSize:12, color:C.textDim, fontStyle:"italic" }}>Simulated illustration only · Not actual trade data · Signals shown for demonstration purposes</p>
         </div>
       </div>
@@ -1708,7 +1728,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
       {/* Sidebar */}
       <div style={{ width:215, background:C.surface, borderRight:`1px solid ${C.border}`, display:"flex", flexDirection:"column", flexShrink:0 }}>
         <div style={{ padding:"20px 18px 16px", borderBottom:`1px solid ${C.border}` }}>
-          <div style={{ fontWeight:700, fontSize:15, fontFamily:"monospace" }}>SIGNAL<span style={{ color:C.accent }}>BOSS</span></div>
+          <div onClick={() => onNavigate("landing")} style={{ fontWeight:700, fontSize:15, fontFamily:"monospace", cursor:"pointer" }}>SIGNAL<span style={{ color:C.accent }}>BOSS</span></div>
           <div style={{ marginTop:8, display:"flex", alignItems:"center", gap:6 }}>
             <LiveDot color={C.long} size={5} />
             <span style={{ fontSize:10, color:C.textMid, fontFamily:"monospace" }}>{t.engineActive}</span>
@@ -1768,6 +1788,17 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(310px,1fr))", gap:14 }}>
               {filtered.map(sig => <SignalCard key={sig.id} signal={sig} onDismiss={dismiss} exitMode={exitMode} t={t} />)}
               {filtered.length===0 && <div style={{ gridColumn:"1/-1", textAlign:"center", padding:"60px 0", color:C.textDim, fontFamily:"monospace", fontSize:13 }}>{t.noSignals}</div>}
+            </div>
+            {/* CTA Banner */}
+            <div style={{ marginTop:32, background:`linear-gradient(135deg, ${C.surface}, #0e120a)`, border:`1px solid ${C.long}33`, borderRadius:14, padding:"24px 28px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:16 }}>
+              <div>
+                <div style={{ fontSize:10, color:C.long, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:6 }}>THIS IS THE DEMO</div>
+                <div style={{ fontSize:16, fontWeight:700, marginBottom:4 }}>Ready for live signals on your account?</div>
+                <div style={{ fontSize:13, color:C.textMid }}>Start your free trial and get real-time alerts the moment conditions align.</div>
+              </div>
+              <button onClick={() => onNavigate("signup")} style={{ padding:"12px 28px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:13, cursor:"pointer", whiteSpace:"nowrap" }}>
+                Start Free Trial →
+              </button>
             </div>
           </div>
         )}
