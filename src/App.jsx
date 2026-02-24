@@ -1083,7 +1083,7 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
       </div>
 
       {/* How It Works */}
-      <div style={{ maxWidth:880, margin:"0 auto", padding:"0 24px 80px" }}>
+      <div id="how-it-works" style={{ maxWidth:880, margin:"0 auto", padding:"0 24px 80px" }}>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(220px,1fr))", gap:16 }}>
           {["01","02","03","04"].map(n => (
             <div key={n} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
@@ -1152,7 +1152,7 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
       </div>
 
       {/* Pricing */}
-      <div style={{ maxWidth:960, margin:"0 auto", padding:"0 24px 100px" }}>
+      <div id="pricing" style={{ maxWidth:960, margin:"0 auto", padding:"0 24px 100px" }}>
         <div style={{ textAlign:"center", marginBottom:48 }}>
           <h2 style={{ fontSize:28, fontWeight:600, letterSpacing:"-0.03em" }}>{t.pricing}</h2>
           <p style={{ color:C.textMid, marginTop:8, fontSize:13 }}>{t.pricingNote}</p>
@@ -1979,14 +1979,23 @@ export default function App() {
     <>
       <style>{css}</style>
       {page !== "dashboard" && (
-        <div style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, display:"flex", justifyContent:"space-between", alignItems:"center", padding:"16px 32px", borderBottom:`1px solid ${C.border}44`, backdropFilter:"blur(16px)", background:"#08090988" }}>
+        <div style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, display:"flex", justifyContent:"space-between", alignItems:"center", padding:"14px 32px", borderBottom:`1px solid ${C.border}44`, backdropFilter:"blur(16px)", background:"#08090988" }}>
           <div onClick={() => { setPage("landing"); setTrack(null); }} style={{ fontWeight:800, fontSize:20, cursor:"pointer", fontFamily:"monospace", color:"#ffffff", letterSpacing:"0.04em" }}>
             SIGNAL<span style={{ color:C.accent }}>BOSS</span>
           </div>
+          {page === "landing" && (
+            <div style={{ display:"flex", gap:28, alignItems:"center" }}>
+              <a href="#how-it-works" style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("how-it-works")?.scrollIntoView({behavior:"smooth"})}}>How It Works</a>
+              <span style={{ color:C.border }}>·</span>
+              <a href="#demo" style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();setPage("dashboard")}}>Demo</a>
+              <span style={{ color:C.border }}>·</span>
+              <a href="#pricing" style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("pricing")?.scrollIntoView({behavior:"smooth"})}}>Pricing</a>
+            </div>
+          )}
           <div style={{ display:"flex", gap:12, alignItems:"center" }}>
             <LangSwitcher lang={lang} setLang={setLang} />
-            <button onClick={() => setPage("login")}  style={{ padding:"8px 18px", background:"transparent", border:`1px solid ${C.border}`, borderRadius:6, color:C.textMid, cursor:"pointer", fontSize:13 }}>{t.signIn}</button>
-            <button onClick={() => setPage("signup")} style={{ padding:"8px 18px", background:C.accent, border:"none", borderRadius:6, color:"#080909", cursor:"pointer", fontWeight:600, fontSize:13 }}>{t.startTrial}</button>
+            <span onClick={() => setPage("login")} style={{ fontSize:13, color:C.textMid, cursor:"pointer", padding:"8px 14px" }}>{t.signIn}</span>
+            <button onClick={() => setPage("signup")} style={{ padding:"8px 20px", background:C.accent, border:"none", borderRadius:6, color:"#080909", cursor:"pointer", fontWeight:700, fontSize:13 }}>{t.startTrial}</button>
           </div>
         </div>
       )}
