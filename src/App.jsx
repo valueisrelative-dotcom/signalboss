@@ -1462,7 +1462,7 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
             <span style={{ color:"#2a3030" }}>·</span>
             <span style={{ cursor:"pointer", color:"#6b7280" }}>Privacy Policy</span>
             <span style={{ color:"#2a3030" }}>·</span>
-            <span style={{ cursor:"pointer", color:"#6b7280" }}>Contact</span>
+            <span style={{ cursor:"pointer", color:"#6b7280" }} onClick={() => onNavigate("contact")}>Contact</span>
             <span style={{ color:"#2a3030" }}>·</span>
             <span style={{ cursor:"pointer", color:C.accent }}>Affiliates</span>
             <span style={{ color:"#2a3030" }}>·</span>
@@ -1479,12 +1479,34 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
 
 function AuthPage({ mode, onNavigate, onAuth, t, track }) {
   const [email, setEmail]       = useState("");
+  const [name, setName]         = useState("");
   const [password, setPassword] = useState("");
   const [plan, setPlan]         = useState("pro");
   const [signupTrack, setSignupTrack] = useState(track || "futures");
+  const [submitting, setSubmitting]   = useState(false);
+  const [submitted, setSubmitted]     = useState(false);
   const isLogin = mode === "login";
   const inputStyle = { width:"100%", padding:"11px 14px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace", outline:"none" };
   const labelStyle = { fontSize:10, color:C.textMid, letterSpacing:"0.12em", display:"block", marginBottom:7, fontFamily:"monospace" };
+
+  const handleSignup = async () => {
+    if (!email || !email.includes("@")) return;
+    setSubmitting(true);
+    try {
+      await fetch("https://formspree.io/f/xdalyedn", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          name, email, plan,
+          track: signupTrack,
+          _subject: `🚀 New Signal Boss Trial Signup — ${signupTrack.toUpperCase()} — ${plan}`,
+        }),
+      });
+    } catch(e) { /* silent fail — don't block the user */ }
+    setSubmitting(false);
+    onAuth({email, plan});
+  };
+
   return (
     <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", padding:24 }}>
       <div style={{ width:"100%", maxWidth:400, background:C.surface, border:`1px solid ${C.border}`, borderRadius:16, padding:36 }}>
@@ -1493,7 +1515,7 @@ function AuthPage({ mode, onNavigate, onAuth, t, track }) {
           <div style={{ color:C.textMid, fontSize:13 }}>{isLogin?t.signInSub:t.signUpSub}</div>
         </div>
         <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
-          {!isLogin && <div><label style={labelStyle}>{t.fullName}</label><input style={inputStyle} placeholder="John Smith" /></div>}
+          {!isLogin && <div><label style={labelStyle}>{t.fullName}</label><input style={inputStyle} value={name} onChange={e=>setName(e.target.value)} placeholder="John Smith" /></div>}
           <div><label style={labelStyle}>{t.email}</label><input style={inputStyle} value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com" type="email" /></div>
           <div><label style={labelStyle}>{t.password}</label><input style={inputStyle} value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••" type="password" /></div>
           {!isLogin && (
@@ -1511,7 +1533,7 @@ function AuthPage({ mode, onNavigate, onAuth, t, track }) {
                 {signupTrack && <div style={{ fontSize:11, color:C.textDim, marginTop:6, fontFamily:"monospace" }}>{signupTrack==="futures" ? "ES · NQ · CL · /6E · /6B · /6J + more" : "EUR/USD · GBP/USD · USD/JPY · crosses + more"}</div>}
               </div>
               <div><label style={labelStyle}>{t.plan}</label>
-                <select value={plan} onChange={e=>setPlan(e.target.value)}>
+                <select value={plan} onChange={e=>setPlan(e.target.value)} style={{ width:"100%", padding:"11px 14px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace" }}>
                   {signupTrack === "forex" ? <>
                     <option value="major">Major Pairs — $129/mo</option>
                     <option value="full">Full Coverage — $249/mo</option>
@@ -1524,8 +1546,11 @@ function AuthPage({ mode, onNavigate, onAuth, t, track }) {
               </div>
             </>
           )}
-          <button onClick={() => onAuth({email,plan})} style={{ width:"100%", padding:"13px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:600, fontSize:14, cursor:"pointer", marginTop:4 }}>
-            {isLogin?t.signIn:t.createAccount}
+          <button
+            onClick={isLogin ? () => onAuth({email,plan}) : handleSignup}
+            disabled={submitting}
+            style={{ width:"100%", padding:"13px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:600, fontSize:14, cursor:"pointer", marginTop:4, opacity:submitting?0.7:1 }}>
+            {submitting ? "Submitting..." : isLogin ? t.signIn : t.createAccount}
           </button>
         </div>
         <div style={{ textAlign:"center", marginTop:20, fontSize:13, color:C.textMid }}>
@@ -2073,6 +2098,105 @@ function StandaloneCalc({ onNavigate, t }) {
   );
 }
 
+function ContactPage({ onNavigate }) {
+  const [name, setName]       = useState("");
+  const [email, setEmail]     = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted]   = useState(false);
+  const [error, setError]           = useState("");
+
+  const inputStyle = { width:"100%", padding:"11px 14px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace", outline:"none" };
+  const labelStyle = { fontSize:10, color:C.textMid, letterSpacing:"0.12em", display:"block", marginBottom:7, fontFamily:"monospace" };
+
+  const handleSubmit = async () => {
+    if (!name || !email || !message) { setError("Please fill in all required fields."); return; }
+    if (!email.includes("@")) { setError("Please enter a valid email address."); return; }
+    setSubmitting(true); setError("");
+    try {
+      const res = await fetch("https://formspree.io/f/mbdaqgye", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          name, email, subject: subject || "(no subject)",
+          message,
+          _subject: `📬 Signal Boss Contact: ${subject || message.slice(0,50)}`,
+        }),
+      });
+      if (res.ok) { setSubmitted(true); }
+      else { setError("Something went wrong. Please try again or email info@signalboss.net directly."); }
+    } catch(e) {
+      setError("Something went wrong. Please email info@signalboss.net directly.");
+    }
+    setSubmitting(false);
+  };
+
+  return (
+    <div style={{ minHeight:"100vh", background:C.bg, padding:"80px 24px 60px" }}>
+      <div style={{ maxWidth:560, margin:"0 auto" }}>
+        <div style={{ marginBottom:36 }}>
+          <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:12 }}>GET IN TOUCH</div>
+          <h1 style={{ fontSize:32, fontWeight:700, letterSpacing:"-0.03em", marginBottom:12 }}>Contact Signal Boss</h1>
+          <p style={{ color:C.textMid, fontSize:14, lineHeight:1.7 }}>
+            Questions about the product, a subscription, or just want to talk volatility? We read every message.
+          </p>
+          <div style={{ marginTop:16, fontSize:13, color:C.textMid, fontFamily:"monospace" }}>
+            Or email directly: <span style={{ color:C.accent }}>info@signalboss.net</span>
+          </div>
+        </div>
+
+        {submitted ? (
+          <div style={{ background:C.surface, border:`1px solid ${C.long}44`, borderRadius:14, padding:36, textAlign:"center" }}>
+            <div style={{ fontSize:36, marginBottom:16 }}>✓</div>
+            <div style={{ fontSize:20, fontWeight:700, color:C.long, marginBottom:8 }}>Message sent.</div>
+            <p style={{ color:C.textMid, fontSize:14, lineHeight:1.7, marginBottom:24 }}>
+              We'll get back to you at {email} within one business day.
+            </p>
+            <button onClick={() => onNavigate("landing")} style={{ padding:"11px 28px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:600, fontSize:13, cursor:"pointer" }}>
+              Back to Signal Boss
+            </button>
+          </div>
+        ) : (
+          <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:14, padding:32 }}>
+            <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14 }}>
+                <div>
+                  <label style={labelStyle}>NAME *</label>
+                  <input style={inputStyle} value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" />
+                </div>
+                <div>
+                  <label style={labelStyle}>EMAIL *</label>
+                  <input style={inputStyle} value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com" type="email" />
+                </div>
+              </div>
+              <div>
+                <label style={labelStyle}>SUBJECT</label>
+                <input style={inputStyle} value={subject} onChange={e=>setSubject(e.target.value)} placeholder="e.g. Question about the Pro plan" />
+              </div>
+              <div>
+                <label style={labelStyle}>MESSAGE *</label>
+                <textarea value={message} onChange={e=>setMessage(e.target.value)}
+                  placeholder="Tell us what's on your mind..."
+                  rows={6}
+                  style={{ ...inputStyle, resize:"vertical", lineHeight:1.7 }} />
+              </div>
+              {error && <div style={{ fontSize:12, color:C.short, fontFamily:"monospace" }}>{error}</div>}
+              <button onClick={handleSubmit} disabled={submitting}
+                style={{ width:"100%", padding:"13px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:14, cursor:"pointer", opacity:submitting?0.7:1 }}>
+                {submitting ? "Sending..." : "Send Message →"}
+              </button>
+              <div style={{ fontSize:11, color:C.textDim, textAlign:"center", fontFamily:"monospace" }}>
+                We respond within one business day · info@signalboss.net
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [page, setPage] = useState("landing");
   const [user, setUser] = useState(null);
@@ -2094,6 +2218,8 @@ export default function App() {
               <a href="#demo" style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();setPage("dashboard")}}>Demo</a>
               <span style={{ color:C.border }}>·</span>
               <a href="#pricing" style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("pricing")?.scrollIntoView({behavior:"smooth"})}}>Pricing</a>
+              <span style={{ color:C.border }}>·</span>
+              <a href="#contact" style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();setPage("contact")}}>Contact</a>
             </div>
           )}
           <div style={{ display:"flex", gap:12, alignItems:"center" }}>
@@ -2107,6 +2233,7 @@ export default function App() {
         {page==="landing"   && <LandingPage onNavigate={setPage} t={t} track={track} setTrack={setTrack} />}
         {(page==="login"||page==="signup") && <AuthPage mode={page} onNavigate={setPage} onAuth={u=>{setUser(u);setPage("dashboard");}} t={t} track={track} />}
         {page==="calc"      && <StandaloneCalc onNavigate={setPage} t={t} />}
+        {page==="contact"   && <ContactPage onNavigate={setPage} />}
         {page==="dashboard" && <Dashboard user={user} onNavigate={setPage} t={t} lang={lang} setLang={setLang} track={track} />}
         {page==="forex-demo" && <ForexDemo onNavigate={setPage} t={t} />}
       </div>
