@@ -1099,18 +1099,122 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
       <div style={{ maxWidth:720, margin:"0 auto", padding:"0 24px 100px" }}>
         <div style={{ borderLeft:`3px solid ${C.accent}`, paddingLeft:32 }}>
           <div style={{ fontSize:11, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:24 }}>{t.whyBuilt}</div>
+
+          {/* Opening punch */}
           <p style={{ fontSize:22, fontWeight:600, color:C.text, lineHeight:1.7, marginBottom:24, letterSpacing:"-0.01em" }}>
-            {t.whyP1}
+            98% of retail traders lose money. Almost 100% of them rely on charts to make it.
           </p>
-          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:22 }}>{t.whyP2}</p>
+
+          {/* Gym analogy */}
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:22 }}>
-            {t.whyP3a}<span style={{ color:C.text, fontWeight:600 }}>{t.whyP3b}</span>{t.whyP3c}
+            Think about that for a moment. Using charts to make money is like joining a gym where 99% of members follow a workout plan that makes them weaker and fatter. Does that seem logical?
           </p>
-          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:22 }}>{t.whyP4}</p>
-          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:30 }}>
-            {t.whyP5a}<span style={{ color:C.text, fontWeight:600 }}>{t.whyP5b}</span>{t.whyP5c}
+
+          {/* Stacked rhythm lines */}
+          <div style={{ margin:"28px 0", paddingLeft:20, borderLeft:`2px solid ${C.border}` }}>
+            {["They call it discipline.", "They call it price action.", "They call it market structure."].map(line => (
+              <p key={line} style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.7, marginBottom:6 }}>{line}</p>
+            ))}
+            <p style={{ fontSize:17, color:C.text, fontWeight:600, lineHeight:1.7, marginTop:10 }}>Yet almost nobody gets stronger.</p>
+          </div>
+
+          {/* Volatility vs charts */}
+          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
+            Charts show you what already happened.
           </p>
-          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:36 }}>{t.whyP6}</p>
+          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:22 }}>
+            Signal Boss identifies when volatility transitions into expansion. That distinction changes everything.
+          </p>
+
+          {/* Regime explanation */}
+          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
+            Markets do not move because a candle looks bullish.
+          </p>
+          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:22 }}>
+            They move because volatility shifts regimes — from compression into expansion, from balance into imbalance, and back again. That transition — that inflection point — is where asymmetric opportunity lives.
+          </p>
+
+          {/* Fragment line */}
+          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
+            Most signal services hand you an entry and disappear.
+          </p>
+          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:28 }}>
+            That is not a system. That is a fragment.
+          </p>
+
+          {/* Three components */}
+          <p style={{ fontSize:17, color:C.text, fontWeight:600, lineHeight:1.9, marginBottom:14 }}>
+            Every Signal Boss alert delivers three components:
+          </p>
+          <div style={{ margin:"0 0 28px 0", display:"flex", flexDirection:"column", gap:10 }}>
+            {["Entry Price", "Smart Stop", "Smart Take Profit"].map(item => (
+              <div key={item} style={{ display:"flex", alignItems:"center", gap:12 }}>
+                <span style={{ color:C.accent, fontSize:14 }}>◆</span>
+                <span style={{ fontSize:16, fontWeight:600, color:C.text, fontFamily:"monospace" }}>{item}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Premise */}
+          <div style={{ background:C.bg, borderRadius:10, padding:"18px 22px", borderLeft:`3px solid ${C.accent}`, marginBottom:28 }}>
+            <p style={{ fontSize:15, color:C.text, lineHeight:1.8, fontStyle:"italic", margin:0 }}>
+              "Correct volatility regime + defined risk + proper sizing = professional trading. Everything else is just staring at charts and hoping."
+            </p>
+          </div>
+
+          {/* Illusion section header */}
+          <p style={{ fontSize:20, fontWeight:700, color:C.text, lineHeight:1.6, marginBottom:16, letterSpacing:"-0.01em" }}>
+            Why do most retail traders lose?
+          </p>
+          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:22 }}>
+            Because price action and market structure create the illusion of understanding.
+          </p>
+
+          {/* Three illusions */}
+          <div style={{ margin:"0 0 24px 0", paddingLeft:20, borderLeft:`2px solid ${C.border}` }}>
+            {[
+              "Patterns feel predictive.",
+              "Support and resistance feel concrete.",
+              "Indicators feel confirmatory.",
+            ].map(line => (
+              <p key={line} style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.7, marginBottom:6 }}>{line}</p>
+            ))}
+          </div>
+
+          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
+            But none of them tell you when the market is positioned for movement based on expected price.
+          </p>
+          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
+            Without volatility context, charts do not provide useful information.
+          </p>
+          <p style={{ fontSize:17, color:C.text, fontWeight:600, lineHeight:1.9, marginBottom:32 }}>
+            They provide false confidence. And false confidence is lethal to P&L.
+          </p>
+
+          {/* The gut-punch question */}
+          <div style={{ background:`linear-gradient(135deg, #0c0e10, #0a0c0e)`, border:`1px solid ${C.accent}22`, borderRadius:12, padding:"24px 28px", marginBottom:28 }}>
+            <p style={{ fontSize:15, color:C.textMid, lineHeight:1.8, marginBottom:10 }}>Ask yourself a simple question:</p>
+            <p style={{ fontSize:18, fontWeight:600, color:C.text, lineHeight:1.7, marginBottom:0, fontStyle:"italic" }}>
+              If charts alone were the answer…<br />
+              why are you not already generating consistent wealth using them?
+            </p>
+          </div>
+
+          {/* Closing */}
+          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
+            Signal Boss does not predict candles.
+          </p>
+          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
+            Signal Boss identifies <span style={{ color:C.text, fontWeight:600 }}>volatility expansion conditions</span> — the only environment where large, sustained price movement statistically occurs.
+          </p>
+          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
+            That is the difference between guessing direction and trading a real edge.
+          </p>
+          <p style={{ fontSize:17, color:C.textMid, lineHeight:1.9, marginBottom:36, fontStyle:"italic" }}>
+            The gym is still full. You don't have to stay on the same plan.
+          </p>
+
+          {/* Signature */}
           <div style={{ display:"flex", alignItems:"center", gap:14 }}>
             <div style={{ width:40, height:40, borderRadius:"50%", background:`linear-gradient(135deg, ${C.accent}, ${C.long})`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, fontWeight:700, color:"#080909" }}>S</div>
             <div>
