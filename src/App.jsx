@@ -876,6 +876,17 @@ function ForexDemo({ onNavigate, t }) {
             Currency futures are where banks show their hand. Our IV inflection signals are built from currency futures, where institutional positioning and volatility are expressed first. Spot forex prices follow these futures moves through arbitrage. Ignoring futures volatility means ignoring where currency price discovery begins.
           </p>
         </div>
+        {/* Demo notice */}
+        <div style={{ marginBottom:20, background:"#0e0a04", border:`1px solid #f59e0b44`, borderRadius:10, padding:"12px 18px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <span style={{ fontSize:14 }}>⚠</span>
+            <span style={{ fontSize:12, color:"#f59e0b", fontFamily:"monospace", fontWeight:600, letterSpacing:"0.08em" }}>SIMULATED DEMO</span>
+            <span style={{ fontSize:12, color:"#9ca3af" }}>— These are not live signals. Real-time signal delivery requires a subscription.</span>
+          </div>
+          <button onClick={() => onNavigate("signup")} style={{ padding:"7px 18px", background:C.accent, color:"#080909", border:"none", borderRadius:6, fontWeight:700, fontSize:12, cursor:"pointer", whiteSpace:"nowrap" }}>
+            Start Free Trial →
+          </button>
+        </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(300px, 1fr))", gap:16 }}>
           {pairs.map((p) => (
             <div key={p.pair} style={{ background:p.dir==="LONG"?C.surfaceUp:C.surfaceDn, border:`1px solid ${p.color}33`, borderRadius:12, padding:20, position:"relative", overflow:"hidden" }}>
@@ -1891,6 +1902,17 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
 
         {activeTab==="signals" && (
           <div style={{ padding:22 }}>
+            {/* Demo notice */}
+            <div style={{ marginBottom:18, background:"#0e0a04", border:`1px solid #f59e0b44`, borderRadius:10, padding:"12px 18px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                <span style={{ fontSize:14 }}>⚠</span>
+                <span style={{ fontSize:12, color:"#f59e0b", fontFamily:"monospace", fontWeight:600, letterSpacing:"0.08em" }}>SIMULATED DEMO</span>
+                <span style={{ fontSize:12, color:"#9ca3af" }}>— These are not live signals. Real-time signal delivery requires a subscription.</span>
+              </div>
+              <button onClick={() => onNavigate("signup")} style={{ padding:"7px 18px", background:C.accent, color:"#080909", border:"none", borderRadius:6, fontWeight:700, fontSize:12, cursor:"pointer", whiteSpace:"nowrap" }}>
+                Start Free Trial →
+              </button>
+            </div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12, marginBottom:18 }}>
               <StatTile label={t.activeSignals} value={active.length} color={C.accent} />
               <StatTile label={t.long}   value={longs}  color={C.long}  sub={t.active.toLowerCase()} />
