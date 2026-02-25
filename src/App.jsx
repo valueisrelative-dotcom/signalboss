@@ -958,36 +958,54 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
     <div style={{ width:"100%", overflowX:"hidden" }}>
       <PriceTicker />
 
+      {/* Track indicator bar — shown when track is selected */}
+      {track && (
+        <div style={{ background:C.surface, borderBottom:`1px solid ${C.border}`, padding:"10px 32px", display:"flex", alignItems:"center", gap:16 }}>
+          <span style={{ fontSize:11, color:C.textMid, fontFamily:"monospace" }}>VIEWING:</span>
+          <button onClick={() => setTrack("futures")} style={{ padding:"5px 14px", borderRadius:20, border:`1px solid ${track==="futures"?C.long:C.border}`, background:track==="futures"?C.longDim:"transparent", color:track==="futures"?C.long:C.textMid, fontSize:12, cursor:"pointer", fontFamily:"monospace", fontWeight:600 }}>FUTURES</button>
+          <button onClick={() => setTrack("forex")} style={{ padding:"5px 14px", borderRadius:20, border:`1px solid ${track==="forex"?C.accent:C.border}`, background:track==="forex"?C.accentDim:"transparent", color:track==="forex"?C.accent:C.textMid, fontSize:12, cursor:"pointer", fontFamily:"monospace", fontWeight:600 }}>FOREX</button>
+          <button onClick={() => setTrack(null)} style={{ marginLeft:"auto", fontSize:11, color:C.textDim, background:"transparent", border:"none", cursor:"pointer", fontFamily:"monospace" }}>← Show all</button>
+        </div>
+      )}
+
       {/* Hero — always shown first */}
       <div style={{ minHeight:"92vh", display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", textAlign:"center", padding:"80px 24px" }}>
-        <div style={{ fontSize:10, letterSpacing:"0.3em", color:C.accent, textTransform:"uppercase", marginBottom:20, display:"flex", alignItems:"center", gap:10, fontFamily:"monospace" }}>
-          <LiveDot color={C.long} size={6} />{t.engineTagline}
+        <div style={{ fontSize:10, letterSpacing:"0.3em", color:track==="forex"?C.accent:C.long, textTransform:"uppercase", marginBottom:20, display:"flex", alignItems:"center", gap:10, fontFamily:"monospace" }}>
+          <LiveDot color={track==="forex"?C.accent:C.long} size={6} />
+          {track==="forex" ? t.forexTagline : track==="futures" ? t.tagline : t.engineTagline}
         </div>
         <div style={{ marginBottom:24 }}><SignalCounter count={signalCount} /></div>
         <h1 style={{ fontSize:"clamp(44px,6.5vw,86px)", fontWeight:700, lineHeight:1.08, marginBottom:24, letterSpacing:"-0.04em", maxWidth:800 }}>
-          {t.chooserTitle1}<br />{t.chooserTitle2}<br /><span style={{ color:C.accent }}>{t.chooserTitle3}</span>
+          {track==="forex"
+            ? <>{t.forexHeroTitle1}<br /><span style={{ color:C.accent }}>{t.forexHeroTitle2}</span></>
+            : track==="futures"
+            ? <>{t.heroTitle1}<br /><span style={{ color:C.accent }}>{t.heroTitle2}</span></>
+            : <>{t.chooserTitle1}<br />{t.chooserTitle2}<br /><span style={{ color:C.accent }}>{t.chooserTitle3}</span></>}
         </h1>
         <p style={{ fontSize:18, color:"#b8cccc", maxWidth:560, lineHeight:1.8, marginBottom:52 }}>
-          {t.chooserSub}
+          {track==="forex" ? t.forexHeroSub : t.chooserSub}
         </p>
         <div style={{ display:"flex", gap:14, flexWrap:"wrap", justifyContent:"center" }}>
-          <button onClick={() => { setTrack("futures"); onNavigate("signup"); }} style={{ padding:"15px 36px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:600, fontSize:14, cursor:"pointer" }}>{t.startTrial}</button>
-          <button onClick={() => { setTrack("futures"); onNavigate("dashboard"); }} style={{ padding:"15px 36px", background:"transparent", color:C.long, border:`1px solid ${C.long}`, borderRadius:8, fontWeight:500, fontSize:14, cursor:"pointer" }}>{t.viewDemo}</button>
+          <button onClick={() => onNavigate("signup")} style={{ padding:"15px 36px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:600, fontSize:14, cursor:"pointer" }}>{t.startTrial}</button>
+          <button onClick={() => onNavigate(track==="forex" ? "forex-demo" : "dashboard")} style={{ padding:"15px 36px", background:"transparent", color:track==="forex"?C.accent:C.long, border:`1px solid ${track==="forex"?C.accent:C.long}`, borderRadius:8, fontWeight:500, fontSize:14, cursor:"pointer" }}>{t.viewDemo}</button>
         </div>
 
         {/* Example signal card + equity curve */}
         <div style={{ marginTop:72, display:"flex", gap:24, flexWrap:"wrap", justifyContent:"center", alignItems:"flex-start", width:"100%", maxWidth:780 }}>
           <div style={{ maxWidth:340, width:"100%", textAlign:"left" }}>
             <div style={{ fontSize:10, color:C.textDim, letterSpacing:"0.15em", marginBottom:12, fontFamily:"monospace", textAlign:"center" }}>{t.exampleSignal}</div>
-            <div style={{ background:C.surfaceUp, border:`1px solid ${C.long}33`, borderRadius:12, padding:20, position:"relative", overflow:"hidden" }}>
-              <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:C.long }} />
-              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:14 }}>
-                <LiveDot color={C.long} size={8} />
+            <div style={{ background:C.surfaceUp, border:`1px solid ${track==="forex"?C.accent+"33":C.long+"33"}`, borderRadius:12, padding:20, position:"relative", overflow:"hidden" }}>
+              <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:track==="forex"?C.accent:C.long }} />
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:track==="forex"?8:14 }}>
+                <LiveDot color={track==="forex"?C.accent:C.long} size={8} />
                 <span style={{ fontSize:18, fontWeight:700, color:C.long, fontFamily:"monospace" }}>LONG</span>
-                <span style={{ fontSize:18, fontWeight:700, fontFamily:"monospace" }}>ES</span>
+                <span style={{ fontSize:18, fontWeight:700, fontFamily:"monospace" }}>{track==="forex"?"EUR/USD":"ES"}</span>
                 <span style={{ fontSize:10, color:C.textMid, background:C.border, padding:"2px 7px", borderRadius:4, fontFamily:"monospace" }}>5m</span>
                 <span style={{ marginLeft:"auto", fontSize:10, color:C.long, background:C.longDim, padding:"3px 10px", borderRadius:20, fontFamily:"monospace" }}>ACTIVE</span>
               </div>
+              {track==="forex" && (
+                <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", background:C.accentDim, padding:"2px 8px", borderRadius:4, display:"inline-block", marginBottom:10 }}>DERIVED FROM /6E</div>
+              )}
               <div style={{ display:"flex", gap:3, marginBottom:12 }}>
                 {[1,2,3].map(i => <span key={i} style={{ fontSize:14, filter:`drop-shadow(0 0 4px ${C.long})` }}>⚡</span>)}
                 <span style={{ fontSize:11, fontWeight:600, color:C.strong, marginLeft:4, fontFamily:"monospace" }}>STRONG</span>
@@ -1017,7 +1035,7 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
         </div>
         <div style={{ display:"flex", gap:20, flexWrap:"wrap", justifyContent:"center" }}>
           {/* Futures */}
-          <div onClick={() => setTrack("futures")}
+          <div onClick={() => { setTrack("futures"); window.scrollTo({top:0, behavior:"smooth"}); }}
             style={{ flex:1, minWidth:300, background:C.surface, border:`1px solid ${C.long}44`, borderRadius:16, padding:36, cursor:"pointer", textAlign:"left", transition:"all 0.2s", position:"relative", overflow:"hidden" }}>
             <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg, ${C.long}, ${C.accent})` }} />
             <div style={{ fontSize:13, fontWeight:700, color:C.long, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:16 }}>{t.exploreFuturesLabel}</div>
@@ -1034,7 +1052,7 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
             <span style={{ fontSize:16, color:C.long, fontWeight:700 }}>{t.exploreFutures}</span>
           </div>
           {/* Forex */}
-          <div onClick={() => setTrack("forex")}
+          <div onClick={() => { setTrack("forex"); window.scrollTo({top:0, behavior:"smooth"}); }}
             style={{ flex:1, minWidth:300, background:C.surface, border:`1px solid ${C.accent}44`, borderRadius:16, padding:36, cursor:"pointer", textAlign:"left", transition:"all 0.2s", position:"relative", overflow:"hidden" }}>
             <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg, ${C.accent}, #a78bfa)` }} />
             <div style={{ fontSize:13, fontWeight:700, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:16 }}>{t.exploreForexLabel}</div>
