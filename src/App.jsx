@@ -93,7 +93,7 @@ const T = {
     futuresPlans: [
       { name: "Starter", price: 149, features: ["ES · NQ · RTY · YM · CL · GC · SI", "All 3 cycles", "Real-time dashboard", "Email alerts", "Account Risk Calculator"] },
       { name: "Pro",     price: 249, features: ["Everything in Starter", "NG · RB · HG · ZB · ZN · ZT · ZF", "/6E · /6B · /6J · /6S · /6A · /6C", "ZS · ZW · ZC", "Telegram alerts · Webhook"] },
-      { name: "Elite",   price: 449, features: ["Everything in Pro", "Smart Stop & Target on every signal", "Intraday STDEV Panels", "Priority support"] },
+      { name: "Elite",   price: 449, features: ["Everything in Pro", "Smart Stop & Target on every signal", "Priority support"] },
     ],
     forexPlans: [
       { name: "Major Pairs", price: 129, features: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "Direct futures correlation", "All 3 cycles", "Real-time dashboard", "Email alerts", "Account Risk Calculator"] },
@@ -182,7 +182,7 @@ const T = {
     futuresPlans: [
       { name: "Inicial",       price: 149, features: ["ES · NQ · RTY · YM · CL · GC · SI", "3 ciclos completos", "Panel en tiempo real", "Alertas email", "Calculadora de Riesgo"] },
       { name: "Pro",           price: 249, features: ["Todo en Inicial", "NG · RB · HG · ZB · ZN · ZT · ZF", "/6E · /6B · /6J · /6S · /6A · /6C", "ZS · ZW · ZC", "Telegram · Webhook"] },
-      { name: "Elite",         price: 449, features: ["Todo en Pro", "Stop & Target Inteligentes", "Paneles STDEV Intradía", "Soporte prioritario"] },
+      { name: "Elite",         price: 449, features: ["Todo en Pro", "Stop & Target Inteligentes", "Soporte prioritario"] },
     ],
     forexPlans: [
       { name: "Pares Principales", price: 129, features: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "Correlación directa con futuros", "3 ciclos", "Panel en tiempo real", "Email", "Calculadora de Riesgo"] },
@@ -271,7 +271,7 @@ const T = {
     futuresPlans: [
       { name: "Inicial",        price: 149, features: ["ES · NQ · RTY · YM · CL · GC · SI", "3 ciclos completos", "Painel em tempo real", "Alertas email", "Calculadora de Risco"] },
       { name: "Pro",            price: 249, features: ["Tudo no Inicial", "NG · RB · HG · ZB · ZN · ZT · ZF", "/6E · /6B · /6J · /6S · /6A · /6C", "ZS · ZW · ZC", "Telegram · Webhook"] },
-      { name: "Elite",          price: 449, features: ["Tudo no Pro", "Stop & Target Inteligentes", "Painéis STDEV Intraday", "Suporte prioritário"] },
+      { name: "Elite",          price: 449, features: ["Tudo no Pro", "Stop & Target Inteligentes", "Suporte prioritário"] },
     ],
     forexPlans: [
       { name: "Pares Principais", price: 129, features: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "Correlação direta com futuros", "3 ciclos", "Painel em tempo real", "Email", "Calculadora de Risco"] },
@@ -360,7 +360,7 @@ const T = {
     futuresPlans: [
       { name: "Starter",          price: 149, features: ["ES · NQ · RTY · YM · CL · GC · SI", "3 cycles complets", "Tableau de bord temps réel", "Alertes email", "Calculateur de Risque"] },
       { name: "Pro",              price: 249, features: ["Tout Starter inclus", "NG · RB · HG · ZB · ZN · ZT · ZF", "/6E · /6B · /6J · /6S · /6A · /6C", "ZS · ZW · ZC", "Telegram · Webhook"] },
-      { name: "Élite",            price: 449, features: ["Tout Pro inclus", "Stop & Target Intelligents", "Panneaux STDEV Intraday", "Support prioritaire"] },
+      { name: "Élite",            price: 449, features: ["Tout Pro inclus", "Stop & Target Intelligents", "Support prioritaire"] },
     ],
     forexPlans: [
       { name: "Paires Majeures",  price: 129, features: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "Corrélation directe avec les futures", "3 cycles", "Tableau de bord temps réel", "Email", "Calculateur de Risque"] },
@@ -562,11 +562,7 @@ function SignalCard({ signal, onDismiss, exitMode, t }) {
       <div style={{ marginBottom:12 }}>
         {Object.values(signal.vwaps).map(v => <VwapRow key={v.label} label={v.label} value={v.value} above={v.above} direction={signal.direction} t={t} />)}
       </div>
-      {/* PLACEHOLDER: 1, 2, 3 STDEV levels — feature coming soon */}
-      <div style={{ marginBottom:12, padding:"8px 10px", border:`1px dashed ${C.border}`, borderRadius:6, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-        <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.08em" }}>1–2–3 STDEV LEVELS</span>
-        <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", background:C.border, padding:"2px 8px", borderRadius:3 }}>COMING SOON</span>
-      </div>
+
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
         <span style={{ fontSize:11, color:C.textMid, fontFamily:"monospace" }}>{t.entryPrice}</span>
         <span style={{ fontSize:14, fontWeight:600, color:C.text, fontFamily:"monospace" }}>{signal.price.toLocaleString()}</span>
@@ -918,11 +914,6 @@ function ForexDemo({ onNavigate, t }) {
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginTop:10 }}>
                 <span style={{ fontSize:11, color:C.textMid, fontFamily:"monospace" }}>Entry price</span>
                 <span style={{ fontSize:15, fontWeight:700, color:C.text, fontFamily:"monospace" }}>{p.entry}</span>
-              </div>
-              {/* STDEV placeholder */}
-              <div style={{ marginTop:10, padding:"6px 10px", border:`1px dashed ${C.border}`, borderRadius:6, display:"flex", justifyContent:"space-between" }}>
-                <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>1–2–3 STDEV LEVELS</span>
-                <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", background:C.border, padding:"1px 6px", borderRadius:3 }}>COMING SOON</span>
               </div>
             </div>
           ))}
@@ -1319,11 +1310,6 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
                       <span style={{ color }}>✓</span><span style={{ color:C.textMid }}>{f}</span>
                     </div>
                   ))}
-                  {i === 2 && (
-                    <div style={{ marginTop:12, padding:"8px 12px", background:C.accentDim, border:`1px solid ${C.accent}22`, borderRadius:6 }}>
-                      <span style={{ fontSize:10, color:C.accent, fontFamily:"monospace" }}>◈ INTRADAY STDEV PANELS — COMING SOON</span>
-                    </div>
-                  )}
                   <button onClick={() => onNavigate("signup")} style={{ width:"100%", marginTop:18, padding:"11px", borderRadius:7, fontWeight:600, fontSize:13, cursor:"pointer", background:popular?color:"transparent", color:popular?"#080909":color, border:`1px solid ${color}` }}>
                     {t.getStarted}
                   </button>
