@@ -958,16 +958,6 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
     <div style={{ width:"100%", overflowX:"hidden" }}>
       <PriceTicker />
 
-      {/* Track indicator bar — shown when track is selected */}
-      {track && (
-        <div style={{ background:C.surface, borderBottom:`1px solid ${C.border}`, padding:"10px 32px", display:"flex", alignItems:"center", gap:16 }}>
-          <span style={{ fontSize:11, color:C.textMid, fontFamily:"monospace" }}>VIEWING:</span>
-          <button onClick={() => setTrack("futures")} style={{ padding:"5px 14px", borderRadius:20, border:`1px solid ${track==="futures"?C.long:C.border}`, background:track==="futures"?C.longDim:"transparent", color:track==="futures"?C.long:C.textMid, fontSize:12, cursor:"pointer", fontFamily:"monospace", fontWeight:600 }}>FUTURES</button>
-          <button onClick={() => setTrack("forex")} style={{ padding:"5px 14px", borderRadius:20, border:`1px solid ${track==="forex"?C.accent:C.border}`, background:track==="forex"?C.accentDim:"transparent", color:track==="forex"?C.accent:C.textMid, fontSize:12, cursor:"pointer", fontFamily:"monospace", fontWeight:600 }}>FOREX</button>
-          <button onClick={() => setTrack(null)} style={{ marginLeft:"auto", fontSize:11, color:C.textDim, background:"transparent", border:"none", cursor:"pointer", fontFamily:"monospace" }}>← Show all</button>
-        </div>
-      )}
-
       {/* Hero — always shown first */}
       <div style={{ minHeight:"92vh", display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", textAlign:"center", padding:"80px 24px" }}>
         <div style={{ fontSize:10, letterSpacing:"0.3em", color:track==="forex"?C.accent:C.long, textTransform:"uppercase", marginBottom:20, display:"flex", alignItems:"center", gap:10, fontFamily:"monospace" }}>
@@ -987,7 +977,7 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
         </p>
         <div style={{ display:"flex", gap:14, flexWrap:"wrap", justifyContent:"center" }}>
           <button onClick={() => onNavigate("signup")} style={{ padding:"15px 36px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:600, fontSize:14, cursor:"pointer" }}>{t.startTrial}</button>
-          <button onClick={() => onNavigate(track==="forex" ? "forex-demo" : "dashboard")} style={{ padding:"15px 36px", background:"transparent", color:track==="forex"?C.accent:C.long, border:`1px solid ${track==="forex"?C.accent:C.long}`, borderRadius:8, fontWeight:500, fontSize:14, cursor:"pointer" }}>{t.viewDemo}</button>
+          <button onClick={() => onNavigate(track==="forex" ? "forex-demo" : track==="futures" ? "dashboard" : "demo-chooser")} style={{ padding:"15px 36px", background:"transparent", color:C.long, border:`1px solid ${C.long}`, borderRadius:8, fontWeight:500, fontSize:14, cursor:"pointer" }}>{t.viewDemo}</button>
         </div>
 
         {/* Example signal card + equity curve */}
@@ -2116,6 +2106,49 @@ function StandaloneCalc({ onNavigate, t }) {
   );
 }
 
+function DemoChooser({ onNavigate, setTrack }) {
+  return (
+    <div style={{ minHeight:"100vh", background:C.bg, display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", padding:"80px 24px" }}>
+      <div style={{ textAlign:"center", marginBottom:48 }}>
+        <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:14 }}>LIVE SIGNAL DEMO</div>
+      </div>
+      <div style={{ display:"flex", gap:20, flexWrap:"wrap", justifyContent:"center", maxWidth:720, width:"100%" }}>
+        {/* Futures */}
+        <div onClick={() => { setTrack("futures"); onNavigate("dashboard"); }}
+          style={{ flex:1, minWidth:280, background:C.surface, border:`1px solid ${C.long}44`, borderRadius:16, padding:36, cursor:"pointer", textAlign:"center", position:"relative", overflow:"hidden", transition:"border-color 0.2s" }}>
+          <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg, ${C.long}, ${C.accent})` }} />
+          <div style={{ fontSize:40, marginBottom:16, filter:`drop-shadow(0 0 12px ${C.long}88)` }}>▲</div>
+          <div style={{ fontSize:28, fontWeight:800, color:C.long, fontFamily:"monospace", letterSpacing:"0.08em", marginBottom:12 }}>FUTURES</div>
+          <h3 style={{ fontSize:16, fontWeight:600, marginBottom:12, letterSpacing:"-0.01em", color:C.textMid }}>ES · NQ · CL · GC</h3>
+          <p style={{ fontSize:14, color:C.textMid, lineHeight:1.75, marginBottom:24 }}>
+            IV inflection signals on the most liquid futures markets. Entry, Smart Stop, Smart Take Profit — for every signal.
+          </p>
+          <div style={{ display:"inline-block", padding:"11px 28px", background:C.longDim, border:`1px solid ${C.long}`, borderRadius:8, color:C.long, fontWeight:700, fontSize:14 }}>
+            View Futures Demo →
+          </div>
+        </div>
+        {/* Forex */}
+        <div onClick={() => { setTrack("forex"); onNavigate("forex-demo"); }}
+          style={{ flex:1, minWidth:280, background:C.surface, border:`1px solid ${C.accent}44`, borderRadius:16, padding:36, cursor:"pointer", textAlign:"center", position:"relative", overflow:"hidden", transition:"border-color 0.2s" }}>
+          <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg, ${C.accent}, #a78bfa)` }} />
+          <div style={{ fontSize:36, marginBottom:16, letterSpacing:"-0.02em", filter:`drop-shadow(0 0 12px ${C.accent}88)` }}>
+            <span style={{ color:C.long }}>$</span><span style={{ color:"#a78bfa" }}>€</span><span style={{ color:C.accent }}>¥</span>
+          </div>
+          <div style={{ fontSize:28, fontWeight:800, color:C.accent, fontFamily:"monospace", letterSpacing:"0.08em", marginBottom:12 }}>FOREX</div>
+          <h3 style={{ fontSize:16, fontWeight:600, marginBottom:12, letterSpacing:"-0.01em", color:C.textMid }}>EUR/USD · GBP/USD · Crosses</h3>
+          <p style={{ fontSize:14, color:C.textMid, lineHeight:1.75, marginBottom:24 }}>
+            Signals derived from exchange-traded currency futures. Institutional positioning, delivered in spot forex terms.
+          </p>
+          <div style={{ display:"inline-block", padding:"11px 28px", background:C.accentDim, border:`1px solid ${C.accent}`, borderRadius:8, color:C.accent, fontWeight:700, fontSize:14 }}>
+            View Forex Demo →
+          </div>
+        </div>
+      </div>
+      <p style={{ fontSize:12, color:C.textDim, marginTop:28, fontFamily:"monospace" }}>Simulated illustration only · Not actual trade data</p>
+    </div>
+  );
+}
+
 function ContactPage({ onNavigate }) {
   const [name, setName]       = useState("");
   const [email, setEmail]     = useState("");
@@ -2229,17 +2262,24 @@ export default function App() {
           <div onClick={() => { setPage("landing"); setTrack(null); }} style={{ fontWeight:800, fontSize:20, cursor:"pointer", fontFamily:"monospace", color:"#ffffff", letterSpacing:"0.04em" }}>
             SIGNAL<span style={{ color:C.accent }}>BOSS</span>
           </div>
-          {page === "landing" && (
-            <div style={{ display:"flex", gap:28, alignItems:"center" }}>
-              <a href="#how-it-works" style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("how-it-works")?.scrollIntoView({behavior:"smooth"})}}>How It Works</a>
-              <span style={{ color:C.border }}>·</span>
-              <a href="#demo" style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();setPage("dashboard")}}>Demo</a>
-              <span style={{ color:C.border }}>·</span>
-              <a href="#pricing" style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("pricing")?.scrollIntoView({behavior:"smooth"})}}>Pricing</a>
-              <span style={{ color:C.border }}>·</span>
-              <a href="#contact" style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();setPage("contact")}}>Contact</a>
+          {/* Center: track toggle + nav links */}
+          <div style={{ display:"flex", alignItems:"center", gap:24 }}>
+            {/* Track toggle */}
+            <div style={{ display:"flex", alignItems:"center", gap:4, background:C.surface, border:`1px solid ${C.border}`, borderRadius:8, padding:3 }}>
+              <button onClick={() => setTrack("futures")} style={{ padding:"6px 18px", borderRadius:6, border:"none", background:(!track||track==="futures")?C.longDim:"transparent", color:(!track||track==="futures")?C.long:C.textMid, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"monospace", letterSpacing:"0.08em", transition:"all 0.15s" }}>FUTURES</button>
+              <button onClick={() => setTrack("forex")} style={{ padding:"6px 18px", borderRadius:6, border:"none", background:track==="forex"?C.accentDim:"transparent", color:track==="forex"?C.accent:C.textMid, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"monospace", letterSpacing:"0.08em", transition:"all 0.15s" }}>FOREX</button>
             </div>
-          )}
+            {/* Nav links */}
+            {page === "landing" && (
+              <div style={{ display:"flex", gap:20, alignItems:"center" }}>
+                <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("how-it-works")?.scrollIntoView({behavior:"smooth"})}}>How It Works</a>
+                <span style={{ color:C.border }}>·</span>
+                <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("pricing")?.scrollIntoView({behavior:"smooth"})}}>Pricing</a>
+                <span style={{ color:C.border }}>·</span>
+                <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();setPage("contact")}}>Contact</a>
+              </div>
+            )}
+          </div>
           <div style={{ display:"flex", gap:12, alignItems:"center" }}>
             <LangSwitcher lang={lang} setLang={setLang} />
             <span onClick={() => setPage("login")} style={{ fontSize:13, color:C.textMid, cursor:"pointer", padding:"8px 14px" }}>{t.signIn}</span>
@@ -2248,11 +2288,12 @@ export default function App() {
         </div>
       )}
       <div style={{ paddingTop:page==="dashboard"?0:64 }}>
-        {page==="landing"   && <LandingPage onNavigate={setPage} t={t} track={track} setTrack={setTrack} />}
+        {page==="landing"    && <LandingPage onNavigate={setPage} t={t} track={track} setTrack={setTrack} />}
         {(page==="login"||page==="signup") && <AuthPage mode={page} onNavigate={setPage} onAuth={u=>{setUser(u);setPage("dashboard");}} t={t} track={track} />}
-        {page==="calc"      && <StandaloneCalc onNavigate={setPage} t={t} />}
-        {page==="contact"   && <ContactPage onNavigate={setPage} />}
-        {page==="dashboard" && <Dashboard user={user} onNavigate={setPage} t={t} lang={lang} setLang={setLang} track={track} />}
+        {page==="calc"       && <StandaloneCalc onNavigate={setPage} t={t} />}
+        {page==="contact"    && <ContactPage onNavigate={setPage} />}
+        {page==="demo-chooser" && <DemoChooser onNavigate={setPage} setTrack={setTrack} />}
+        {page==="dashboard"  && <Dashboard user={user} onNavigate={setPage} t={t} lang={lang} setLang={setLang} track={track} />}
         {page==="forex-demo" && <ForexDemo onNavigate={setPage} t={t} />}
       </div>
     </>
