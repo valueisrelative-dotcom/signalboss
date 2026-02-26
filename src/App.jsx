@@ -1181,7 +1181,10 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
 
           {/* The reframe */}
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:16 }}>
-            Charts are not the enemy. Candlesticks, support and resistance, price action — these tools have real value. Experienced traders use them every day. The problem is not the chart. The problem is that charts alone don't tell you <span style={{ color:C.text, fontWeight:600 }}>whether the market is in a condition where large, sustained movement is statistically likely.</span>
+            The problem is that charts alone don't tell you if the market is in a condition where a large, sustained move is statistically likely.
+          </p>
+          <p style={{ fontSize:17, color:C.text, fontWeight:600, lineHeight:1.9, marginBottom:32 }}>
+            Intuitively, you already know this.
           </p>
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:32 }}>
             That information doesn't live on a chart. It lives in volatility — specifically, in implied volatility derived from exchange-traded futures, where institutional positioning is expressed first and retail traders rarely look.
