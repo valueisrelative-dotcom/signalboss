@@ -1175,40 +1175,36 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
             <span style={{ color:C.text }}>They Don't Show Conditions.</span>
           </p>
 
-          <p style={{ fontSize:18, fontWeight:600, color:C.accent, lineHeight:1.6, marginBottom:28, letterSpacing:"-0.01em" }}>
+          <p style={{ fontSize:18, fontWeight:600, color:C.accent, lineHeight:1.6, marginBottom:32, letterSpacing:"-0.01em" }}>
             The Problem Isn't Charts. It's Using Them Without The Right Context.
           </p>
 
+          {/* The reframe */}
+          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:16 }}>
+            Charts are not the enemy. Candlesticks, support and resistance, price action — these tools have real value. Experienced traders use them every day. The problem is not the chart. The problem is that charts alone don't tell you <span style={{ color:C.text, fontWeight:600 }}>whether the market is in a condition where large, sustained movement is statistically likely.</span>
+          </p>
+          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:32 }}>
+            That information doesn't live on a chart. It lives in volatility — specifically, in implied volatility derived from exchange-traded futures, where institutional positioning is expressed first and retail traders rarely look.
+          </p>
+
           {/* Stacked rhythm lines */}
-          <div style={{ margin:"28px 0", paddingLeft:20, borderLeft:`2px solid ${C.border}` }}>
-            {["They call it discipline.", "They call it price action.", "They call it market structure."].map(line => (
+          <div style={{ margin:"0 0 28px 0", paddingLeft:20, borderLeft:`2px solid ${C.border}` }}>
+            {[
+              "Price action tells you what the market already did.",
+              "Market structure tells you where it's been.",
+              "Volatility tells you what it's preparing to do right now.",
+            ].map(line => (
               <p key={line} style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.7, marginBottom:6 }}>{line}</p>
             ))}
-            <p style={{ fontSize:17, color:C.text, fontWeight:600, lineHeight:1.7, marginTop:10 }}>Yet almost nobody gets stronger.</p>
+            <p style={{ fontSize:17, color:C.text, fontWeight:600, lineHeight:1.7, marginTop:10 }}>Only one of those is forward-looking.</p>
           </div>
 
-          {/* Volatility vs charts */}
+          {/* How Signal Boss fits */}
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
-            Charts show you what already happened.
-          </p>
-          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:22 }}>
-            Signal Boss identifies when volatility transitions into expansion. That distinction changes everything.
-          </p>
-
-          {/* Regime explanation */}
-          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
-            Markets do not move because a candle looks bullish.
-          </p>
-          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:22 }}>
-            They move because volatility shifts regimes — from compression into expansion, from balance into imbalance, and back again. That transition — that inflection point — is where asymmetric opportunity lives.
-          </p>
-
-          {/* Fragment line */}
-          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
-            Most signal services hand you an entry and disappear.
+            Signal Boss doesn't replace your chart process. It gives you the layer that's been missing from it.
           </p>
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:28 }}>
-            That is not a system. That is a fragment.
+            When a Signal Boss alert fires, it means volatility has reached an inflection point — the condition under which large price movement statistically occurs. If you still want to look at your chart before you pull the trigger, look. Most of the time, you'll see the chart confirming what the volatility already told you.
           </p>
 
           {/* Three components */}
@@ -1223,42 +1219,16 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
               </div>
             ))}
           </div>
+          <p style={{ fontSize:15, color:C.textMid, lineHeight:1.9, marginBottom:32 }}>
+            Not just an entry and a wish. A complete trade — built from the same volatility data that institutions use to price risk.
+          </p>
 
           {/* Premise */}
-          <div style={{ background:C.bg, borderRadius:10, padding:"18px 22px", borderLeft:`3px solid ${C.accent}`, marginBottom:28 }}>
+          <div style={{ background:C.bg, borderRadius:10, padding:"18px 22px", borderLeft:`3px solid ${C.accent}`, marginBottom:32 }}>
             <p style={{ fontSize:15, color:C.text, lineHeight:1.8, fontStyle:"italic", margin:0 }}>
-              "Correct volatility regime + defined risk + proper sizing = professional trading. Everything else is just staring at charts and hoping."
+              "Correct volatility regime + defined risk + proper sizing = professional trading. Get the Signal, confirm with your chart."
             </p>
           </div>
-
-          {/* Illusion section header */}
-          <p style={{ fontSize:20, fontWeight:700, color:C.text, lineHeight:1.6, marginBottom:16, letterSpacing:"-0.01em" }}>
-            Why do most retail traders lose?
-          </p>
-          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:22 }}>
-            Because price action and market structure create the illusion of understanding.
-          </p>
-
-          {/* Three illusions */}
-          <div style={{ margin:"0 0 24px 0", paddingLeft:20, borderLeft:`2px solid ${C.border}` }}>
-            {[
-              "Patterns feel predictive.",
-              "Support and resistance feel concrete.",
-              "Indicators feel confirmatory.",
-            ].map(line => (
-              <p key={line} style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.7, marginBottom:6 }}>{line}</p>
-            ))}
-          </div>
-
-          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
-            But none of them tell you when the market is positioned for movement based on expected price.
-          </p>
-          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
-            Without volatility context, charts do not provide useful information.
-          </p>
-          <p style={{ fontSize:17, color:C.text, fontWeight:600, lineHeight:1.9, marginBottom:32 }}>
-            They provide false confidence. And false confidence is lethal to P&L.
-          </p>
 
           {/* The gut-punch question */}
           <div style={{ background:`linear-gradient(135deg, #0c0e10, #0a0c0e)`, border:`1px solid ${C.accent}22`, borderRadius:12, padding:"24px 28px", marginBottom:28 }}>
@@ -1271,13 +1241,13 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
 
           {/* Closing */}
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
-            Signal Boss does not predict candles.
+            Signal Boss does not predict candles. It does not replace your judgment.
           </p>
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
-            Signal Boss identifies <span style={{ color:C.text, fontWeight:600 }}>volatility expansion conditions</span> — the only environment where large, sustained price movement statistically occurs.
+            It identifies <span style={{ color:C.text, fontWeight:600 }}>volatility expansion conditions</span> — the environment where large, sustained price movement statistically occurs — and delivers a complete, actionable trade the moment conditions align.
           </p>
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
-            That is the difference between guessing direction and trading a real edge.
+            Use your charts to confirm. Trade with the context your charts were never designed to give you.
           </p>
           <p style={{ fontSize:17, color:C.textMid, lineHeight:1.9, marginBottom:36, fontStyle:"italic" }}>
             The gym is still full. You don't have to stay on the same plan.
