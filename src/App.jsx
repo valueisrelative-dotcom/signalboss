@@ -851,103 +851,144 @@ function ForexDemo({ onNavigate, t }) {
     { pair:"EUR/GBP", future:"/6E · /6B", dir:"SHORT", bolts:1, strength:"WEAK",   cycles:[["Daily","↓ below zero"],["2-Day","↑ above zero"],["4-Day","↑ above zero"]], vwaps:[["Daily VWAP","↓ below"],["Weekly VWAP","↑ above"]], entry:"0.8571", color:C.short },
     { pair:"EUR/CHF", future:"/6E · /6S", dir:"LONG",  bolts:2, strength:"MODERATE",cycles:[["Daily","↑ above zero"],["2-Day","↑ above zero"],["4-Day","↓ below zero"]], vwaps:[["Daily VWAP","↑ above"],["Weekly VWAP","↓ below"]], entry:"0.9412", color:C.long },
   ];
+  const [activeTab, setActiveTab] = useState("signals");
+
+  const tabs = [
+    { id:"signals", label:"Live Signals",    icon:"◉" },
+    { id:"pnl",     label:"P&L Tracker",     icon:"◈" },
+    { id:"config",  label:"Configuration",   icon:"⚙" },
+    { id:"prop",    label:"Risk Calculator", icon:"⬡" },
+    { id:"account", label:"Account",         icon:"◎" },
+  ];
+
   return (
-    <div style={{ minHeight:"100vh", background:C.bg, padding:"40px 24px" }}>
-      <div style={{ maxWidth:1100, margin:"0 auto" }}>
-        {/* Header with clickable logo */}
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:32, flexWrap:"wrap", gap:12 }}>
-          <div>
-            <div onClick={() => onNavigate("landing")} style={{ fontWeight:800, fontSize:18, fontFamily:"monospace", color:"#ffffff", letterSpacing:"0.04em", cursor:"pointer", marginBottom:10 }}>
-              SIGNAL<span style={{ color:C.accent }}>BOSS</span>
-            </div>
-            <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:8 }}>FOREX SIGNAL DEMO</div>
-            <h2 style={{ fontSize:24, fontWeight:700, letterSpacing:"-0.02em" }}>Live Signal Intelligence · Forex</h2>
-            <p style={{ color:C.textMid, fontSize:13, marginTop:6 }}>Signals derived from exchange-traded currency futures. Institutional positioning, retail execution.</p>
+    <div style={{ display:"flex", minHeight:"100vh" }}>
+      {/* Sidebar */}
+      <div style={{ width:215, background:C.surface, borderRight:`1px solid ${C.border}`, display:"flex", flexDirection:"column", flexShrink:0 }}>
+        <div style={{ padding:"20px 18px 16px", borderBottom:`1px solid ${C.border}` }}>
+          <div onClick={() => onNavigate("landing")} style={{ fontWeight:700, fontSize:15, fontFamily:"monospace", cursor:"pointer" }}>SIGNAL<span style={{ color:C.accent }}>BOSS</span></div>
+          <div style={{ marginTop:8, display:"flex", alignItems:"center", gap:6 }}>
+            <LiveDot color={C.accent} size={5} />
+            <span style={{ fontSize:10, color:C.textMid, fontFamily:"monospace" }}>FOREX ENGINE ACTIVE</span>
           </div>
-          <div style={{ display:"flex", gap:10 }}>
-            <button onClick={() => onNavigate("landing")} style={{ padding:"10px 20px", background:"transparent", border:`1px solid ${C.border}`, borderRadius:7, color:C.textMid, cursor:"pointer", fontSize:13 }}>← Home</button>
-            <button onClick={() => onNavigate("signup")} style={{ padding:"10px 20px", background:C.accent, border:"none", borderRadius:7, color:"#080909", fontWeight:600, fontSize:13, cursor:"pointer" }}>Start Free Trial</button>
+          <div style={{ marginTop:12, display:"flex", gap:4, background:C.bg, borderRadius:7, padding:3 }}>
+            <button onClick={() => onNavigate("dashboard")} style={{ flex:1, padding:"5px 0", borderRadius:5, border:"none", background:"transparent", color:C.textMid, fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"monospace" }}>FUTURES</button>
+            <button style={{ flex:1, padding:"5px 0", borderRadius:5, border:"none", background:C.accentDim, color:C.accent, fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"monospace" }}>FOREX</button>
           </div>
         </div>
-        {/* Methodology note */}
-        <div style={{ background:C.surface, border:`1px solid ${C.accent}33`, borderRadius:10, padding:"14px 20px", marginBottom:28, display:"flex", alignItems:"center", gap:12 }}>
-          <span style={{ color:C.accent, fontSize:16 }}>◈</span>
-          <p style={{ fontSize:13, color:"#c9cdd6", lineHeight:1.7, margin:0 }}>
-            Currency futures are where banks show their hand. Our IV inflection signals are built from currency futures, where institutional positioning and volatility are expressed first. Spot forex prices follow these futures moves through arbitrage. Ignoring futures volatility means ignoring where currency price discovery begins.
-          </p>
-        </div>
-        {/* Demo notice */}
-        <div style={{ marginBottom:20, background:"#0e0a04", border:`1px solid #f59e0b44`, borderRadius:10, padding:"12px 18px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12 }}>
-          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            <span style={{ fontSize:14 }}>⚠</span>
-            <span style={{ fontSize:12, color:"#f59e0b", fontFamily:"monospace", fontWeight:600, letterSpacing:"0.08em" }}>SIMULATED DEMO</span>
-            <span style={{ fontSize:12, color:"#9ca3af" }}>— These are not live signals. Real-time signal delivery requires a subscription.</span>
-          </div>
-          <button onClick={() => onNavigate("signup")} style={{ padding:"7px 18px", background:C.accent, color:"#080909", border:"none", borderRadius:6, fontWeight:700, fontSize:12, cursor:"pointer", whiteSpace:"nowrap" }}>
-            Start Free Trial →
-          </button>
-        </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(300px, 1fr))", gap:16 }}>
-          {pairs.map((p) => (
-            <div key={p.pair} style={{ background:p.dir==="LONG"?C.surfaceUp:C.surfaceDn, border:`1px solid ${p.color}33`, borderRadius:12, padding:20, position:"relative", overflow:"hidden" }}>
-              <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:p.color }} />
-              {/* Header */}
-              <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
-                <LiveDot color={p.color} size={7} />
-                <span style={{ fontSize:18, fontWeight:700, color:p.color, fontFamily:"monospace" }}>{p.dir}</span>
-                <span style={{ fontSize:18, fontWeight:700, fontFamily:"monospace" }}>{p.pair}</span>
-                <span style={{ marginLeft:"auto", fontSize:10, color:p.color, background:p.color+"18", padding:"2px 8px", borderRadius:12, fontFamily:"monospace" }}>ACTIVE</span>
-              </div>
-              {/* Futures reference */}
-              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.08em", marginBottom:10, background:C.accentDim, padding:"3px 8px", borderRadius:4, display:"inline-block" }}>
-                DERIVED FROM {p.future}
-              </div>
-              {/* Strength */}
-              <div style={{ display:"flex", gap:3, marginBottom:12, alignItems:"center" }}>
-                {[1,2,3].map(i => <span key={i} style={{ fontSize:13, opacity:i<=p.bolts?1:0.15, filter:i<=p.bolts?`drop-shadow(0 0 4px ${p.color})`:"none" }}>⚡</span>)}
-                <span style={{ fontSize:11, fontWeight:600, color:p.bolts===3?C.strong:p.bolts===2?C.mod:C.weak, marginLeft:4, fontFamily:"monospace" }}>{p.strength}</span>
-              </div>
-              {/* Cycles */}
-              {p.cycles.map(([label, val]) => (
-                <div key={label} style={{ display:"flex", justifyContent:"space-between", padding:"5px 0", borderBottom:`1px solid ${C.border}`, fontSize:11, fontFamily:"monospace" }}>
-                  <span style={{ color:C.textMid }}>{label}</span>
-                  <span style={{ color:val.includes("above") ? p.dir==="LONG"?C.long:C.textDim : p.dir==="SHORT"?C.short:C.textDim }}>{val} ✓</span>
-                </div>
-              ))}
-              {/* VWAPs */}
-              {p.vwaps.map(([label, val]) => (
-                <div key={label} style={{ display:"flex", justifyContent:"space-between", padding:"5px 0", borderBottom:`1px solid ${C.border}`, fontSize:11, fontFamily:"monospace" }}>
-                  <span style={{ color:C.textMid }}>{label}</span>
-                  <span style={{ color:val.includes("above") ? p.dir==="LONG"?C.long:C.warn : p.dir==="SHORT"?C.short:C.warn }}>{val} ✓</span>
-                </div>
-              ))}
-              {/* Entry */}
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginTop:10 }}>
-                <span style={{ fontSize:11, color:C.textMid, fontFamily:"monospace" }}>Entry price</span>
-                <span style={{ fontSize:15, fontWeight:700, color:C.text, fontFamily:"monospace" }}>{p.entry}</span>
-              </div>
+        <nav style={{ padding:"12px 10px", flex:1 }}>
+          {tabs.map(tab => (
+            <div key={tab.id} onClick={() => tab.id === "prop" ? onNavigate("calc") : setActiveTab(tab.id)} className={`nav-item ${activeTab===tab.id?"active":""}`} style={{ color:activeTab===tab.id?C.accent:C.textMid }}>
+              <span style={{ fontSize:12 }}>{tab.icon}</span>{tab.label}
             </div>
           ))}
+        </nav>
+        <div style={{ padding:"10px 18px", borderTop:`1px solid ${C.border}` }}>
+          <div onClick={() => onNavigate("landing")} style={{ fontSize:11, color:C.textDim, cursor:"pointer", marginBottom:6, fontFamily:"monospace" }}>← Home</div>
+          <button onClick={() => onNavigate("signup")} style={{ width:"100%", padding:"9px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:700, fontSize:12, cursor:"pointer" }}>Start Free Trial →</button>
         </div>
-        {/* CTA Banner */}
-        <div style={{ margin:"48px 0 24px", background:`linear-gradient(135deg, ${C.surface}, #0d0a1a)`, border:`1px solid ${C.accent}33`, borderRadius:16, padding:"32px 40px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:20 }}>
-          <div>
-            <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:8 }}>READY TO TRADE WITH THE EDGE?</div>
-            <h3 style={{ fontSize:22, fontWeight:700, marginBottom:8, letterSpacing:"-0.02em" }}>What you just saw — that's every session.</h3>
-            <p style={{ fontSize:14, color:C.textMid, lineHeight:1.7, maxWidth:480 }}>
-              Real-time IV inflection signals across all major forex pairs and crosses. Built from currency futures. Delivered the moment conditions align.
-            </p>
+      </div>
+
+      {/* Main */}
+      <div style={{ flex:1, overflow:"auto", background:C.bg }}>
+        <PriceTicker />
+
+        {activeTab==="signals" && (
+          <div style={{ padding:22 }}>
+            {/* Demo notice */}
+            <div style={{ marginBottom:18, background:"#0e0a04", border:`1px solid #f59e0b44`, borderRadius:10, padding:"12px 18px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                <span style={{ fontSize:14 }}>⚠</span>
+                <span style={{ fontSize:12, color:"#f59e0b", fontFamily:"monospace", fontWeight:600, letterSpacing:"0.08em" }}>SIMULATED DEMO</span>
+                <span style={{ fontSize:12, color:"#9ca3af" }}>— These are not live signals. Real-time signal delivery requires a subscription.</span>
+              </div>
+              <button onClick={() => onNavigate("signup")} style={{ padding:"7px 18px", background:C.accent, color:"#080909", border:"none", borderRadius:6, fontWeight:700, fontSize:12, cursor:"pointer", whiteSpace:"nowrap" }}>Start Free Trial →</button>
+            </div>
+            {/* Methodology note */}
+            <div style={{ background:C.surface, border:`1px solid ${C.accent}33`, borderRadius:10, padding:"14px 20px", marginBottom:20, display:"flex", alignItems:"center", gap:12 }}>
+              <span style={{ color:C.accent, fontSize:16 }}>◈</span>
+              <p style={{ fontSize:13, color:"#c9cdd6", lineHeight:1.7, margin:0 }}>
+                Currency futures are where banks show their hand. IV inflection signals built from exchange-traded currency futures — where institutional positioning is expressed first. Spot forex prices follow through arbitrage.
+              </p>
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(300px, 1fr))", gap:16 }}>
+              {pairs.map((p) => (
+                <div key={p.pair} style={{ background:p.dir==="LONG"?C.surfaceUp:C.surfaceDn, border:`1px solid ${p.color}33`, borderRadius:12, padding:20, position:"relative", overflow:"hidden" }}>
+                  <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:p.color }} />
+                  <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
+                    <LiveDot color={p.color} size={7} />
+                    <span style={{ fontSize:18, fontWeight:700, color:p.color, fontFamily:"monospace" }}>{p.dir}</span>
+                    <span style={{ fontSize:18, fontWeight:700, fontFamily:"monospace" }}>{p.pair}</span>
+                    <span style={{ marginLeft:"auto", fontSize:10, color:p.color, background:p.color+"18", padding:"2px 8px", borderRadius:12, fontFamily:"monospace" }}>ACTIVE</span>
+                  </div>
+                  <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.08em", marginBottom:10, background:C.accentDim, padding:"3px 8px", borderRadius:4, display:"inline-block" }}>
+                    DERIVED FROM {p.future}
+                  </div>
+                  <div style={{ display:"flex", gap:3, marginBottom:12, alignItems:"center" }}>
+                    {[1,2,3].map(i => <span key={i} style={{ fontSize:13, opacity:i<=p.bolts?1:0.15, filter:i<=p.bolts?`drop-shadow(0 0 4px ${p.color})`:"none" }}>⚡</span>)}
+                    <span style={{ fontSize:11, fontWeight:600, color:p.bolts===3?C.strong:p.bolts===2?C.mod:C.weak, marginLeft:4, fontFamily:"monospace" }}>{p.strength}</span>
+                  </div>
+                  {p.cycles.map(([label, val]) => (
+                    <div key={label} style={{ display:"flex", justifyContent:"space-between", padding:"5px 0", borderBottom:`1px solid ${C.border}`, fontSize:11, fontFamily:"monospace" }}>
+                      <span style={{ color:C.textMid }}>{label}</span>
+                      <span style={{ color:val.includes("above") ? p.dir==="LONG"?C.long:C.textDim : p.dir==="SHORT"?C.short:C.textDim }}>{val} ✓</span>
+                    </div>
+                  ))}
+                  {p.vwaps.map(([label, val]) => (
+                    <div key={label} style={{ display:"flex", justifyContent:"space-between", padding:"5px 0", borderBottom:`1px solid ${C.border}`, fontSize:11, fontFamily:"monospace" }}>
+                      <span style={{ color:C.textMid }}>{label}</span>
+                      <span style={{ color:val.includes("above") ? p.dir==="LONG"?C.long:C.warn : p.dir==="SHORT"?C.short:C.warn }}>{val} ✓</span>
+                    </div>
+                  ))}
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginTop:10 }}>
+                    <span style={{ fontSize:11, color:C.textMid, fontFamily:"monospace" }}>Entry price</span>
+                    <span style={{ fontSize:15, fontWeight:700, color:C.text, fontFamily:"monospace" }}>{p.entry}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* CTA Banner */}
+            <div style={{ marginTop:32, background:`linear-gradient(135deg, ${C.surface}, #0d0a1a)`, border:`1px solid ${C.accent}33`, borderRadius:14, padding:"24px 28px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:16 }}>
+              <div>
+                <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:6 }}>THIS IS THE DEMO</div>
+                <div style={{ fontSize:16, fontWeight:700, marginBottom:4 }}>Ready for live signals on your account?</div>
+                <div style={{ fontSize:13, color:C.textMid }}>Start your free trial and get real-time alerts the moment conditions align.</div>
+              </div>
+              <button onClick={() => onNavigate("signup")} style={{ padding:"12px 28px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:13, cursor:"pointer", whiteSpace:"nowrap" }}>
+                Start Free Trial →
+              </button>
+            </div>
+            <div style={{ textAlign:"center", marginTop:16 }}>
+              <p style={{ fontSize:12, color:C.textDim, fontStyle:"italic" }}>Simulated illustration only · Not actual trade data · Signals shown for demonstration purposes</p>
+            </div>
           </div>
-          <div style={{ display:"flex", flexDirection:"column", gap:10, alignItems:"flex-start" }}>
-            <button onClick={() => onNavigate("signup")} style={{ padding:"14px 32px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:14, cursor:"pointer", whiteSpace:"nowrap" }}>
-              Start Free Trial →
-            </button>
-            <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", textAlign:"center", width:"100%" }}>14-day trial · No credit card required</div>
+        )}
+
+        {activeTab==="pnl" && <PositionTracker />}
+
+        {activeTab==="config" && (
+          <div style={{ padding:22, maxWidth:500 }}>
+            <h2 style={{ fontSize:18, fontWeight:600, marginBottom:4 }}>Configuration</h2>
+            <p style={{ color:C.textMid, fontSize:13, marginBottom:22 }}>Signal filters and display preferences for your forex track.</p>
+            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20 }}>
+              <div style={{ fontSize:13, color:C.textMid, lineHeight:1.8 }}>
+                Full configuration options — timeframe selection, pair filtering, VWAP rules, and alert preferences — are available with a live subscription.
+              </div>
+              <button onClick={() => onNavigate("signup")} style={{ marginTop:16, padding:"10px 24px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:600, fontSize:13, cursor:"pointer" }}>Start Free Trial →</button>
+            </div>
           </div>
-        </div>
-        <div style={{ textAlign:"center", marginTop:16 }}>
-          <p style={{ fontSize:12, color:C.textDim, fontStyle:"italic" }}>Simulated illustration only · Not actual trade data · Signals shown for demonstration purposes</p>
-        </div>
+        )}
+
+        {activeTab==="account" && (
+          <div style={{ padding:22, maxWidth:500 }}>
+            <h2 style={{ fontSize:18, fontWeight:600, marginBottom:4 }}>Account</h2>
+            <p style={{ color:C.textMid, fontSize:13, marginBottom:22 }}>Manage your Signal Boss subscription and preferences.</p>
+            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20 }}>
+              <div style={{ fontSize:13, color:C.textMid, lineHeight:1.8 }}>Account management is available once you have an active subscription.</div>
+              <button onClick={() => onNavigate("signup")} style={{ marginTop:16, padding:"10px 24px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:600, fontSize:13, cursor:"pointer" }}>Start Free Trial →</button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -1016,6 +1057,11 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
             </div>
           </div>
           <EquityCurve />
+        </div>
+        <div style={{ textAlign:"center", marginTop:16 }}>
+          <p style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", fontStyle:"italic" }}>
+            Hypothetical and Illustrative Examples · Not actual trading results · Past performance does not guarantee future results
+          </p>
         </div>
       </div>
 
@@ -1094,6 +1140,10 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
 
       {/* How It Works */}
       <div id="how-it-works" style={{ maxWidth:880, margin:"0 auto", padding:"0 24px 80px" }}>
+        <div style={{ textAlign:"center", marginBottom:40 }}>
+          <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:14 }}>THE METHODOLOGY</div>
+          <h2 style={{ fontSize:32, fontWeight:700, letterSpacing:"-0.03em", marginBottom:0 }}>How Signal Boss Works</h2>
+        </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(220px,1fr))", gap:16 }}>
           {["01","02","03","04"].map(n => (
             <div key={n} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
@@ -1108,7 +1158,7 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
       {/* Founder Section */}
       <div style={{ maxWidth:720, margin:"0 auto", padding:"0 24px 100px" }}>
         <div style={{ borderLeft:`3px solid ${C.accent}`, paddingLeft:32 }}>
-          <div style={{ fontSize:11, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:24 }}>{t.whyBuilt}</div>
+          <div style={{ fontSize:22, fontWeight:800, color:C.accent, fontFamily:"monospace", letterSpacing:"0.12em", marginBottom:28, textTransform:"uppercase" }}>{t.whyBuilt}</div>
 
           {/* Opening punch */}
           <p style={{ fontSize:22, fontWeight:600, color:C.text, lineHeight:1.7, marginBottom:24, letterSpacing:"-0.01em" }}>
@@ -1866,6 +1916,10 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
           <div style={{ marginTop:8, display:"flex", alignItems:"center", gap:6 }}>
             <LiveDot color={C.long} size={5} />
             <span style={{ fontSize:10, color:C.textMid, fontFamily:"monospace" }}>{t.engineActive}</span>
+          </div>
+          <div style={{ marginTop:12, display:"flex", gap:4, background:C.bg, borderRadius:7, padding:3 }}>
+            <button style={{ flex:1, padding:"5px 0", borderRadius:5, border:"none", background:C.longDim, color:C.long, fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"monospace" }}>FUTURES</button>
+            <button onClick={() => onNavigate("forex-demo")} style={{ flex:1, padding:"5px 0", borderRadius:5, border:"none", background:"transparent", color:C.textMid, fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"monospace" }}>FOREX</button>
           </div>
           <div style={{ marginTop:10 }}><LangSwitcher lang={lang} setLang={setLang} /></div>
         </div>
