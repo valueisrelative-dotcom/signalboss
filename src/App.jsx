@@ -1165,6 +1165,11 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
             If Charts Worked, 98% Wouldn't Be Losing.
           </p>
 
+          {/* Gym analogy */}
+          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:28 }}>
+            Imagine joining a gym and following a workout plan that makes 98% of its members weaker and fatter. Chart-based trading is the 'workout plan' for many traders, and put simply it's making them poorer and weaker financially. Signal Boss allows traders to get valid, institutional grade signals that are triggered by the conditions that truly move markets.
+          </p>
+
           <p style={{ fontSize:20, fontWeight:600, color:"#c9cdd6", lineHeight:1.6, marginBottom:8, letterSpacing:"-0.01em" }}>
             Charts show you what already happened.<br />
             <span style={{ color:C.text }}>They Don't Show Conditions.</span>
@@ -1172,11 +1177,6 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
 
           <p style={{ fontSize:18, fontWeight:600, color:C.accent, lineHeight:1.6, marginBottom:28, letterSpacing:"-0.01em" }}>
             The Problem Isn't Charts. It's Using Them Without The Right Context.
-          </p>
-
-          {/* Gym analogy */}
-          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:22 }}>
-            Think about that for a moment. Using charts to make money is like joining a gym where 99% of members follow a workout plan that makes them weaker and fatter. Does that seem logical?
           </p>
 
           {/* Stacked rhythm lines */}
