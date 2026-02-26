@@ -1161,8 +1161,17 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
           <div style={{ fontSize:22, fontWeight:800, color:C.accent, fontFamily:"monospace", letterSpacing:"0.12em", marginBottom:28, textTransform:"uppercase" }}>{t.whyBuilt}</div>
 
           {/* Opening punch */}
-          <p style={{ fontSize:22, fontWeight:600, color:C.text, lineHeight:1.7, marginBottom:24, letterSpacing:"-0.01em" }}>
-            98% of retail traders lose money. Almost 100% of them rely on charts to make it.
+          <p style={{ fontSize:28, fontWeight:700, color:C.text, lineHeight:1.5, marginBottom:24, letterSpacing:"-0.02em" }}>
+            If Charts Worked, 98% Wouldn't Be Losing.
+          </p>
+
+          <p style={{ fontSize:20, fontWeight:600, color:"#c9cdd6", lineHeight:1.6, marginBottom:8, letterSpacing:"-0.01em" }}>
+            Charts show you what already happened.<br />
+            <span style={{ color:C.text }}>They Don't Show Conditions.</span>
+          </p>
+
+          <p style={{ fontSize:18, fontWeight:600, color:C.accent, lineHeight:1.6, marginBottom:28, letterSpacing:"-0.01em" }}>
+            The Problem Isn't Charts. It's Using Them Without The Right Context.
           </p>
 
           {/* Gym analogy */}
