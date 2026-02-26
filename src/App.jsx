@@ -1871,7 +1871,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
         </div>
         <nav style={{ padding:"12px 10px", flex:1 }}>
           {tabs.map(tab => (
-            <div key={tab.id} onClick={() => setActiveTab(tab.id)} className={`nav-item ${activeTab===tab.id?"active":""}`} style={{ color:activeTab===tab.id?C.accent:C.textMid }}>
+            <div key={tab.id} onClick={() => tab.id === "prop" ? onNavigate("calc") : setActiveTab(tab.id)} className={`nav-item ${activeTab===tab.id?"active":""}`} style={{ color:activeTab===tab.id?C.accent:C.textMid }}>
               <span style={{ fontSize:12 }}>{tab.icon}</span>{tab.label}
             </div>
           ))}
@@ -2062,9 +2062,22 @@ function StandaloneCalc({ onNavigate, t }) {
   const [email, setEmail]       = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [error, setError]       = useState("");
-  const handleSubmit = () => {
+  const [submitting, setSubmitting] = useState(false);
+  const handleSubmit = async () => {
     if (!email || !email.includes("@")) { setError("Please enter a valid email."); return; }
-    setSubmitted(true); setError("");
+    setSubmitting(true);
+    try {
+      await fetch("https://formspree.io/f/mbdaqgye", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          email,
+          _subject: "🔢 Signal Boss Calculator Access Request",
+          source: "Risk Calculator Gate",
+        }),
+      });
+    } catch(e) { /* silent fail */ }
+    setSubmitted(true); setError(""); setSubmitting(false);
   };
   return (
     <div style={{ minHeight:"100vh", background:C.bg, padding:"40px 24px" }}>
@@ -2084,7 +2097,7 @@ function StandaloneCalc({ onNavigate, t }) {
               <input type="email" value={email} onChange={e => { setEmail(e.target.value); setError(""); }}
                 placeholder="your@email.com" onKeyDown={e => e.key==="Enter" && handleSubmit()}
                 style={{ flex:1, padding:"10px 14px", background:C.bg, border:`1px solid ${error?C.short:C.border}`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace", outline:"none" }} />
-              <button onClick={handleSubmit} style={{ padding:"10px 20px", background:C.prop, color:"#fff", border:"none", borderRadius:7, fontWeight:600, fontSize:13, cursor:"pointer", whiteSpace:"nowrap" }}>Get Access</button>
+              <button onClick={handleSubmit} disabled={submitting} style={{ padding:"10px 20px", background:C.prop, color:"#fff", border:"none", borderRadius:7, fontWeight:600, fontSize:13, cursor:"pointer", whiteSpace:"nowrap", opacity:submitting?0.7:1 }}>{submitting ? "..." : "Get Access"}</button>
             </div>
             {error && <div style={{ fontSize:12, color:C.short, marginTop:8, fontFamily:"monospace" }}>{error}</div>}
             <div style={{ fontSize:11, color:C.textDim, marginTop:12 }}>No spam. Unsubscribe anytime.</div>
