@@ -2113,7 +2113,7 @@ function StandaloneCalc({ onNavigate, t }) {
     setSubmitted(true); setError(""); setSubmitting(false);
   };
   return (
-    <div style={{ minHeight:"100vh", background:C.bg, padding:"40px 24px" }}>
+    <div style={{ minHeight:"100vh", background:C.bg, padding:"100px 24px 40px" }}>
       <div style={{ maxWidth:860, margin:"0 auto" }}>
         <div style={{ marginBottom:32 }}>
           <div onClick={() => onNavigate("landing")} style={{ fontSize:11, color:C.textMid, cursor:"pointer", marginBottom:16, fontFamily:"monospace" }}>← Back to Signal Boss</div>
@@ -2121,19 +2121,19 @@ function StandaloneCalc({ onNavigate, t }) {
           <p style={{ color:C.textMid, fontSize:14 }}>Free tool. No subscription required. Know your real risk before you trade.</p>
         </div>
         {!submitted ? (
-          <div style={{ maxWidth:440, background:C.surface, border:`1px solid ${C.prop}33`, borderRadius:14, padding:28, marginBottom:32 }}>
-            <div style={{ fontSize:13, fontWeight:600, color:C.prop, marginBottom:6 }}>⬡ Free Access</div>
-            <p style={{ fontSize:13, color:C.textMid, lineHeight:1.6, marginBottom:18 }}>
+          <div style={{ maxWidth:480, background:C.surface, border:`1px solid ${C.prop}44`, borderRadius:14, padding:32, marginBottom:40 }}>
+            <div style={{ fontSize:13, fontWeight:600, color:C.prop, marginBottom:8 }}>⬡ Free Access</div>
+            <p style={{ fontSize:13, color:C.textMid, lineHeight:1.6, marginBottom:20 }}>
               Enter your email to unlock the full calculator. We'll also send you a free guide on prop firm risk management.
             </p>
-            <div style={{ display:"flex", gap:10 }}>
-              <input type="email" value={email} onChange={e => { setEmail(e.target.value); setError(""); }}
-                placeholder="your@email.com" onKeyDown={e => e.key==="Enter" && handleSubmit()}
-                style={{ flex:1, padding:"10px 14px", background:C.bg, border:`1px solid ${error?C.short:C.border}`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace", outline:"none" }} />
-              <button onClick={handleSubmit} disabled={submitting} style={{ padding:"10px 20px", background:C.prop, color:"#fff", border:"none", borderRadius:7, fontWeight:600, fontSize:13, cursor:"pointer", whiteSpace:"nowrap", opacity:submitting?0.7:1 }}>{submitting ? "..." : "Get Access"}</button>
-            </div>
-            {error && <div style={{ fontSize:12, color:C.short, marginTop:8, fontFamily:"monospace" }}>{error}</div>}
-            <div style={{ fontSize:11, color:C.textDim, marginTop:12 }}>No spam. Unsubscribe anytime.</div>
+            <input type="email" value={email} onChange={e => { setEmail(e.target.value); setError(""); }}
+              placeholder="your@email.com" onKeyDown={e => e.key==="Enter" && handleSubmit()}
+              style={{ width:"100%", boxSizing:"border-box", padding:"12px 16px", background:C.bg, border:`1px solid ${error?C.short:C.border}`, borderRadius:7, color:C.text, fontSize:14, fontFamily:"monospace", outline:"none", marginBottom:10, display:"block" }} />
+            <button onClick={handleSubmit} disabled={submitting} style={{ width:"100%", padding:"12px", background:C.prop, color:"#fff", border:"none", borderRadius:7, fontWeight:700, fontSize:14, cursor:"pointer", opacity:submitting?0.7:1 }}>
+              {submitting ? "Unlocking..." : "Get Access →"}
+            </button>
+            {error && <div style={{ fontSize:12, color:C.short, marginTop:10, fontFamily:"monospace" }}>{error}</div>}
+            <div style={{ fontSize:11, color:C.textDim, marginTop:12, textAlign:"center" }}>No spam. Unsubscribe anytime.</div>
           </div>
         ) : (
           <div style={{ maxWidth:440, background:C.surface, border:`1px solid ${C.long}33`, borderRadius:14, padding:22, marginBottom:32, display:"flex", gap:12, alignItems:"center" }}>
