@@ -2004,9 +2004,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
             <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:14 }}>
               <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>{t.timeframe}</div>
               <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-                {["1m","3m","5m","15m","30m","1h"].map(tf => (
-                  <button key={tf} onClick={() => setTimeframe(tf)} className="tab-btn" style={{ padding:"7px 16px", borderRadius:6, fontSize:12, fontFamily:"monospace", background:timeframe===tf?C.accentDim:C.bg, color:timeframe===tf?C.accent:C.textMid, border:`1px solid ${timeframe===tf?C.accent+"44":C.border}` }}>{tf}</button>
-                ))}
+                <button className="tab-btn" style={{ padding:"7px 16px", borderRadius:6, fontSize:12, fontFamily:"monospace", background:C.accentDim, color:C.accent, border:`1px solid ${C.accent+"44"}` }}>5m</button>
               </div>
             </div>
             <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:14 }}>
