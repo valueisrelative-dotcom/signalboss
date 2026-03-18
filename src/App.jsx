@@ -35,16 +35,16 @@ const T = {
       ["Daily Loss Limits", "Never accidentally breach a daily loss rule"],
     ],
     exploreFuturesLabel: "EXPLORE FUTURES", exploreForexLabel: "EXPLORE FOREX",
-    futuresDesc: "ES, NQ, CL, /6E, /6B, /6J and all major futures contracts. Direct IV inflection signals on the exchange-traded instruments where institutional positioning is most transparent.",
-    futuresFeatures: ["ES · NQ · CL · RTY · ZB", "/6E · /6B · /6J · /6S · /6A · /6C", "Account Risk Calculator included", "Smart Stop & Take Profit on every signal"],
+    futuresDesc: "ES, NQ, CL, GC, RTY, ZB and currency futures /6E, /6B, /6A. Multi-cycle momentum signals with VWAP confirmation on the contracts where institutional positioning is most transparent.",
+    futuresFeatures: ["ES · NQ · CL · GC · RTY · ZB", "/6E · /6B · /6A", "Account Risk Calculator included", "Smart Stop & Take Profit on every signal"],
     forexLabel: "FOREX TRADERS", forexHeadline: "Trade the intelligence.",
-    forexDesc: "EUR/USD, GBP/USD, USD/JPY and all major pairs including crosses. Same IV signal intelligence derived from currency futures — where price discovery actually begins.",
-    forexFeatures: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "EUR/JPY · EUR/GBP · EUR/CHF + more", "Account Risk Calculator included", "Smart Stop & Take Profit on every signal"],
+    forexDesc: "EUR/USD, GBP/USD and AUD/USD. Multi-cycle momentum signals derived from currency futures — where institutional price discovery actually begins.",
+    forexFeatures: ["EUR/USD · GBP/USD · AUD/USD", "Derived from /6E · /6B · /6A futures", "Account Risk Calculator included", "Smart Stop & Take Profit on every signal"],
     trialNote: "14-day free trial · No credit card required · Cancel anytime",
     exploreFutures: "Explore Futures →", exploreForex: "Explore Forex →",
     forexTagline: "Forex Signal Intelligence · Live",
     forexHeroTitle1: "No charts. No noise.", forexHeroTitle2: "The Inflection Point.",
-    forexHeroSub: "Currency futures are where institutions show their hand. Signal Boss reads IV inflection points on /6E, /6B, /6J and more — giving forex traders institutional-grade intelligence on every major pair and cross.",
+    forexHeroSub: "Currency futures are where institutions show their hand. Signal Boss reads cycle momentum on /6E, /6B, and /6A — giving forex traders institutional-grade intelligence on EUR/USD, GBP/USD, and AUD/USD.",
     methodologyLabel: "THE METHODOLOGY",
     methodologyTitle: "The market tells you where price is going.",
     methodologyAccent: "We just listen.",
@@ -91,13 +91,13 @@ const T = {
       "04": { title: "Clean Signal Cards", desc: "No charts. No clutter. Precise, actionable alerts the moment conditions align." },
     },
     futuresPlans: [
-      { name: "Starter", price: 149, features: ["ES · NQ · RTY · YM · CL · GC · SI", "All 3 cycles", "Real-time dashboard", "Email alerts", "Account Risk Calculator"] },
-      { name: "Pro",     price: 249, features: ["Everything in Starter", "NG · RB · HG · ZB · ZN · ZT · ZF", "/6E · /6B · /6J · /6S · /6A · /6C", "ZS · ZW · ZC", "Telegram alerts · Webhook"] },
-      { name: "Elite",   price: 449, features: ["Everything in Pro", "Smart Stop & Target on every signal", "Priority support"] },
+      { name: "Starter", price: 149, features: ["ES · NQ · CL · GC · RTY", "All 3 cycles", "Real-time dashboard", "Email alerts", "Account Risk Calculator"] },
+      { name: "Pro",     price: 249, features: ["Everything in Starter", "ZB · /6E · /6B · /6A", "Smart Stop & Take Profit on every signal", "Telegram alerts · Webhook"] },
+      { name: "Elite",   price: 449, features: ["Everything in Pro", "1 & 2 STDEV intraday range on every signal", "Priority support"] },
     ],
     forexPlans: [
-      { name: "Major Pairs", price: 129, features: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "Direct futures correlation", "All 3 cycles", "Real-time dashboard", "Email alerts", "Account Risk Calculator"] },
-      { name: "Full Coverage", price: 249, features: ["Everything in Major Pairs", "EUR/JPY · EUR/GBP · EUR/CHF", "Up to 15 pairs total", "Cross pair signals (dual futures ref.)", "Telegram alerts · Webhook"] },
+      { name: "Major Pairs", price: 129, features: ["EUR/USD · GBP/USD · AUD/USD", "Derived from /6E · /6B · /6A futures", "All 3 cycles", "Real-time dashboard", "Email alerts", "Account Risk Calculator"] },
+      { name: "Full Coverage", price: 249, features: ["Everything in Major Pairs", "Smart Stop & Take Profit on every signal", "Telegram alerts · Webhook"] },
     ],
   },
   es: {
@@ -127,15 +127,15 @@ const T = {
       ["Límites de Pérdida Diaria", "Nunca incumplas accidentalmente una regla diaria"],
     ],
     exploreFuturesLabel: "EXPLORAR FUTUROS", exploreForexLabel: "EXPLORAR FOREX",
-    futuresDesc: "ES, NQ, CL, /6E, /6B, /6J y todos los principales contratos de futuros. Señales directas de inflexión IV en los instrumentos cotizados donde el posicionamiento institucional es más transparente.",
-    futuresFeatures: ["ES · NQ · CL · RTY · ZB", "/6E · /6B · /6J · /6S · /6A · /6C", "Calculadora de Riesgo incluida", "Stop Inteligente y Toma de Ganancias en cada señal"],
+    futuresDesc: "ES, NQ, CL, GC, RTY, ZB y futuros de divisas /6E, /6B, /6A. Señales de momentum multi-ciclo con confirmación VWAP en los contratos donde el posicionamiento institucional es más transparente.",
+    futuresFeatures: ["ES · NQ · CL · GC · RTY · ZB", "/6E · /6B · /6A", "Calculadora de Riesgo incluida", "Stop Inteligente y Toma de Ganancias en cada señal"],
     forexLabel: "TRADERS DE FOREX", forexHeadline: "Opera con la inteligencia.",
-    forexDesc: "EUR/USD, GBP/USD, USD/JPY y todos los pares principales incluidos los cruces. La misma inteligencia de señal IV derivada de futuros de divisas — donde comienza realmente el descubrimiento de precios.",
-    forexFeatures: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "EUR/JPY · EUR/GBP · EUR/CHF + más", "Calculadora de Riesgo incluida", "Stop Inteligente y Toma de Ganancias en cada señal"],
+    forexDesc: "EUR/USD, GBP/USD y AUD/USD. Señales de momentum multi-ciclo derivadas de futuros de divisas — donde comienza realmente el descubrimiento de precios institucional.",
+    forexFeatures: ["EUR/USD · GBP/USD · AUD/USD", "Derivado de futuros /6E · /6B · /6A", "Calculadora de Riesgo incluida", "Stop Inteligente y Toma de Ganancias en cada señal"],
     trialNote: "14 días gratis · Sin tarjeta de crédito · Cancela cuando quieras",
     exploreFutures: "Explorar Futuros →", exploreForex: "Explorar Forex →",
     forexHeroTitle1: "Sin gráficos. Sin ruido.", forexHeroTitle2: "El Punto de Inflexión.",
-    forexHeroSub: "Los futuros de divisas son donde las instituciones muestran su mano. Signal Boss lee los puntos de inflexión IV en /6E, /6B, /6J y más — dando a los traders de forex inteligencia institucional en cada par y cruce principal.",
+    forexHeroSub: "Los futuros de divisas son donde las instituciones muestran su mano. Signal Boss lee el momentum de ciclos en /6E, /6B y /6A — dando a los traders de forex inteligencia institucional en EUR/USD, GBP/USD y AUD/USD.",
     methodologyLabel: "LA METODOLOGÍA",
     methodologyTitle: "El mercado te dice hacia dónde va el precio.",
     methodologyAccent: "Nosotros solo escuchamos.",
@@ -180,13 +180,13 @@ const T = {
       "04": { title: "Tarjetas Limpias", desc: "Sin gráficos. Sin desorden. Alertas precisas cuando las condiciones se alinean." },
     },
     futuresPlans: [
-      { name: "Inicial",       price: 149, features: ["ES · NQ · RTY · YM · CL · GC · SI", "3 ciclos completos", "Panel en tiempo real", "Alertas email", "Calculadora de Riesgo"] },
-      { name: "Pro",           price: 249, features: ["Todo en Inicial", "NG · RB · HG · ZB · ZN · ZT · ZF", "/6E · /6B · /6J · /6S · /6A · /6C", "ZS · ZW · ZC", "Telegram · Webhook"] },
-      { name: "Elite",         price: 449, features: ["Todo en Pro", "Stop & Target Inteligentes", "Soporte prioritario"] },
+      { name: "Inicial",       price: 149, features: ["ES · NQ · CL · GC · RTY", "3 ciclos completos", "Panel en tiempo real", "Alertas email", "Calculadora de Riesgo"] },
+      { name: "Pro",           price: 249, features: ["Todo en Inicial", "ZB · /6E · /6B · /6A", "Stop Inteligente y Toma de Ganancias en cada señal", "Telegram · Webhook"] },
+      { name: "Elite",         price: 449, features: ["Todo en Pro", "Rango intraday 1 y 2 STDEV en cada señal", "Soporte prioritario"] },
     ],
     forexPlans: [
-      { name: "Pares Principales", price: 129, features: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "Correlación directa con futuros", "3 ciclos", "Panel en tiempo real", "Email", "Calculadora de Riesgo"] },
-      { name: "Cobertura Total",   price: 249, features: ["Todo en Principales", "EUR/JPY · EUR/GBP · EUR/CHF", "Hasta 15 pares", "Señales de cruces (ref. doble)", "Telegram · Webhook"] },
+      { name: "Pares Principales", price: 129, features: ["EUR/USD · GBP/USD · AUD/USD", "Derivado de futuros /6E · /6B · /6A", "3 ciclos", "Panel en tiempo real", "Email", "Calculadora de Riesgo"] },
+      { name: "Cobertura Total",   price: 249, features: ["Todo en Principales", "Stop Inteligente y Toma de Ganancias en cada señal", "Telegram · Webhook"] },
     ],
   },
   pt: {
@@ -216,15 +216,15 @@ const T = {
       ["Limites de Perda Diária",    "Nunca viole acidentalmente uma regra de perda diária"],
     ],
     exploreFuturesLabel: "EXPLORAR FUTUROS", exploreForexLabel: "EXPLORAR FOREX",
-    futuresDesc: "ES, NQ, CL, /6E, /6B, /6J e todos os principais contratos futuros. Sinais diretos de inflexão IV nos instrumentos negociados em bolsa onde o posicionamento institucional é mais transparente.",
-    futuresFeatures: ["ES · NQ · CL · RTY · ZB", "/6E · /6B · /6J · /6S · /6A · /6C", "Calculadora de Risco incluída", "Stop Inteligente e Take Profit em cada sinal"],
+    futuresDesc: "ES, NQ, CL, GC, RTY, ZB e futuros de moedas /6E, /6B, /6A. Sinais de momentum multi-ciclo com confirmação VWAP nos contratos onde o posicionamento institucional é mais transparente.",
+    futuresFeatures: ["ES · NQ · CL · GC · RTY · ZB", "/6E · /6B · /6A", "Calculadora de Risco incluída", "Stop Inteligente e Take Profit em cada sinal"],
     forexLabel: "TRADERS DE FOREX", forexHeadline: "Opere com a inteligência.",
-    forexDesc: "EUR/USD, GBP/USD, USD/JPY e todos os pares principais incluindo cruzamentos. A mesma inteligência de sinal IV derivada de futuros de moedas — onde a descoberta de preços realmente começa.",
-    forexFeatures: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "EUR/JPY · EUR/GBP · EUR/CHF + mais", "Calculadora de Risco incluída", "Stop Inteligente e Take Profit em cada sinal"],
+    forexDesc: "EUR/USD, GBP/USD e AUD/USD. Sinais de momentum multi-ciclo derivados de futuros de moedas — onde começa realmente a descoberta de preços institucional.",
+    forexFeatures: ["EUR/USD · GBP/USD · AUD/USD", "Derivado de futuros /6E · /6B · /6A", "Calculadora de Risco incluída", "Stop Inteligente e Take Profit em cada sinal"],
     trialNote: "14 dias grátis · Sem cartão · Cancele quando quiser",
     exploreFutures: "Explorar Futuros →", exploreForex: "Explorar Forex →",
     forexHeroTitle1: "Sem gráficos. Sem ruído.", forexHeroTitle2: "O Ponto de Inflexão.",
-    forexHeroSub: "Futuros de moedas são onde as instituições mostram suas cartas. Signal Boss lê pontos de inflexão de VI em /6E, /6B, /6J e mais — dando aos traders forex inteligência institucional em todos os pares e cruzamentos principais.",
+    forexHeroSub: "Futuros de moedas são onde as instituições mostram suas cartas. Signal Boss lê o momentum de ciclos em /6E, /6B e /6A — dando aos traders forex inteligência institucional em EUR/USD, GBP/USD e AUD/USD.",
     methodologyLabel: "A METODOLOGIA",
     methodologyTitle: "O mercado diz para onde o preço vai.",
     methodologyAccent: "Nós apenas ouvimos.",
@@ -269,13 +269,13 @@ const T = {
       "04": { title: "Cards Limpos", desc: "Sem gráficos. Alertas precisos quando as condições se alinham." },
     },
     futuresPlans: [
-      { name: "Inicial",        price: 149, features: ["ES · NQ · RTY · YM · CL · GC · SI", "3 ciclos completos", "Painel em tempo real", "Alertas email", "Calculadora de Risco"] },
-      { name: "Pro",            price: 249, features: ["Tudo no Inicial", "NG · RB · HG · ZB · ZN · ZT · ZF", "/6E · /6B · /6J · /6S · /6A · /6C", "ZS · ZW · ZC", "Telegram · Webhook"] },
-      { name: "Elite",          price: 449, features: ["Tudo no Pro", "Stop & Target Inteligentes", "Suporte prioritário"] },
+      { name: "Inicial",        price: 149, features: ["ES · NQ · CL · GC · RTY", "3 ciclos completos", "Painel em tempo real", "Alertas email", "Calculadora de Risco"] },
+      { name: "Pro",            price: 249, features: ["Tudo no Inicial", "ZB · /6E · /6B · /6A", "Stop Inteligente e Take Profit em cada sinal", "Telegram · Webhook"] },
+      { name: "Elite",          price: 449, features: ["Tudo no Pro", "Faixa intraday 1 e 2 STDEV em cada sinal", "Suporte prioritário"] },
     ],
     forexPlans: [
-      { name: "Pares Principais", price: 129, features: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "Correlação direta com futuros", "3 ciclos", "Painel em tempo real", "Email", "Calculadora de Risco"] },
-      { name: "Cobertura Total",  price: 249, features: ["Tudo nos Principais", "EUR/JPY · EUR/GBP · EUR/CHF", "Até 15 pares", "Sinais cruzados (ref. dupla)", "Telegram · Webhook"] },
+      { name: "Pares Principais", price: 129, features: ["EUR/USD · GBP/USD · AUD/USD", "Derivado de futuros /6E · /6B · /6A", "3 ciclos", "Painel em tempo real", "Email", "Calculadora de Risco"] },
+      { name: "Cobertura Total",  price: 249, features: ["Tudo nos Principais", "Stop Inteligente e Take Profit em cada sinal", "Telegram · Webhook"] },
     ],
   },
   fr: {
@@ -305,15 +305,15 @@ const T = {
       ["Limites de Perte Journalière", "Ne dépassez jamais accidentellement une règle journalière"],
     ],
     exploreFuturesLabel: "EXPLORER FUTURES", exploreForexLabel: "EXPLORER FOREX",
-    futuresDesc: "ES, NQ, CL, /6E, /6B, /6J et tous les principaux contrats futures. Signaux d'inflexion IV directs sur les instruments cotés en bourse où le positionnement institutionnel est le plus transparent.",
-    futuresFeatures: ["ES · NQ · CL · RTY · ZB", "/6E · /6B · /6J · /6S · /6A · /6C", "Calculateur de Risque inclus", "Stop Intelligent et Prise de Profit sur chaque signal"],
+    futuresDesc: "ES, NQ, CL, GC, RTY, ZB et futures de devises /6E, /6B, /6A. Signaux de momentum multi-cycle avec confirmation VWAP sur les contrats où le positionnement institutionnel est le plus transparent.",
+    futuresFeatures: ["ES · NQ · CL · GC · RTY · ZB", "/6E · /6B · /6A", "Calculateur de Risque inclus", "Stop Intelligent et Prise de Profit sur chaque signal"],
     forexLabel: "TRADERS FOREX", forexHeadline: "Tradez avec l'intelligence.",
-    forexDesc: "EUR/USD, GBP/USD, USD/JPY et toutes les paires majeures incluant les croisements. La même intelligence de signal IV dérivée des futures de devises — là où la découverte des prix commence vraiment.",
-    forexFeatures: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "EUR/JPY · EUR/GBP · EUR/CHF + plus", "Calculateur de Risque inclus", "Stop Intelligent et Prise de Profit sur chaque signal"],
+    forexDesc: "EUR/USD, GBP/USD et AUD/USD. Signaux de momentum multi-cycle dérivés des futures de devises — là où la découverte des prix institutionnels commence vraiment.",
+    forexFeatures: ["EUR/USD · GBP/USD · AUD/USD", "Dérivé des futures /6E · /6B · /6A", "Calculateur de Risque inclus", "Stop Intelligent et Prise de Profit sur chaque signal"],
     trialNote: "14 jours d'essai gratuit · Sans carte · Annulez à tout moment",
     exploreFutures: "Explorer Futures →", exploreForex: "Explorer Forex →",
     forexHeroTitle1: "Pas de graphiques. Pas de bruit.", forexHeroTitle2: "Le Point d'Inflexion.",
-    forexHeroSub: "Les futures sur devises, c'est là où les institutions montrent leur jeu. Signal Boss lit les points d'inflexion de VI sur /6E, /6B, /6J et plus — offrant aux traders forex une intelligence institutionnelle sur chaque paire et croisement majeur.",
+    forexHeroSub: "Les futures sur devises, c'est là où les institutions montrent leur jeu. Signal Boss lit le momentum des cycles sur /6E, /6B et /6A — offrant aux traders forex une intelligence institutionnelle sur EUR/USD, GBP/USD et AUD/USD.",
     methodologyLabel: "LA MÉTHODOLOGIE",
     methodologyTitle: "Le marché vous dit où va le prix.",
     methodologyAccent: "Nous écoutons simplement.",
@@ -358,13 +358,13 @@ const T = {
       "04": { title: "Cartes de Signal Claires", desc: "Pas de graphiques. Pas de désordre. Alertes précises dès que les conditions sont réunies." },
     },
     futuresPlans: [
-      { name: "Starter",          price: 149, features: ["ES · NQ · RTY · YM · CL · GC · SI", "3 cycles complets", "Tableau de bord temps réel", "Alertes email", "Calculateur de Risque"] },
-      { name: "Pro",              price: 249, features: ["Tout Starter inclus", "NG · RB · HG · ZB · ZN · ZT · ZF", "/6E · /6B · /6J · /6S · /6A · /6C", "ZS · ZW · ZC", "Telegram · Webhook"] },
-      { name: "Élite",            price: 449, features: ["Tout Pro inclus", "Stop & Target Intelligents", "Support prioritaire"] },
+      { name: "Starter",          price: 149, features: ["ES · NQ · CL · GC · RTY", "3 cycles complets", "Tableau de bord temps réel", "Alertes email", "Calculateur de Risque"] },
+      { name: "Pro",              price: 249, features: ["Tout Starter inclus", "ZB · /6E · /6B · /6A", "Stop Intelligent et Prise de Profit sur chaque signal", "Telegram · Webhook"] },
+      { name: "Elite",            price: 449, features: ["Tout Pro inclus", "Plage intraday 1 & 2 STDEV sur chaque signal", "Support prioritaire"] },
     ],
     forexPlans: [
-      { name: "Paires Majeures",  price: 129, features: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "Corrélation directe avec les futures", "3 cycles", "Tableau de bord temps réel", "Email", "Calculateur de Risque"] },
-      { name: "Couverture Totale",price: 249, features: ["Tout Paires Majeures inclus", "EUR/JPY · EUR/GBP · EUR/CHF", "Jusqu'à 15 paires", "Signaux croisés (réf. double)", "Telegram · Webhook"] },
+      { name: "Paires Majeures",  price: 129, features: ["EUR/USD · GBP/USD · AUD/USD", "Dérivé des futures /6E · /6B · /6A", "3 cycles", "Tableau de bord temps réel", "Email", "Calculateur de Risque"] },
+      { name: "Couverture Totale",price: 249, features: ["Tout Paires Majeures inclus", "Stop Intelligent et Prise de Profit sur chaque signal", "Telegram · Webhook"] },
     ],
   },
 };
@@ -789,7 +789,7 @@ function LangSwitcher({ lang, setLang }) {
 function FAQSection() {
   const [open, setOpen] = useState(null);
   const faqs = [
-    ["What markets does Signal Boss cover?", "Signal Boss is designed for US equity index futures — ES (S&P 500), NQ (Nasdaq), YM (Dow), and RTY (Russell 2000). The methodology works on any liquid futures contract with reliable implied volatility data."],
+    ["What markets does Signal Boss cover?", "Signal Boss covers ES (S&P 500), NQ (Nasdaq), CL (Crude Oil), GC (Gold), RTY (Russell 2000), ZB (30-Year T-Bond), and currency futures /6E (EUR/USD), /6B (GBP/USD), and /6A (AUD/USD)."],
     ["How are signals delivered?", "Signals appear in real-time on your Signal Boss dashboard. Alert delivery via email, SMS, and webhook (for automation) is available on Pro and Elite plans. You can also configure which instruments and timeframes trigger alerts."],
     ["Do I need to be at my desk all day?", "No. Signal Boss is designed around close-confirmed signals — meaning a signal fires when a candle closes with all conditions met, not on intraday noise. You can check in at key times rather than watching a screen all day."],
     ["What's the difference between 1, 2, and 3-cycle confluence?", "Each cycle (Daily, 2-Day, 4-Day) represents a different momentum timeframe. When all three align in the same direction, you get a 3/3 Strong signal — the highest conviction setup. 1 or 2 cycles aligning is still a valid signal, just with less confluence behind it."],
@@ -819,10 +819,9 @@ function FAQSection() {
 function FAQSectionForex() {
   const [open, setOpen] = useState(null);
   const faqs = [
-    ["What forex pairs does Signal Boss cover?", "Signal Boss covers all major pairs derived from exchange-traded currency futures — EUR/USD (/6E), GBP/USD (/6B), USD/JPY (/6J), USD/CHF (/6S), AUD/USD (/6A), and CAD/USD (/6C). We also cover key crosses including EUR/JPY, EUR/GBP, and EUR/CHF, derived from the confluence of both underlying futures contracts."],
+    ["What forex pairs does Signal Boss cover?", "Signal Boss covers EUR/USD (/6E), GBP/USD (/6B), and AUD/USD (/6A) — derived directly from exchange-traded currency futures where institutional price discovery begins."],
     ["Why use currency futures signals for spot forex trading?", "Currency futures are exchange-traded, fully transparent, and reflect institutional positioning in real time. The implied volatility data derived from futures options is a leading indicator for spot forex price movement. The directional correlation between a futures IV signal and the equivalent spot pair is approximately 99% — meaning the signal intelligence is identical whether you execute in futures or spot forex."],
     ["Does this work for FTMO, FundedNext, and other forex prop firms?", "Yes. Signal Boss includes the Account Risk Calculator covering FTMO, FundedNext, MyFundedFX, and all major forex evaluation firms. The calculator handles pip-based risk, lot sizing, leverage ratios, and daily drawdown rules — the same logic applies whether you're protecting a prop challenge or your own capital."],
-    ["What's the difference between a direct pair signal and a cross pair signal?", "Direct pairs like EUR/USD are derived from a single futures contract (/6E). Cross pairs like EUR/JPY are derived from two underlying futures contracts (/6E and /6J) — both must confirm in the correct direction for a cross signal to fire. Cross signals therefore carry a higher natural confluence threshold and are shown with both futures references on the signal card."],
     ["How are pip-based stop and target levels calculated?", "Smart Stop and Smart Take Profit levels on forex signals are derived from the same IV mean-reversion methodology used for futures tick-based levels. The calculation accounts for the pip value of each specific pair, producing actionable levels you can enter directly into your broker platform."],
     ["Do I need to understand futures markets to use the forex track?", "No. You trade spot forex — Signal Boss handles the futures intelligence layer. All signal cards are presented in familiar forex terms (pips, entry price, pair name). The futures reference (e.g., 'Derived from /6E') is shown for transparency but you don't need to trade futures to benefit from the signals."],
     ["What timeframes are covered?", "Signals are available on the 5-minute, 15-minute, 1-hour, 4-hour, and Daily timeframes — consistent across all pairs including crosses."],
@@ -848,13 +847,9 @@ function FAQSectionForex() {
 
 function ForexDemo({ onNavigate, t }) {
   const pairs = [
-    { pair:"EUR/USD", future:"/6E",       dir:"LONG",  bolts:3, strength:"STRONG",  cycles:[["Daily","↑ above zero"],["2-Day","↑ above zero"],["4-Day","↑ above zero"]], vwaps:[["Daily VWAP","↑ above"],["Weekly VWAP","↑ above"]], entry:"1.0842", color:C.long },
-    { pair:"GBP/USD", future:"/6B",       dir:"LONG",  bolts:2, strength:"MODERATE",cycles:[["Daily","↑ above zero"],["2-Day","↑ above zero"],["4-Day","↓ below zero"]], vwaps:[["Daily VWAP","↑ above"],["Weekly VWAP","↑ above"]], entry:"1.2634", color:C.long },
-    { pair:"USD/JPY", future:"/6J ↔",     dir:"SHORT", bolts:3, strength:"STRONG",  cycles:[["Daily","↓ below zero"],["2-Day","↓ below zero"],["4-Day","↓ below zero"]], vwaps:[["Daily VWAP","↓ below"],["Weekly VWAP","↓ below"]], entry:"149.82", color:C.short },
-    { pair:"USD/CHF", future:"/6S",       dir:"SHORT", bolts:2, strength:"MODERATE",cycles:[["Daily","↓ below zero"],["2-Day","↓ below zero"],["4-Day","↑ above zero"]], vwaps:[["Daily VWAP","↓ below"],["Weekly VWAP","↑ above"]], entry:"0.8923", color:C.short },
-    { pair:"EUR/JPY", future:"/6E · /6J ↔",dir:"LONG", bolts:3, strength:"STRONG", cycles:[["Daily","↑ above zero"],["2-Day","↑ above zero"],["4-Day","↑ above zero"]], vwaps:[["Daily VWAP","↑ above"],["Weekly VWAP","↑ above"]], entry:"162.14", color:C.long },
-    { pair:"EUR/GBP", future:"/6E · /6B", dir:"SHORT", bolts:1, strength:"WEAK",   cycles:[["Daily","↓ below zero"],["2-Day","↑ above zero"],["4-Day","↑ above zero"]], vwaps:[["Daily VWAP","↓ below"],["Weekly VWAP","↑ above"]], entry:"0.8571", color:C.short },
-    { pair:"EUR/CHF", future:"/6E · /6S", dir:"LONG",  bolts:2, strength:"MODERATE",cycles:[["Daily","↑ above zero"],["2-Day","↑ above zero"],["4-Day","↓ below zero"]], vwaps:[["Daily VWAP","↑ above"],["Weekly VWAP","↓ below"]], entry:"0.9412", color:C.long },
+    { pair:"EUR/USD", future:"/6E", dir:"LONG",  bolts:3, strength:"STRONG",  cycles:[["Daily","↑ above zero"],["2-Day","↑ above zero"],["4-Day","↑ above zero"]], vwaps:[["Daily VWAP","↑ above"],["Weekly VWAP","↑ above"]], entry:"1.0842", color:C.long },
+    { pair:"GBP/USD", future:"/6B", dir:"LONG",  bolts:2, strength:"MODERATE",cycles:[["Daily","↑ above zero"],["2-Day","↑ above zero"],["4-Day","↓ below zero"]], vwaps:[["Daily VWAP","↑ above"],["Weekly VWAP","↑ above"]], entry:"1.2634", color:C.long },
+    { pair:"AUD/USD", future:"/6A", dir:"SHORT", bolts:2, strength:"MODERATE",cycles:[["Daily","↓ below zero"],["2-Day","↓ below zero"],["4-Day","↑ above zero"]], vwaps:[["Daily VWAP","↓ below"],["Weekly VWAP","↑ above"]], entry:"0.6481", color:C.short },
   ];
   const [activeTab, setActiveTab] = useState("signals");
 
@@ -1383,8 +1378,8 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
           {(track==="forex" ? [
             { quote:"I trade EUR/USD on FTMO and never thought to look at the underlying futures contract. Signal Boss changed that entirely. Seeing the /6E IV signal before I enter a EUR/USD trade feels like having information nobody else at my level has.", name:"P.M.", detail:"EUR/USD forex trader · Paris, FR", stars:5 },
             { quote:"The FTMO calculator finally made the risk real for me. I was treating a $100K account like I had $100K. I didn't. Signal Boss and the calculator together completely changed how I size positions.", name:"A.L.", detail:"FTMO challenge trader · London, UK", stars:5 },
-            { quote:"I trade GBP/USD and USD/JPY. The fact that Signal Boss reads /6B and /6J and shows me the institutional positioning before I trade the spot pair — that's not something any other signal service offers. It's a completely different level.", name:"T.H.", detail:"Forex trader · Toronto, CA", stars:5 },
-            { quote:"EUR/JPY is my main pair. Most tools don't even cover it properly. Signal Boss derives the signal from both /6E and /6J and shows you both references on the card. That transparency alone is worth it.", name:"C.V.", detail:"Cross pair trader · Brussels, BE", stars:5 },
+            { quote:"I trade GBP/USD and AUD/USD. The fact that Signal Boss reads /6B and /6A and shows me the institutional positioning before I trade the spot pair — that's not something any other signal service offers. It's a completely different level.", name:"T.H.", detail:"Forex trader · Toronto, CA", stars:5 },
+            { quote:"EUR/USD is my main pair. Most tools give you a chart arrow with zero context. Signal Boss derives the signal directly from /6E and shows you the futures reference on the card. That transparency alone is worth it.", name:"C.V.", detail:"Forex trader · Brussels, BE", stars:5 },
             { quote:"I was skeptical that futures IV would apply to my spot forex trades. The correlation is real. I've been tracking it for two months and the directional alignment is remarkable. Exactly what they say.", name:"R.K.", detail:"Forex prop trader · Amsterdam, NL", stars:5 },
             { quote:"The methodology explanation is what sold me. Not the signals — the explanation. I understood why it worked before I subscribed. That kind of transparency is unheard of in this space.", name:"S.D.", detail:"Forex & CFD trader · Sydney, AU", stars:5 },
           ] : [
@@ -1572,7 +1567,7 @@ function AuthPage({ mode, onNavigate, onAuth, t, track }) {
                     </button>
                   ))}
                 </div>
-                {signupTrack && <div style={{ fontSize:11, color:C.textDim, marginTop:6, fontFamily:"monospace" }}>{signupTrack==="futures" ? "ES · NQ · CL · /6E · /6B · /6J + more" : "EUR/USD · GBP/USD · USD/JPY · crosses + more"}</div>}
+                {signupTrack && <div style={{ fontSize:11, color:C.textDim, marginTop:6, fontFamily:"monospace" }}>{signupTrack==="futures" ? "ES · NQ · CL · GC · RTY · ZB · /6E · /6B · /6A" : "EUR/USD · GBP/USD · AUD/USD"}</div>}
               </div>
               <div><label style={labelStyle}>{t.plan}</label>
                 <select value={plan} onChange={e=>setPlan(e.target.value)} style={{ width:"100%", padding:"11px 14px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace" }}>
@@ -1616,7 +1611,6 @@ const TICK_VALUES = {
   "EUR/USD": { tick:0.0001, tickVal:10.00, unit:"pips", label:"EUR/USD"    },
   "GBP/USD": { tick:0.0001, tickVal:10.00, unit:"pips", label:"GBP/USD"    },
   "USD/JPY": { tick:0.01,   tickVal:9.09,  unit:"pips", label:"USD/JPY"    },
-  "USD/CHF": { tick:0.0001, tickVal:10.00, unit:"pips", label:"USD/CHF"    },
   "EUR/JPY": { tick:0.01,   tickVal:9.09,  unit:"pips", label:"EUR/JPY"    },
   "EUR/GBP": { tick:0.0001, tickVal:10.00, unit:"pips", label:"EUR/GBP"    },
 };
