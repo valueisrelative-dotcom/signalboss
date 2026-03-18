@@ -521,12 +521,29 @@ function CycleRow({ cycle, direction, t }) {
   );
 }
 
-function SignalCard({ signal, onDismiss, exitMode, t }) {
-  const isLong = signal.direction === "LONG";
+function SignalCard({ signal, onDismiss, exitMode, rrPref, setRrPref, t }) {
+  const isLong      = signal.direction === "LONG";
   const isCancelled = signal.status === "CANCELLED";
   const isActive    = signal.status === "ACTIVE";
   const dirColor    = isLong ? C.long : C.short;
   const vwapAllGood = signal.vwapsConfirming === Object.keys(signal.vwaps).length;
+  const risk        = signal.risk;
+
+  // Pick the right pre-calculated TP price based on subscriber's R:R pref
+  const tpPriceKey  = rrPref === 2.0 ? "tp2_0Price" : rrPref === 3.0 ? "tp3_0Price" : "tp2_5Price";
+  const tpUsdKey    = rrPref === 2.0 ? "tp2_0Usd"   : rrPref === 3.0 ? "tp3_0Usd"   : "tp2_5Usd";
+  const tpPrice     = risk ? risk[tpPriceKey] : null;
+  const tpUsd       = risk ? risk[tpUsdKey]   : null;
+
+  // Recommendation label
+  const recLabel = risk ? (
+    risk.suggestedRR === rrPref
+      ? `★ Signal Boss recommends ${risk.suggestedRR}:1 — ${risk.conditionsMet}/5 conditions confirmed`
+      : `Signal Boss recommends ${risk.suggestedRR}:1 — ${risk.conditionsMet}/5 conditions confirmed`
+  ) : null;
+
+  const rrOptions = [2.0, 2.5, 3.0];
+
   return (
     <div className={`signal-new ${isActive?(isLong?"card-long":"card-short"):""}`} style={{
       background: isActive?(isLong?C.surfaceUp:C.surfaceDn):C.surface,
@@ -535,6 +552,8 @@ function SignalCard({ signal, onDismiss, exitMode, t }) {
       opacity:isCancelled?0.45:1, transition:"opacity 0.3s",
     }}>
       <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:isActive?dirColor:C.border, borderRadius:"12px 12px 0 0" }} />
+
+      {/* Header */}
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:14 }}>
         <div style={{ display:"flex", alignItems:"center", gap:10 }}>
           <LiveDot color={isActive?dirColor:C.neutral} size={8} />
@@ -552,6 +571,8 @@ function SignalCard({ signal, onDismiss, exitMode, t }) {
           {!isCancelled && <button onClick={() => onDismiss(signal.id)} style={{ fontSize:10, color:C.textDim, background:"transparent", border:"none", cursor:"pointer" }}>{t.dismiss}</button>}
         </div>
       </div>
+
+      {/* Strength */}
       <div style={{ marginBottom:12 }}>
         <StrengthBolts count={signal.cyclesConfirming} strength={signal.strength} />
         <div style={{ display:"flex", gap:16, marginTop:4 }}>
@@ -559,20 +580,89 @@ function SignalCard({ signal, onDismiss, exitMode, t }) {
           <span style={{ fontSize:10, color:vwapAllGood?C.long:C.warn, fontFamily:"monospace" }}>{signal.vwapsConfirming}/2 {t.vwapsConfirming}</span>
         </div>
       </div>
+
       <div style={{ height:1, background:C.border, marginBottom:10 }} />
+
+      {/* Cycles */}
       <div style={{ marginBottom:10 }}>
         {Object.values(signal.cycles).map(cyc => <CycleRow key={cyc.label} cycle={cyc} direction={signal.direction} t={t} />)}
       </div>
+
       <div style={{ height:1, background:C.border, marginBottom:10 }} />
+
+      {/* VWAPs */}
       <div style={{ marginBottom:12 }}>
         {Object.values(signal.vwaps).map(v => <VwapRow key={v.label} label={v.label} value={v.value} above={v.above} direction={signal.direction} t={t} />)}
       </div>
 
+      {/* Entry price */}
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
         <span style={{ fontSize:11, color:C.textMid, fontFamily:"monospace" }}>{t.entryPrice}</span>
         <span style={{ fontSize:14, fontWeight:600, color:C.text, fontFamily:"monospace" }}>{signal.price.toLocaleString()}</span>
       </div>
-      <div style={{ display:"flex", justifyContent:"flex-end" }}>
+
+      {/* ── Smart Stop & Take Profit ── */}
+      {risk && (
+        <>
+          <div style={{ height:1, background:C.border, marginBottom:12 }} />
+
+          {/* Stop row */}
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
+            <div>
+              <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:3 }}>SMART STOP</div>
+              <div style={{ fontSize:13, fontWeight:700, color:C.short, fontFamily:"monospace" }}>{risk.stopPrice.toLocaleString()}</div>
+              <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>{risk.stopTicks} ticks · ${risk.stopUsd.toLocaleString()}/contract</div>
+            </div>
+            <div style={{ textAlign:"right" }}>
+              <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:3 }}>SMART TP</div>
+              <div style={{ fontSize:13, fontWeight:700, color:C.long, fontFamily:"monospace" }}>{tpPrice?.toLocaleString()}</div>
+              <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>${tpUsd?.toLocaleString()}/contract</div>
+            </div>
+          </div>
+
+          {/* R:R selector */}
+          <div style={{ marginBottom:8 }}>
+            <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:6 }}>TARGET R:R</div>
+            <div style={{ display:"flex", gap:6 }}>
+              {rrOptions.map(rr => {
+                const isSelected = rrPref === rr;
+                const isRecommended = risk.suggestedRR === rr;
+                return (
+                  <button key={rr} onClick={() => setRrPref(rr)}
+                    style={{
+                      flex:1, padding:"6px 0", borderRadius:6, fontFamily:"monospace", fontSize:11, fontWeight:700,
+                      cursor:"pointer", transition:"all 0.15s",
+                      background: isSelected ? dirColor+"33" : C.bg,
+                      color:      isSelected ? dirColor       : C.textDim,
+                      border:    `1px solid ${isSelected ? dirColor+"66" : C.border}`,
+                    }}>
+                    {rr}:1{isRecommended ? " ★" : ""}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Recommendation note */}
+          <div style={{ fontSize:10, color: risk.suggestedRR === rrPref ? C.accent : C.textDim, fontFamily:"monospace", background: risk.suggestedRR === rrPref ? C.accentDim : "transparent", border:`1px solid ${risk.suggestedRR === rrPref ? C.accent+"33" : "transparent"}`, borderRadius:5, padding: risk.suggestedRR === rrPref ? "5px 8px" : "0", marginBottom: risk.suggestedRR === rrPref ? 8 : 0, lineHeight:1.5 }}>
+            {recLabel}
+          </div>
+
+          {/* Vol regime badge */}
+          <div style={{ display:"flex", gap:8, alignItems:"center" }}>
+            <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>Vol:</span>
+            <span style={{ fontSize:10, fontFamily:"monospace", fontWeight:600,
+              color: risk.volRegime==="HIGH" ? C.short : risk.volRegime==="LOW" ? C.long : C.warn,
+              background: risk.volRegime==="HIGH" ? C.shortDim : risk.volRegime==="LOW" ? C.longDim : C.border,
+              padding:"1px 7px", borderRadius:3 }}>
+              {risk.volRegime}
+            </span>
+            <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>z={risk.zAtr}</span>
+          </div>
+        </>
+      )}
+
+      <div style={{ display:"flex", justifyContent:"flex-end", marginTop:10 }}>
         <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", background:C.border, padding:"2px 8px", borderRadius:3 }}>{t.exit}: {exitMode}</span>
       </div>
     </div>
@@ -1844,6 +1934,10 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   const [filterDir, setFilterDir] = useState("ALL");
   const [filterStr, setFilterStr] = useState("ALL");
   const [vwapRule, setVwapRule]   = useState("daily");
+  const [rrPref, setRrPref]       = useState(() => {
+    const saved = localStorage.getItem("sb_rr_pref");
+    return saved ? parseFloat(saved) : 2.5;
+  });
   const [cycleConfig, setCycleConfig] = useState({
     daily:   { enabled:true, label:"1-Day",  resetTime:"9:30 AM", every:"1 trading day" },
     twoDay:  { enabled:true, label:"3-Day",  resetTime:"8:20 AM", every:"3 trading days" },
@@ -1974,7 +2068,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
               ))}
             </div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(310px,1fr))", gap:14 }}>
-              {filtered.map(sig => <SignalCard key={sig.id} signal={sig} onDismiss={dismiss} exitMode={exitMode} t={t} />)}
+              {filtered.map(sig => <SignalCard key={sig.id} signal={sig} onDismiss={dismiss} exitMode={exitMode} rrPref={rrPref} setRrPref={(v)=>{ setRrPref(v); localStorage.setItem("sb_rr_pref", v); }} t={t} />)}
               {filtered.length===0 && <div style={{ gridColumn:"1/-1", textAlign:"center", padding:"60px 0", color:C.textDim, fontFamily:"monospace", fontSize:13 }}>{t.noSignals}</div>}
             </div>
             {/* CTA Banner */}
