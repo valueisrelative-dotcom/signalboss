@@ -409,7 +409,8 @@ const css = `
 // ── Live signal feed ──────────────────────────────────────────────────────────
 // After creating your GitHub Gist, paste the raw URL here:
 // https://gist.githubusercontent.com/YOUR_USERNAME/YOUR_GIST_ID/raw/signals.json
-const SIGNALS_URL = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/signals.json';
+const SIGNALS_URL  = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/signals.json';
+const HISTORY_URL  = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/history.json';
 
 const TICKER_ITEMS = [
   { sym: "ES",  price: "5,247.25",  chg: "+8.50",   up: true  },
@@ -1945,9 +1946,11 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   });
   const idRef = useRef(100);
   const [todayCount, setTodayCount] = useState(47);
+  const [history,    setHistory]    = useState([]);
+  const [histStats,  setHistStats]  = useState(null);
 
   useEffect(() => {
-    if (!SIGNALS_URL) return;   // no URL set — keep mock demo signals
+    if (!SIGNALS_URL) return;
     const load = () => {
       fetch(`${SIGNALS_URL}?t=${Date.now()}`)
         .then(r => r.json())
@@ -1957,10 +1960,26 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
             setTodayCount(data.count || data.signals.length);
           }
         })
-        .catch(() => {});   // silently keep last-known signals on error
+        .catch(() => {});
     };
     load();
-    const iv = setInterval(load, 30000);   // refresh every 30 seconds
+    const iv = setInterval(load, 30000);
+    return () => clearInterval(iv);
+  }, []);
+
+  useEffect(() => {
+    if (!HISTORY_URL) return;
+    const loadHistory = () => {
+      fetch(`${HISTORY_URL}?t=${Date.now()}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.history) setHistory(data.history);
+          if (data.stats)   setHistStats(data.stats);
+        })
+        .catch(() => {});
+    };
+    loadHistory();
+    const iv = setInterval(loadHistory, 60000);  // refresh every 60s
     return () => clearInterval(iv);
   }, []);
 
@@ -1977,6 +1996,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
 
   const tabs = [
     { id:"signals", label:t.liveSignals,   icon:"◉" },
+    { id:"history", label:"Signal History", icon:"◷" },
     { id:"pnl",     label:"P&L Tracker",   icon:"◈" },
     { id:"config",  label:t.configuration, icon:"⚙" },
     { id:"prop",    label:t.propCalc,       icon:"⬡" },
@@ -2081,6 +2101,104 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
               <button onClick={() => onNavigate("signup")} style={{ padding:"12px 28px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:13, cursor:"pointer", whiteSpace:"nowrap" }}>
                 Start Free Trial →
               </button>
+            </div>
+          </div>
+        )}
+
+        {activeTab==="history" && (
+          <div style={{ padding:22, maxWidth:860 }}>
+            <div style={{ marginBottom:20 }}>
+              <h2 style={{ fontSize:18, fontWeight:600, marginBottom:4 }}>Signal History</h2>
+              <p style={{ color:C.textMid, fontSize:13 }}>Live forward track record — every signal logged from entry to exit in real time.</p>
+            </div>
+
+            {/* Stats bar */}
+            {histStats && histStats.total_signals > 0 && (
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(130px,1fr))", gap:10, marginBottom:20 }}>
+                {[
+                  { label:"SIGNALS",    value: histStats.total_signals,             color: C.text },
+                  { label:"WIN RATE",   value: `${histStats.win_rate}%`,             color: histStats.win_rate >= 55 ? C.long : C.warn },
+                  { label:"AVG P&L",    value: `$${Math.abs(histStats.avg_pnl_usd).toLocaleString()}`, color: histStats.avg_pnl_usd >= 0 ? C.long : C.short },
+                  { label:"TOTAL P&L",  value: `${histStats.total_pnl_usd >= 0 ? "+" : ""}$${histStats.total_pnl_usd.toLocaleString()}`, color: histStats.total_pnl_usd >= 0 ? C.long : C.short },
+                  { label:"AVG HOLD",   value: `${histStats.avg_duration_min}m`,     color: C.accent },
+                ].map(s => (
+                  <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"14px 16px" }}>
+                    <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:6 }}>{s.label}</div>
+                    <div style={{ fontSize:18, fontWeight:700, color:s.color, fontFamily:"monospace" }}>{s.value}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* History list */}
+            {history.length === 0 ? (
+              <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:40, textAlign:"center" }}>
+                <div style={{ fontSize:28, marginBottom:12 }}>◷</div>
+                <div style={{ fontSize:14, fontWeight:600, marginBottom:6 }}>No history yet</div>
+                <div style={{ fontSize:12, color:C.textMid }}>Signal entries and exits will appear here as the engine runs. Check back in a few hours.</div>
+              </div>
+            ) : (
+              <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                {history.map((entry, i) => {
+                  const isClosed = entry.status === "CLOSED";
+                  const isWin    = entry.winner === true;
+                  const isLong   = entry.direction === "LONG";
+                  const dirColor = isLong ? C.long : C.short;
+                  const pnlColor = isWin ? C.long : entry.winner === false ? C.short : C.textMid;
+                  return (
+                    <div key={entry.id || i} style={{ background:C.surface, border:`1px solid ${isClosed ? (isWin ? C.long+"22" : C.short+"22") : dirColor+"33"}`, borderRadius:10, padding:"14px 18px", display:"flex", flexWrap:"wrap", gap:12, alignItems:"center", justifyContent:"space-between" }}>
+                      {/* Left: instrument + direction + status */}
+                      <div style={{ display:"flex", alignItems:"center", gap:10, minWidth:140 }}>
+                        <div style={{ width:8, height:8, borderRadius:"50%", background: isClosed ? (isWin ? C.long : C.short) : dirColor, flexShrink:0 }} />
+                        <div>
+                          <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                            <span style={{ fontSize:14, fontWeight:700, color:dirColor, fontFamily:"monospace" }}>{entry.direction}</span>
+                            <span style={{ fontSize:14, fontWeight:700, fontFamily:"monospace" }}>{entry.symbol}</span>
+                            <span style={{ fontSize:9, color:C.textDim, background:C.border, padding:"1px 5px", borderRadius:3, fontFamily:"monospace" }}>{isClosed ? "CLOSED" : "ACTIVE"}</span>
+                          </div>
+                          <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginTop:2 }}>{entry.entry_time}{entry.exit_time ? ` → ${entry.exit_time}` : " → now"}</div>
+                        </div>
+                      </div>
+
+                      {/* Middle: entry → exit prices */}
+                      <div style={{ fontFamily:"monospace", fontSize:12 }}>
+                        <span style={{ color:C.textMid }}>Entry </span>
+                        <span style={{ color:C.text, fontWeight:600 }}>{entry.entry_price?.toLocaleString()}</span>
+                        {entry.exit_price && <>
+                          <span style={{ color:C.textDim }}> → </span>
+                          <span style={{ color:C.text, fontWeight:600 }}>{entry.exit_price?.toLocaleString()}</span>
+                        </>}
+                      </div>
+
+                      {/* Right: P&L + conditions + duration */}
+                      <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                        <div style={{ textAlign:"right" }}>
+                          {isClosed && entry.pnl_usd !== null ? (
+                            <div style={{ fontSize:15, fontWeight:700, color:pnlColor, fontFamily:"monospace" }}>
+                              {entry.pnl_usd >= 0 ? "+" : ""}${entry.pnl_usd.toLocaleString()}
+                            </div>
+                          ) : (
+                            <div style={{ fontSize:11, color:C.accent, fontFamily:"monospace" }}>● LIVE</div>
+                          )}
+                          <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginTop:2 }}>
+                            {entry.conditions_met}/5 · {entry.strength}
+                            {isClosed && entry.duration_min > 0 ? ` · ${entry.duration_min}m` : ""}
+                          </div>
+                        </div>
+                        {isClosed && entry.exit_reason && (
+                          <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", background:C.bg, padding:"2px 7px", borderRadius:3, maxWidth:110, textAlign:"center", lineHeight:1.4 }}>
+                            {entry.exit_reason}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            <div style={{ marginTop:16, fontSize:11, color:C.textDim, fontFamily:"monospace", textAlign:"center" }}>
+              Live forward track record · Updates every 5 minutes · Not financial advice
             </div>
           </div>
         )}
