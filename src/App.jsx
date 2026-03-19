@@ -1264,6 +1264,2098 @@ const FALLBACK_BACKTEST = {
   ],
 };
 
+const BACKTEST_STATIC = {
+  "ES": {
+    "symbol": "ES",
+    "name": "E-mini S&P 500",
+    "period": "45 trading days",
+    "rr": 5.0,
+    "overall": {
+      "trades": 133,
+      "wins": 45,
+      "losses": 88,
+      "win_rate": 33.8,
+      "total_pnl": 5062.5,
+      "profit_factor": 1.32,
+      "avg_win": 460.56,
+      "avg_loss": -177.98,
+      "avg_hold_min": 48.9,
+      "max_drawdown": 2800.0,
+      "equity": [
+        0,
+        375.0,
+        275.0,
+        650.0,
+        1025.0,
+        937.5,
+        700.0,
+        412.5,
+        1287.5,
+        1662.5,
+        1562.5,
+        1937.5,
+        1837.5,
+        1875.0,
+        1825.0,
+        1800.0,
+        1700.0,
+        1600.0,
+        1975.0,
+        2537.5,
+        2375.0,
+        2750.0,
+        2650.0,
+        2550.0,
+        2450.0,
+        2825.0,
+        2700.0,
+        3387.5,
+        3762.5,
+        3637.5,
+        4012.5,
+        3900.0,
+        3787.5,
+        4162.5,
+        4062.5,
+        4625.0,
+        4425.0,
+        4275.0,
+        4075.0,
+        3975.0,
+        4350.0,
+        4250.0,
+        4150.0,
+        3987.5,
+        4487.5,
+        4987.5,
+        5612.5,
+        5437.5,
+        5812.5,
+        6187.5,
+        6562.5,
+        6425.0,
+        6200.0,
+        6575.0,
+        6400.0,
+        6162.5,
+        5825.0,
+        6200.0,
+        6037.5,
+        5787.5,
+        5612.5,
+        5512.5,
+        5412.5,
+        5262.5,
+        5700.0,
+        5625.0,
+        5525.0,
+        5900.0,
+        5725.0,
+        6412.5,
+        6150.0,
+        6050.0,
+        5950.0,
+        5850.0,
+        5750.0,
+        5587.5,
+        6212.5,
+        5812.5,
+        5287.5,
+        4762.5,
+        4525.0,
+        5150.0,
+        5075.0,
+        4900.0,
+        4575.0,
+        4400.0,
+        4775.0,
+        4675.0,
+        4550.0,
+        4212.5,
+        3875.0,
+        4250.0,
+        3912.5,
+        3775.0,
+        4150.0,
+        4025.0,
+        4400.0,
+        4150.0,
+        4962.5,
+        4862.5,
+        5237.5,
+        5175.0,
+        5075.0,
+        4987.5,
+        5362.5,
+        5737.5,
+        5612.5,
+        5237.5,
+        4925.0,
+        4562.5,
+        5000.0,
+        4900.0,
+        4800.0,
+        5425.0,
+        5312.5,
+        5100.0,
+        4850.0,
+        4650.0,
+        5150.0,
+        5525.0,
+        5350.0,
+        6475.0,
+        6850.0,
+        7225.0,
+        6975.0,
+        6875.0,
+        6762.5,
+        6625.0,
+        6412.5,
+        6137.5,
+        5825.0,
+        5537.5,
+        5200.0,
+        5062.5
+      ]
+    },
+    "by_trigger": {
+      "AAA+": {
+        "trades": 19,
+        "wins": 6,
+        "losses": 13,
+        "win_rate": 31.6,
+        "total_pnl": 687.5,
+        "profit_factor": 1.38,
+        "avg_win": 416.67,
+        "avg_loss": -139.42,
+        "avg_hold_min": 47.4
+      },
+      "A": {
+        "trades": 78,
+        "wins": 27,
+        "losses": 51,
+        "win_rate": 34.6,
+        "total_pnl": 2437.5,
+        "profit_factor": 1.26,
+        "avg_win": 441.2,
+        "avg_loss": -185.78,
+        "avg_hold_min": 33.7
+      },
+      "AA": {
+        "trades": 35,
+        "wins": 12,
+        "losses": 23,
+        "win_rate": 34.3,
+        "total_pnl": 2037.5,
+        "profit_factor": 1.48,
+        "avg_win": 526.04,
+        "avg_loss": -185.87,
+        "avg_hold_min": 84.7
+      },
+      "AAA": {
+        "trades": 1,
+        "wins": 0,
+        "losses": 1,
+        "win_rate": 0.0,
+        "total_pnl": -100.0,
+        "profit_factor": 0.0,
+        "avg_win": 0,
+        "avg_loss": -100.0,
+        "avg_hold_min": 5.0
+      }
+    },
+    "trades": [
+      {
+        "n": 1,
+        "trigger": "AAA+",
+        "dir": "LONG",
+        "date": "2026-01-07",
+        "time": "08:25",
+        "entry": 6986.25,
+        "stop": 6984.25,
+        "tp": 6993.75,
+        "exit": 6994.75,
+        "ticks": 6,
+        "pnl": 375.0,
+        "duration": 75,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 2,
+        "trigger": "AAA+",
+        "dir": "SHORT",
+        "date": "2026-01-07",
+        "time": "10:10",
+        "entry": 6983.0,
+        "stop": 6985.0,
+        "tp": 6975.5,
+        "exit": 6988.0,
+        "ticks": -8,
+        "pnl": -100.0,
+        "duration": 20,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 3,
+        "trigger": "AAA+",
+        "dir": "LONG",
+        "date": "2026-01-07",
+        "time": "10:45",
+        "entry": 6990.75,
+        "stop": 6987.75,
+        "tp": 6998.7375,
+        "exit": 6999.0,
+        "ticks": 6,
+        "pnl": 375.0,
+        "duration": 55,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 4,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-08",
+        "time": "19:50",
+        "entry": 6962.75,
+        "stop": 6964.75,
+        "tp": 6955.25,
+        "exit": 6955.25,
+        "ticks": 6,
+        "pnl": 375.0,
+        "duration": 40,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 5,
+        "trigger": "AA",
+        "dir": "LONG",
+        "date": "2026-01-09",
+        "time": "08:40",
+        "entry": 6986.0,
+        "stop": 6984.0,
+        "tp": 6993.5,
+        "exit": 6984.25,
+        "ticks": -8,
+        "pnl": -87.5,
+        "duration": 5,
+        "reason": "SL",
+        "win": false,
+        "cycles": "3-Day, 6-Day"
+      },
+      {
+        "n": 6,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-09",
+        "time": "10:05",
+        "entry": 6959.75,
+        "stop": 6964.5,
+        "tp": 6947.6375,
+        "exit": 6977.0,
+        "ticks": -19,
+        "pnl": -237.5,
+        "duration": 5,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 7,
+        "trigger": "AAA+",
+        "dir": "LONG",
+        "date": "2026-01-09",
+        "time": "10:20",
+        "entry": 6989.5,
+        "stop": 6983.75,
+        "tp": 7004.425,
+        "exit": 6981.25,
+        "ticks": -23,
+        "pnl": -287.5,
+        "duration": 20,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 8,
+        "trigger": "AA",
+        "dir": "LONG",
+        "date": "2026-01-09",
+        "time": "11:00",
+        "entry": 6990.5,
+        "stop": 6983.5,
+        "tp": 7008.1625,
+        "exit": 7009.25,
+        "ticks": 14,
+        "pnl": 875.0,
+        "duration": 90,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 9,
+        "trigger": "AA",
+        "dir": "SHORT",
+        "date": "2026-01-11",
+        "time": "19:00",
+        "entry": 6996.75,
+        "stop": 6998.75,
+        "tp": 6989.25,
+        "exit": 6986.25,
+        "ticks": 6,
+        "pnl": 375.0,
+        "duration": 30,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day, 3-Day"
+      },
+      {
+        "n": 10,
+        "trigger": "AAA",
+        "dir": "SHORT",
+        "date": "2026-01-11",
+        "time": "19:35",
+        "entry": 6979.25,
+        "stop": 6981.25,
+        "tp": 6971.75,
+        "exit": 6982.25,
+        "ticks": -8,
+        "pnl": -100.0,
+        "duration": 5,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 11,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-12",
+        "time": "09:35",
+        "entry": 6990.0,
+        "stop": 6987.5,
+        "tp": 6997.5,
+        "exit": 6997.75,
+        "ticks": 6,
+        "pnl": 375.0,
+        "duration": 15,
+        "reason": "TP",
+        "win": true,
+        "cycles": "6-Day"
+      },
+      {
+        "n": 12,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-12",
+        "time": "19:00",
+        "entry": 7004.0,
+        "stop": 7006.0,
+        "tp": 6996.5,
+        "exit": 7006.5,
+        "ticks": -8,
+        "pnl": -100.0,
+        "duration": 15,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 13,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-12",
+        "time": "20:50",
+        "entry": 7006.5,
+        "stop": 7004.5,
+        "tp": 7014.0,
+        "exit": 7007.25,
+        "ticks": 6,
+        "pnl": 37.5,
+        "duration": 400,
+        "reason": "SL",
+        "win": true,
+        "cycles": "3-Day"
+      },
+      {
+        "n": 14,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-13",
+        "time": "05:05",
+        "entry": 7005.5,
+        "stop": 7007.5,
+        "tp": 6998.0,
+        "exit": 7006.5,
+        "ticks": -8,
+        "pnl": -50.0,
+        "duration": 30,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 15,
+        "trigger": "AA",
+        "dir": "SHORT",
+        "date": "2026-01-13",
+        "time": "05:40",
+        "entry": 7004.75,
+        "stop": 7006.75,
+        "tp": 6997.25,
+        "exit": 7005.25,
+        "ticks": -8,
+        "pnl": -25.0,
+        "duration": 10,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day"
+      },
+      {
+        "n": 16,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-13",
+        "time": "06:05",
+        "entry": 7007.25,
+        "stop": 7005.25,
+        "tp": 7014.75,
+        "exit": 7005.0,
+        "ticks": -8,
+        "pnl": -100.0,
+        "duration": 25,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 17,
+        "trigger": "AA",
+        "dir": "LONG",
+        "date": "2026-01-13",
+        "time": "06:45",
+        "entry": 7008.0,
+        "stop": 7006.0,
+        "tp": 7015.5,
+        "exit": 7005.75,
+        "ticks": -8,
+        "pnl": -100.0,
+        "duration": 95,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day"
+      },
+      {
+        "n": 18,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-13",
+        "time": "08:25",
+        "entry": 7007.75,
+        "stop": 7005.75,
+        "tp": 7015.25,
+        "exit": 7030.5,
+        "ticks": 6,
+        "pnl": 375.0,
+        "duration": 5,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 19,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-13",
+        "time": "10:00",
+        "entry": 7000.5,
+        "stop": 7005.0,
+        "tp": 6988.7625,
+        "exit": 6986.75,
+        "ticks": 9,
+        "pnl": 562.5,
+        "duration": 20,
+        "reason": "TP",
+        "win": true,
+        "cycles": "3-Day"
+      },
+      {
+        "n": 20,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-13",
+        "time": "11:40",
+        "entry": 7008.75,
+        "stop": 7005.5,
+        "tp": 7017.3375,
+        "exit": 7004.5,
+        "ticks": -13,
+        "pnl": -162.5,
+        "duration": 55,
+        "reason": "SL",
+        "win": false,
+        "cycles": "3-Day"
+      },
+      {
+        "n": 21,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-13",
+        "time": "23:05",
+        "entry": 6995.5,
+        "stop": 6997.5,
+        "tp": 6988.0,
+        "exit": 6988.0,
+        "ticks": 6,
+        "pnl": 375.0,
+        "duration": 85,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 22,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-14",
+        "time": "20:00",
+        "entry": 6964.25,
+        "stop": 6962.25,
+        "tp": 6971.75,
+        "exit": 6961.5,
+        "ticks": -8,
+        "pnl": -100.0,
+        "duration": 10,
+        "reason": "SL",
+        "win": false,
+        "cycles": "6-Day"
+      },
+      {
+        "n": 23,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-14",
+        "time": "20:30",
+        "entry": 6954.0,
+        "stop": 6956.0,
+        "tp": 6946.5,
+        "exit": 6958.5,
+        "ticks": -8,
+        "pnl": -100.0,
+        "duration": 5,
+        "reason": "SL",
+        "win": false,
+        "cycles": "6-Day"
+      },
+      {
+        "n": 24,
+        "trigger": "AAA+",
+        "dir": "SHORT",
+        "date": "2026-01-14",
+        "time": "22:25",
+        "entry": 6958.75,
+        "stop": 6960.75,
+        "tp": 6951.25,
+        "exit": 6961.25,
+        "ticks": -8,
+        "pnl": -100.0,
+        "duration": 95,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 25,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-16",
+        "time": "09:50",
+        "entry": 6988.25,
+        "stop": 6990.5,
+        "tp": 6980.75,
+        "exit": 6979.0,
+        "ticks": 6,
+        "pnl": 375.0,
+        "duration": 5,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 26,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-16",
+        "time": "14:00",
+        "entry": 6994.5,
+        "stop": 6992.0,
+        "tp": 7002.0,
+        "exit": 6985.75,
+        "ticks": -10,
+        "pnl": -125.0,
+        "duration": 10,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 27,
+        "trigger": "AA",
+        "dir": "SHORT",
+        "date": "2026-01-18",
+        "time": "23:35",
+        "entry": 6917.75,
+        "stop": 6923.25,
+        "tp": 6903.8375,
+        "exit": 6903.5,
+        "ticks": 11,
+        "pnl": 687.5,
+        "duration": 80,
+        "reason": "TP",
+        "win": true,
+        "cycles": "3-Day, 6-Day"
+      },
+      {
+        "n": 28,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-21",
+        "time": "06:45",
+        "entry": 6829.0,
+        "stop": 6831.0,
+        "tp": 6821.5,
+        "exit": 6819.5,
+        "ticks": 6,
+        "pnl": 375.0,
+        "duration": 10,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 29,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-21",
+        "time": "18:00",
+        "entry": 6925.75,
+        "stop": 6923.25,
+        "tp": 6933.25,
+        "exit": 6921.0,
+        "ticks": -10,
+        "pnl": -125.0,
+        "duration": 30,
+        "reason": "SL",
+        "win": false,
+        "cycles": "3-Day"
+      },
+      {
+        "n": 30,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-22",
+        "time": "00:40",
+        "entry": 6922.75,
+        "stop": 6924.75,
+        "tp": 6915.25,
+        "exit": 6913.0,
+        "ticks": 6,
+        "pnl": 375.0,
+        "duration": 30,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 31,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-22",
+        "time": "12:30",
+        "entry": 6965.5,
+        "stop": 6963.25,
+        "tp": 6973.0,
+        "exit": 6962.0,
+        "ticks": -9,
+        "pnl": -112.5,
+        "duration": 40,
+        "reason": "SL",
+        "win": false,
+        "cycles": "6-Day"
+      },
+      {
+        "n": 32,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-22",
+        "time": "14:00",
+        "entry": 6963.0,
+        "stop": 6960.75,
+        "tp": 6970.5,
+        "exit": 6960.75,
+        "ticks": -9,
+        "pnl": -112.5,
+        "duration": 30,
+        "reason": "SL",
+        "win": false,
+        "cycles": "6-Day"
+      },
+      {
+        "n": 33,
+        "trigger": "AA",
+        "dir": "LONG",
+        "date": "2026-01-22",
+        "time": "19:05",
+        "entry": 6943.0,
+        "stop": 6941.0,
+        "tp": 6950.5,
+        "exit": 6952.75,
+        "ticks": 6,
+        "pnl": 375.0,
+        "duration": 55,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day, 6-Day"
+      },
+      {
+        "n": 34,
+        "trigger": "AAA+",
+        "dir": "SHORT",
+        "date": "2026-01-23",
+        "time": "06:40",
+        "entry": 6938.5,
+        "stop": 6940.5,
+        "tp": 6931.0,
+        "exit": 6941.5,
+        "ticks": -8,
+        "pnl": -100.0,
+        "duration": 65,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 35,
+        "trigger": "AAA+",
+        "dir": "LONG",
+        "date": "2026-01-23",
+        "time": "10:20",
+        "entry": 6949.0,
+        "stop": 6944.5,
+        "tp": 6960.5125,
+        "exit": 6962.25,
+        "ticks": 9,
+        "pnl": 562.5,
+        "duration": 40,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 36,
+        "trigger": "AAA+",
+        "dir": "SHORT",
+        "date": "2026-01-23",
+        "time": "12:50",
+        "entry": 6935.25,
+        "stop": 6939.25,
+        "tp": 6925.0875,
+        "exit": 6942.0,
+        "ticks": -16,
+        "pnl": -200.0,
+        "duration": 15,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 37,
+        "trigger": "AAA+",
+        "dir": "SHORT",
+        "date": "2026-01-23",
+        "time": "13:10",
+        "entry": 6938.5,
+        "stop": 6942.5,
+        "tp": 6928.0,
+        "exit": 6941.5,
+        "ticks": -16,
+        "pnl": -150.0,
+        "duration": 5,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 38,
+        "trigger": "AAA+",
+        "dir": "LONG",
+        "date": "2026-01-23",
+        "time": "13:35",
+        "entry": 6945.0,
+        "stop": 6941.0,
+        "tp": 6955.3125,
+        "exit": 6940.75,
+        "ticks": -16,
+        "pnl": -200.0,
+        "duration": 145,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 39,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-26",
+        "time": "01:00",
+        "entry": 6935.75,
+        "stop": 6933.75,
+        "tp": 6943.25,
+        "exit": 6933.75,
+        "ticks": -8,
+        "pnl": -100.0,
+        "duration": 40,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 40,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-26",
+        "time": "01:45",
+        "entry": 6935.0,
+        "stop": 6933.0,
+        "tp": 6942.5,
+        "exit": 6943.25,
+        "ticks": 6,
+        "pnl": 375.0,
+        "duration": 75,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 41,
+        "trigger": "AA",
+        "dir": "LONG",
+        "date": "2026-01-26",
+        "time": "08:05",
+        "entry": 6944.5,
+        "stop": 6942.5,
+        "tp": 6952.0,
+        "exit": 6940.75,
+        "ticks": -8,
+        "pnl": -100.0,
+        "duration": 30,
+        "reason": "SL",
+        "win": false,
+        "cycles": "3-Day, 6-Day"
+      },
+      {
+        "n": 42,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-26",
+        "time": "19:00",
+        "entry": 6977.75,
+        "stop": 6979.75,
+        "tp": 6970.25,
+        "exit": 6981.75,
+        "ticks": -8,
+        "pnl": -100.0,
+        "duration": 15,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 43,
+        "trigger": "AA",
+        "dir": "SHORT",
+        "date": "2026-01-28",
+        "time": "10:40",
+        "entry": 7010.25,
+        "stop": 7014.5,
+        "tp": 6999.525,
+        "exit": 7013.5,
+        "ticks": -17,
+        "pnl": -162.5,
+        "duration": 25,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day"
+      },
+      {
+        "n": 44,
+        "trigger": "AA",
+        "dir": "SHORT",
+        "date": "2026-01-28",
+        "time": "11:30",
+        "entry": 7005.75,
+        "stop": 7009.75,
+        "tp": 6995.2875,
+        "exit": 6993.75,
+        "ticks": 8,
+        "pnl": 500.0,
+        "duration": 175,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day, 3-Day"
+      },
+      {
+        "n": 45,
+        "trigger": "AA",
+        "dir": "SHORT",
+        "date": "2026-01-28",
+        "time": "15:25",
+        "entry": 7006.25,
+        "stop": 7010.5,
+        "tp": 6995.5625,
+        "exit": 6988.5,
+        "ticks": 8,
+        "pnl": 500.0,
+        "duration": 35,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day, 3-Day"
+      },
+      {
+        "n": 46,
+        "trigger": "AA",
+        "dir": "SHORT",
+        "date": "2026-01-28",
+        "time": "18:05",
+        "entry": 7009.75,
+        "stop": 7015.0,
+        "tp": 6996.1,
+        "exit": 6996.0,
+        "ticks": 10,
+        "pnl": 625.0,
+        "duration": 50,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day, 3-Day"
+      },
+      {
+        "n": 47,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-28",
+        "time": "19:55",
+        "entry": 6999.0,
+        "stop": 6995.5,
+        "tp": 7008.0375,
+        "exit": 6994.25,
+        "ticks": -14,
+        "pnl": -175.0,
+        "duration": 20,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 48,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-28",
+        "time": "21:00",
+        "entry": 6998.25,
+        "stop": 6996.25,
+        "tp": 7005.75,
+        "exit": 7006.0,
+        "ticks": 6,
+        "pnl": 375.0,
+        "duration": 70,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 49,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-29",
+        "time": "06:05",
+        "entry": 7015.25,
+        "stop": 7013.25,
+        "tp": 7022.75,
+        "exit": 7023.0,
+        "ticks": 6,
+        "pnl": 375.0,
+        "duration": 60,
+        "reason": "TP",
+        "win": true,
+        "cycles": "3-Day"
+      },
+      {
+        "n": 50,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-29",
+        "time": "09:30",
+        "entry": 7010.25,
+        "stop": 7012.5,
+        "tp": 7002.75,
+        "exit": 6983.0,
+        "ticks": 6,
+        "pnl": 375.0,
+        "duration": 10,
+        "reason": "TP",
+        "win": true,
+        "cycles": "3-Day"
+      }
+    ]
+  },
+  "NQ": {
+    "symbol": "NQ",
+    "name": "E-mini Nasdaq-100",
+    "period": "47 trading days",
+    "rr": 5.0,
+    "overall": {
+      "trades": 129,
+      "wins": 53,
+      "losses": 76,
+      "win_rate": 41.1,
+      "total_pnl": 19305.0,
+      "profit_factor": 1.78,
+      "avg_win": 830.66,
+      "avg_loss": -325.26,
+      "avg_hold_min": 34.7,
+      "max_drawdown": 4390.0,
+      "equity": [
+        0,
+        -110.0,
+        215.0,
+        415.0,
+        320.0,
+        155.0,
+        730.0,
+        620.0,
+        425.0,
+        35.0,
+        -520.0,
+        -900.0,
+        1100.0,
+        1500.0,
+        2275.0,
+        2155.0,
+        2480.0,
+        2310.0,
+        2180.0,
+        2505.0,
+        3380.0,
+        4405.0,
+        4280.0,
+        4480.0,
+        4930.0,
+        4685.0,
+        4510.0,
+        4315.0,
+        4615.0,
+        4305.0,
+        5155.0,
+        6355.0,
+        5615.0,
+        6115.0,
+        7940.0,
+        8165.0,
+        7735.0,
+        7220.0,
+        6905.0,
+        6685.0,
+        6475.0,
+        6180.0,
+        6015.0,
+        5865.0,
+        5710.0,
+        5580.0,
+        5955.0,
+        5795.0,
+        5425.0,
+        5180.0,
+        4640.0,
+        4130.0,
+        3775.0,
+        4250.0,
+        4065.0,
+        4640.0,
+        5140.0,
+        5590.0,
+        6340.0,
+        6130.0,
+        5970.0,
+        5850.0,
+        6425.0,
+        6010.0,
+        5725.0,
+        5590.0,
+        6215.0,
+        7115.0,
+        7765.0,
+        7445.0,
+        6985.0,
+        6525.0,
+        8150.0,
+        7540.0,
+        7100.0,
+        7625.0,
+        7440.0,
+        7315.0,
+        7175.0,
+        7625.0,
+        8450.0,
+        7975.0,
+        7220.0,
+        9770.0,
+        9300.0,
+        9175.0,
+        8805.0,
+        9155.0,
+        8915.0,
+        9540.0,
+        8925.0,
+        10575.0,
+        11375.0,
+        11005.0,
+        10700.0,
+        10535.0,
+        10395.0,
+        10695.0,
+        11445.0,
+        11190.0,
+        10485.0,
+        11235.0,
+        11535.0,
+        12360.0,
+        13735.0,
+        15310.0,
+        14490.0,
+        16340.0,
+        16160.0,
+        15805.0,
+        16905.0,
+        16610.0,
+        16375.0,
+        17800.0,
+        17290.0,
+        18590.0,
+        18155.0,
+        17625.0,
+        17025.0,
+        18600.0,
+        18275.0,
+        19200.0,
+        19800.0,
+        19480.0,
+        18790.0,
+        18620.0,
+        19295.0,
+        20345.0,
+        19890.0,
+        19305.0
+      ]
+    },
+    "by_trigger": {
+      "AAA+": {
+        "trades": 17,
+        "wins": 8,
+        "losses": 9,
+        "win_rate": 47.1,
+        "total_pnl": 2300.0,
+        "profit_factor": 1.74,
+        "avg_win": 678.12,
+        "avg_loss": -347.22,
+        "avg_hold_min": 18.2
+      },
+      "A": {
+        "trades": 81,
+        "wins": 33,
+        "losses": 48,
+        "win_rate": 40.7,
+        "total_pnl": 10745.0,
+        "profit_factor": 1.77,
+        "avg_win": 748.48,
+        "avg_loss": -290.73,
+        "avg_hold_min": 22.7
+      },
+      "AA": {
+        "trades": 31,
+        "wins": 12,
+        "losses": 19,
+        "win_rate": 38.7,
+        "total_pnl": 6260.0,
+        "profit_factor": 1.82,
+        "avg_win": 1158.33,
+        "avg_loss": -402.11,
+        "avg_hold_min": 75.2
+      }
+    },
+    "trades": [
+      {
+        "n": 1,
+        "trigger": "AAA+",
+        "dir": "LONG",
+        "date": "2026-01-07",
+        "time": "08:40",
+        "entry": 25790.75,
+        "stop": 25785.25,
+        "tp": 25804.8125,
+        "exit": 25783.0,
+        "ticks": -22,
+        "pnl": -110.0,
+        "duration": 5,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 2,
+        "trigger": "AAA+",
+        "dir": "LONG",
+        "date": "2026-01-07",
+        "time": "09:25",
+        "entry": 25790.75,
+        "stop": 25784.0,
+        "tp": 25808.15,
+        "exit": 25822.0,
+        "ticks": 13,
+        "pnl": 325.0,
+        "duration": 5,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 3,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-07",
+        "time": "19:35",
+        "entry": 25830.75,
+        "stop": 25826.5,
+        "tp": 25841.85,
+        "exit": 25842.5,
+        "ticks": 8,
+        "pnl": 200.0,
+        "duration": 20,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 4,
+        "trigger": "AA",
+        "dir": "SHORT",
+        "date": "2026-01-07",
+        "time": "22:35",
+        "entry": 25777.5,
+        "stop": 25782.25,
+        "tp": 25765.6125,
+        "exit": 25783.25,
+        "ticks": -19,
+        "pnl": -95.0,
+        "duration": 35,
+        "reason": "SL",
+        "win": false,
+        "cycles": "3-Day, 6-Day"
+      },
+      {
+        "n": 5,
+        "trigger": "AA",
+        "dir": "LONG",
+        "date": "2026-01-08",
+        "time": "08:15",
+        "entry": 25796.75,
+        "stop": 25788.5,
+        "tp": 25817.7125,
+        "exit": 25787.75,
+        "ticks": -33,
+        "pnl": -165.0,
+        "duration": 60,
+        "reason": "SL",
+        "win": false,
+        "cycles": "3-Day, 6-Day"
+      },
+      {
+        "n": 6,
+        "trigger": "AA",
+        "dir": "SHORT",
+        "date": "2026-01-08",
+        "time": "09:30",
+        "entry": 25706.0,
+        "stop": 25717.75,
+        "tp": 25676.075,
+        "exit": 25621.25,
+        "ticks": 23,
+        "pnl": 575.0,
+        "duration": 10,
+        "reason": "TP",
+        "win": true,
+        "cycles": "3-Day, 6-Day"
+      },
+      {
+        "n": 7,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-09",
+        "time": "00:55",
+        "entry": 25693.5,
+        "stop": 25688.0,
+        "tp": 25707.7875,
+        "exit": 25685.5,
+        "ticks": -22,
+        "pnl": -110.0,
+        "duration": 10,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 8,
+        "trigger": "AA",
+        "dir": "LONG",
+        "date": "2026-01-09",
+        "time": "08:35",
+        "entry": 25790.75,
+        "stop": 25781.0,
+        "tp": 25815.3125,
+        "exit": 25768.0,
+        "ticks": -39,
+        "pnl": -195.0,
+        "duration": 35,
+        "reason": "SL",
+        "win": false,
+        "cycles": "3-Day, 6-Day"
+      },
+      {
+        "n": 9,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-09",
+        "time": "09:35",
+        "entry": 25756.0,
+        "stop": 25736.5,
+        "tp": 25805.1625,
+        "exit": 25706.0,
+        "ticks": -78,
+        "pnl": -390.0,
+        "duration": 10,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 10,
+        "trigger": "AA",
+        "dir": "SHORT",
+        "date": "2026-01-09",
+        "time": "10:05",
+        "entry": 25643.25,
+        "stop": 25671.0,
+        "tp": 25573.425,
+        "exit": 25747.5,
+        "ticks": -111,
+        "pnl": -555.0,
+        "duration": 5,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 11,
+        "trigger": "AAA+",
+        "dir": "LONG",
+        "date": "2026-01-09",
+        "time": "10:20",
+        "entry": 25799.75,
+        "stop": 25765.75,
+        "tp": 25885.175,
+        "exit": 25780.75,
+        "ticks": -136,
+        "pnl": -380.0,
+        "duration": 20,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 12,
+        "trigger": "AA",
+        "dir": "LONG",
+        "date": "2026-01-09",
+        "time": "10:55",
+        "entry": 25812.25,
+        "stop": 25772.0,
+        "tp": 25912.9,
+        "exit": 25915.5,
+        "ticks": 80,
+        "pnl": 2000.0,
+        "duration": 55,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 13,
+        "trigger": "AA",
+        "dir": "SHORT",
+        "date": "2026-01-11",
+        "time": "19:00",
+        "entry": 25888.25,
+        "stop": 25896.5,
+        "tp": 25867.175,
+        "exit": 25860.5,
+        "ticks": 16,
+        "pnl": 400.0,
+        "duration": 10,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day, 3-Day"
+      },
+      {
+        "n": 14,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-12",
+        "time": "09:30",
+        "entry": 25855.5,
+        "stop": 25840.0,
+        "tp": 25894.3875,
+        "exit": 25901.0,
+        "ticks": 31,
+        "pnl": 775.0,
+        "duration": 25,
+        "reason": "TP",
+        "win": true,
+        "cycles": "6-Day"
+      },
+      {
+        "n": 15,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-13",
+        "time": "00:25",
+        "entry": 25905.25,
+        "stop": 25899.25,
+        "tp": 25920.325,
+        "exit": 25890.0,
+        "ticks": -24,
+        "pnl": -120.0,
+        "duration": 5,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 16,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-13",
+        "time": "00:40",
+        "entry": 25898.5,
+        "stop": 25891.75,
+        "tp": 25915.5625,
+        "exit": 25917.5,
+        "ticks": 13,
+        "pnl": 325.0,
+        "duration": 45,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 17,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-13",
+        "time": "05:05",
+        "entry": 25892.0,
+        "stop": 25901.0,
+        "tp": 25869.05,
+        "exit": 25900.5,
+        "ticks": -36,
+        "pnl": -170.0,
+        "duration": 110,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 18,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-13",
+        "time": "08:00",
+        "entry": 25906.25,
+        "stop": 25899.75,
+        "tp": 25922.525,
+        "exit": 25892.5,
+        "ticks": -26,
+        "pnl": -130.0,
+        "duration": 15,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 19,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-13",
+        "time": "08:25",
+        "entry": 25911.75,
+        "stop": 25905.25,
+        "tp": 25928.3625,
+        "exit": 26017.0,
+        "ticks": 13,
+        "pnl": 325.0,
+        "duration": 5,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 20,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-13",
+        "time": "10:15",
+        "entry": 25883.25,
+        "stop": 25900.75,
+        "tp": 25839.0,
+        "exit": 25837.5,
+        "ticks": 35,
+        "pnl": 875.0,
+        "duration": 5,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 21,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-13",
+        "time": "12:50",
+        "entry": 25901.5,
+        "stop": 25922.25,
+        "tp": 25849.375,
+        "exit": 25839.75,
+        "ticks": 41,
+        "pnl": 1025.0,
+        "duration": 65,
+        "reason": "TP",
+        "win": true,
+        "cycles": "3-Day"
+      },
+      {
+        "n": 22,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-13",
+        "time": "20:45",
+        "entry": 25885.25,
+        "stop": 25891.5,
+        "tp": 25869.05,
+        "exit": 25895.0,
+        "ticks": -25,
+        "pnl": -125.0,
+        "duration": 40,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 23,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-13",
+        "time": "23:45",
+        "entry": 25886.75,
+        "stop": 25890.75,
+        "tp": 25876.175,
+        "exit": 25875.75,
+        "ticks": 8,
+        "pnl": 200.0,
+        "duration": 15,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 24,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-14",
+        "time": "05:20",
+        "entry": 25773.25,
+        "stop": 25782.5,
+        "tp": 25749.5125,
+        "exit": 25746.0,
+        "ticks": 18,
+        "pnl": 450.0,
+        "duration": 10,
+        "reason": "TP",
+        "win": true,
+        "cycles": "6-Day"
+      },
+      {
+        "n": 25,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-14",
+        "time": "08:30",
+        "entry": 25765.5,
+        "stop": 25777.75,
+        "tp": 25734.825,
+        "exit": 25779.75,
+        "ticks": -49,
+        "pnl": -245.0,
+        "duration": 60,
+        "reason": "SL",
+        "win": false,
+        "cycles": "6-Day"
+      },
+      {
+        "n": 26,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-14",
+        "time": "20:00",
+        "entry": 25640.5,
+        "stop": 25631.75,
+        "tp": 25662.7,
+        "exit": 25620.25,
+        "ticks": -35,
+        "pnl": -175.0,
+        "duration": 10,
+        "reason": "SL",
+        "win": false,
+        "cycles": "6-Day"
+      },
+      {
+        "n": 27,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-14",
+        "time": "20:30",
+        "entry": 25575.75,
+        "stop": 25585.5,
+        "tp": 25551.1125,
+        "exit": 25600.75,
+        "ticks": -39,
+        "pnl": -195.0,
+        "duration": 5,
+        "reason": "SL",
+        "win": false,
+        "cycles": "6-Day"
+      },
+      {
+        "n": 28,
+        "trigger": "AAA+",
+        "dir": "SHORT",
+        "date": "2026-01-14",
+        "time": "22:25",
+        "entry": 25597.75,
+        "stop": 25604.0,
+        "tp": 25581.55,
+        "exit": 25581.5,
+        "ticks": 12,
+        "pnl": 300.0,
+        "duration": 30,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 29,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-16",
+        "time": "09:55",
+        "entry": 25728.5,
+        "stop": 25744.0,
+        "tp": 25689.6875,
+        "exit": 25755.25,
+        "ticks": -62,
+        "pnl": -310.0,
+        "duration": 10,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 30,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-16",
+        "time": "10:10",
+        "entry": 25721.0,
+        "stop": 25738.0,
+        "tp": 25678.25,
+        "exit": 25676.0,
+        "ticks": 34,
+        "pnl": 850.0,
+        "duration": 5,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 31,
+        "trigger": "AA",
+        "dir": "SHORT",
+        "date": "2026-01-18",
+        "time": "23:35",
+        "entry": 25393.0,
+        "stop": 25417.25,
+        "tp": 25331.8375,
+        "exit": 25326.75,
+        "ticks": 48,
+        "pnl": 1200.0,
+        "duration": 95,
+        "reason": "TP",
+        "win": true,
+        "cycles": "3-Day, 6-Day"
+      },
+      {
+        "n": 32,
+        "trigger": "AA",
+        "dir": "LONG",
+        "date": "2026-01-20",
+        "time": "10:40",
+        "entry": 25412.25,
+        "stop": 25375.25,
+        "tp": 25505.0625,
+        "exit": 25351.0,
+        "ticks": -148,
+        "pnl": -740.0,
+        "duration": 5,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day"
+      },
+      {
+        "n": 33,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-21",
+        "time": "06:45",
+        "entry": 25089.5,
+        "stop": 25099.5,
+        "tp": 25064.3,
+        "exit": 25045.5,
+        "ticks": 20,
+        "pnl": 500.0,
+        "duration": 10,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 34,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-21",
+        "time": "14:25",
+        "entry": 25429.25,
+        "stop": 25392.5,
+        "tp": 25521.3875,
+        "exit": 25548.25,
+        "ticks": 73,
+        "pnl": 1825.0,
+        "duration": 15,
+        "reason": "TP",
+        "win": true,
+        "cycles": "3-Day"
+      },
+      {
+        "n": 35,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-22",
+        "time": "00:40",
+        "entry": 25544.0,
+        "stop": 25548.5,
+        "tp": 25532.45,
+        "exit": 25517.0,
+        "ticks": 9,
+        "pnl": 225.0,
+        "duration": 25,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 36,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-22",
+        "time": "09:45",
+        "entry": 25575.0,
+        "stop": 25596.5,
+        "tp": 25521.1125,
+        "exit": 25621.75,
+        "ticks": -86,
+        "pnl": -430.0,
+        "duration": 5,
+        "reason": "SL",
+        "win": false,
+        "cycles": "6-Day"
+      },
+      {
+        "n": 37,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-22",
+        "time": "09:55",
+        "entry": 25578.0,
+        "stop": 25603.75,
+        "tp": 25513.05,
+        "exit": 25623.0,
+        "ticks": -103,
+        "pnl": -515.0,
+        "duration": 35,
+        "reason": "SL",
+        "win": false,
+        "cycles": "6-Day"
+      },
+      {
+        "n": 38,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-22",
+        "time": "18:00",
+        "entry": 25590.75,
+        "stop": 25606.5,
+        "tp": 25550.775,
+        "exit": 25617.0,
+        "ticks": -63,
+        "pnl": -315.0,
+        "duration": 20,
+        "reason": "SL",
+        "win": false,
+        "cycles": "6-Day"
+      },
+      {
+        "n": 39,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-22",
+        "time": "19:00",
+        "entry": 25610.5,
+        "stop": 25621.5,
+        "tp": 25582.675,
+        "exit": 25622.25,
+        "ticks": -44,
+        "pnl": -220.0,
+        "duration": 5,
+        "reason": "SL",
+        "win": false,
+        "cycles": "6-Day"
+      },
+      {
+        "n": 40,
+        "trigger": "AAA+",
+        "dir": "SHORT",
+        "date": "2026-01-23",
+        "time": "06:55",
+        "entry": 25606.75,
+        "stop": 25617.25,
+        "tp": 25579.9375,
+        "exit": 25617.5,
+        "ticks": -42,
+        "pnl": -210.0,
+        "duration": 10,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 41,
+        "trigger": "AAA+",
+        "dir": "SHORT",
+        "date": "2026-01-25",
+        "time": "19:00",
+        "entry": 25570.0,
+        "stop": 25584.75,
+        "tp": 25532.9125,
+        "exit": 25586.75,
+        "ticks": -59,
+        "pnl": -295.0,
+        "duration": 5,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day, 6-Day"
+      },
+      {
+        "n": 42,
+        "trigger": "AA",
+        "dir": "LONG",
+        "date": "2026-01-25",
+        "time": "22:00",
+        "entry": 25637.0,
+        "stop": 25628.75,
+        "tp": 25657.775,
+        "exit": 25627.25,
+        "ticks": -33,
+        "pnl": -165.0,
+        "duration": 65,
+        "reason": "SL",
+        "win": false,
+        "cycles": "3-Day, 6-Day"
+      },
+      {
+        "n": 43,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-26",
+        "time": "01:00",
+        "entry": 25685.75,
+        "stop": 25677.25,
+        "tp": 25707.575,
+        "exit": 25678.25,
+        "ticks": -34,
+        "pnl": -150.0,
+        "duration": 5,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 44,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-26",
+        "time": "01:10",
+        "entry": 25687.25,
+        "stop": 25679.5,
+        "tp": 25707.2375,
+        "exit": 25678.5,
+        "ticks": -31,
+        "pnl": -155.0,
+        "duration": 20,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 45,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-26",
+        "time": "07:00",
+        "entry": 25695.0,
+        "stop": 25688.5,
+        "tp": 25711.3875,
+        "exit": 25685.0,
+        "ticks": -26,
+        "pnl": -130.0,
+        "duration": 20,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 46,
+        "trigger": "A",
+        "dir": "LONG",
+        "date": "2026-01-26",
+        "time": "08:45",
+        "entry": 25697.25,
+        "stop": 25689.75,
+        "tp": 25716.375,
+        "exit": 25727.25,
+        "ticks": 15,
+        "pnl": 375.0,
+        "duration": 15,
+        "reason": "TP",
+        "win": true,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 47,
+        "trigger": "A",
+        "dir": "SHORT",
+        "date": "2026-01-26",
+        "time": "19:00",
+        "entry": 25877.5,
+        "stop": 25885.5,
+        "tp": 25856.95,
+        "exit": 25894.75,
+        "ticks": -32,
+        "pnl": -160.0,
+        "duration": 15,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day"
+      },
+      {
+        "n": 48,
+        "trigger": "AA",
+        "dir": "SHORT",
+        "date": "2026-01-28",
+        "time": "11:40",
+        "entry": 26122.5,
+        "stop": 26141.0,
+        "tp": 26075.6625,
+        "exit": 26151.75,
+        "ticks": -74,
+        "pnl": -370.0,
+        "duration": 30,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day"
+      },
+      {
+        "n": 49,
+        "trigger": "AA",
+        "dir": "SHORT",
+        "date": "2026-01-28",
+        "time": "14:25",
+        "entry": 26122.75,
+        "stop": 26135.0,
+        "tp": 26091.775,
+        "exit": 26151.25,
+        "ticks": -49,
+        "pnl": -245.0,
+        "duration": 5,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day"
+      },
+      {
+        "n": 50,
+        "trigger": "AA",
+        "dir": "SHORT",
+        "date": "2026-01-28",
+        "time": "16:00",
+        "entry": 26048.25,
+        "stop": 26075.25,
+        "tp": 25980.75,
+        "exit": 26150.0,
+        "ticks": -108,
+        "pnl": -540.0,
+        "duration": 5,
+        "reason": "SL",
+        "win": false,
+        "cycles": "1-Day, 3-Day"
+      }
+    ]
+  }
+};
+
 function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
   const [signalCount] = useState(47 + Math.floor(Math.random() * 12));
   const [demoRR, setDemoRR]         = useState("2.5");
@@ -2371,6 +4463,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   const [history,    setHistory]    = useState([]);
   const [histStats,  setHistStats]  = useState(null);
   const [backtest,   setBacktest]   = useState(FALLBACK_BACKTEST);
+  const [btInstrument, setBtInstrument] = useState("NQ");
 
   useEffect(() => {
     if (!SIGNALS_URL) return;
@@ -2570,164 +4663,202 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
           </div>
         )}
 
-        {activeTab==="backtest" && (
+        {activeTab==="backtest" && (() => {
+          const btData = BACKTEST_STATIC[btInstrument];
+          const ov     = btData.overall;
+          const byTrig = btData.by_trigger;
+          const breakEven = (1 / (1 + btData.rr) * 100).toFixed(1);
+          return (
           <div style={{ padding:22, maxWidth:900 }}>
 
-            {/* Header */}
+            {/* Header + instrument selector */}
             <div style={{ marginBottom:22 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:6 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10, flexWrap:"wrap" }}>
                 <h2 style={{ fontSize:18, fontWeight:700, margin:0 }}>Backtest Results</h2>
                 <span style={{ fontSize:10, fontFamily:"monospace", background:C.accentDim, color:C.accent, padding:"2px 8px", borderRadius:4, border:`1px solid ${C.accent}44` }}>HYPOTHETICAL</span>
+                <div style={{ marginLeft:"auto", display:"flex", gap:6 }}>
+                  {["ES","NQ"].map(sym => (
+                    <button key={sym} onClick={() => setBtInstrument(sym)} style={{
+                      padding:"5px 16px", borderRadius:6, fontSize:12, fontFamily:"monospace", fontWeight:700, cursor:"pointer",
+                      background: btInstrument===sym ? C.accent : C.surface,
+                      color:      btInstrument===sym ? "#080909"  : C.textMid,
+                      border:     `1px solid ${btInstrument===sym ? C.accent : C.border}`,
+                    }}>{sym}</button>
+                  ))}
+                </div>
               </div>
-              {backtest && (
-                <p style={{ color:C.textMid, fontSize:13, margin:0, lineHeight:1.6 }}>
-                  <strong style={{ color:C.text }}>{backtest.instrument} — {backtest.name}</strong>
-                  &nbsp;·&nbsp;{backtest.period}&nbsp;·&nbsp;{backtest.params?.window}
-                  <br/>
-                  <span style={{ fontSize:12 }}>{backtest.methodology}</span>
-                </p>
-              )}
+              <p style={{ color:C.textMid, fontSize:13, margin:0, lineHeight:1.6 }}>
+                <strong style={{ color:C.text }}>{btData.name}</strong>
+                &nbsp;·&nbsp;{btData.period}&nbsp;·&nbsp;{btData.rr}:1 R:R&nbsp;·&nbsp;5-min bars&nbsp;·&nbsp;Hybrid stop (cycle invalidation / ATR×1.2)
+              </p>
             </div>
 
-            {!backtest ? (
-              <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:40, textAlign:"center" }}>
-                <div style={{ fontSize:12, color:C.textMid }}>Loading backtest data…</div>
-              </div>
-            ) : (<>
+            {/* Stats grid */}
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(128px,1fr))", gap:10, marginBottom:22 }}>
+              {[
+                { label:"TRADES",        value: ov.trades,                                    sub:`${(ov.trades / (btData.period.match(/\d+/)?.[0] ?? 45) * 5).toFixed(1)}/week`,  color: C.text },
+                { label:"WIN RATE",      value: `${ov.win_rate}%`,                             sub:`B/E: ${breakEven}%`,                     color: C.long },
+                { label:"PROFIT FACTOR", value: `${ov.profit_factor}x`,                        sub:"gross W ÷ gross L",                     color: C.accent },
+                { label:"NET P&L",       value: `+$${ov.total_pnl.toLocaleString()}`,          sub:`${ov.wins}W / ${ov.losses}L`,            color: C.long },
+                { label:"MAX DRAWDOWN",  value: `$${ov.max_drawdown.toLocaleString()}`,        sub:"peak-to-trough",                        color: C.warn },
+                { label:"AVG HOLD",      value: `${ov.avg_hold_min}m`,                         sub:"per trade",                             color: C.textMid },
+              ].map(s => (
+                <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"14px 16px" }}>
+                  <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:5 }}>{s.label}</div>
+                  <div style={{ fontSize:17, fontWeight:700, color:s.color, fontFamily:"monospace" }}>{s.value}</div>
+                  <div style={{ fontSize:10, color:C.textDim, marginTop:3 }}>{s.sub}</div>
+                </div>
+              ))}
+            </div>
 
-              {/* Stats grid */}
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(128px,1fr))", gap:10, marginBottom:22 }}>
-                {[
-                  { label:"TRADES",       value: backtest.stats.trades,                    sub:`${(backtest.stats.trades/30).toFixed(1)}/day`,  color: C.text },
-                  { label:"WIN RATE",     value: `${backtest.stats.winRate}%`,              sub:`B/E: ${backtest.stats.breakEven}%`,              color: C.long },
-                  { label:"PROFIT FACTOR",value: `${backtest.stats.profitFactor}x`,         sub:"gross W ÷ gross L",                              color: C.accent },
-                  { label:"NET P&L",      value: `+$${(backtest.stats.totalPnlUsd ?? backtest.stats.totalPnl ?? 0).toLocaleString()}`, sub:`${backtest.period.split(' ')[0]+' '+backtest.period.split(' ')[1]+' days'}`, color: C.long },
-                  { label:"MAX DRAWDOWN", value: `$${(backtest.stats.maxDrawdownUsd ?? backtest.stats.maxDrawdown ?? 0).toLocaleString()}`, sub:"peak-to-trough",                      color: C.warn },
-                  { label:"AVG HOLD",     value: `${backtest.stats.avgHoldMin}m`,           sub:"per trade",                                      color: C.textMid },
-                ].map(s => (
-                  <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"14px 16px" }}>
-                    <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:5 }}>{s.label}</div>
-                    <div style={{ fontSize:17, fontWeight:700, color:s.color, fontFamily:"monospace" }}>{s.value}</div>
-                    <div style={{ fontSize:10, color:C.textDim, marginTop:3 }}>{s.sub}</div>
-                  </div>
-                ))}
+            {/* By-trigger breakdown */}
+            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, overflow:"hidden", marginBottom:22 }}>
+              <div style={{ padding:"14px 18px", borderBottom:`1px solid ${C.border}` }}>
+                <div style={{ fontSize:13, fontWeight:600 }}>Results by Trigger Tier</div>
+                <div style={{ fontSize:11, color:C.textDim, marginTop:3 }}>Higher tiers show stronger alignment across cycles</div>
               </div>
-
-              {/* Equity curve */}
-              {backtest.equity && backtest.equity.length > 0 && (() => {
-                const pts   = backtest.equity;
-                const lo    = Math.min(0, ...pts);
-                const hi    = Math.max(...pts);
-                const span  = hi - lo || 1;
-                const W     = 780, H = 160, pad = 8;
-                const xStep = (W - pad*2) / (pts.length - 1);
-                const toY   = v => H - pad - ((v - lo) / span) * (H - pad*2);
-                const zero  = toY(0);
-                const pathD = pts.map((v, i) => `${i===0?"M":"L"}${pad + i*xStep},${toY(v)}`).join(" ");
-                // Gradient fill below the line
-                const fillD = `${pathD} L${pad+(pts.length-1)*xStep},${H-pad} L${pad},${H-pad} Z`;
-                return (
-                  <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:"18px 20px", marginBottom:22 }}>
-                    <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", marginBottom:10, display:"flex", justifyContent:"space-between" }}>
-                      <span>EQUITY CURVE  (per contract, 1 trade = 1 dot)</span>
-                      <span style={{ color:C.long }}>+${hi.toLocaleString()} peak</span>
-                    </div>
-                    <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:H, display:"block" }}>
-                      <defs>
-                        <linearGradient id="eq-fill" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor={C.long} stopOpacity="0.18"/>
-                          <stop offset="100%" stopColor={C.long} stopOpacity="0.02"/>
-                        </linearGradient>
-                      </defs>
-                      {/* Zero line */}
-                      <line x1={pad} y1={zero} x2={W-pad} y2={zero} stroke={C.border} strokeWidth="1" strokeDasharray="3,3"/>
-                      {/* Fill */}
-                      <path d={fillD} fill="url(#eq-fill)"/>
-                      {/* Line */}
-                      <path d={pathD} fill="none" stroke={C.long} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
-                      {/* Dots */}
-                      {pts.map((v, i) => (
-                        <circle key={i} cx={pad + i*xStep} cy={toY(v)} r="3.5"
-                          fill={backtest.trades[i]?.win ? C.long : C.short}
-                          stroke={C.bg} strokeWidth="1.5"/>
+              <div style={{ overflowX:"auto" }}>
+                <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12, fontFamily:"monospace" }}>
+                  <thead>
+                    <tr style={{ borderBottom:`1px solid ${C.border}` }}>
+                      {["Trigger","Trades","Win Rate","Profit Factor","Net P&L","Avg Hold"].map(h => (
+                        <th key={h} style={{ padding:"9px 14px", textAlign:"left", fontSize:9, color:C.textDim, letterSpacing:"0.08em", fontWeight:600, whiteSpace:"nowrap" }}>{h}</th>
                       ))}
-                    </svg>
-                    <div style={{ display:"flex", gap:14, marginTop:8, fontSize:10, color:C.textDim, fontFamily:"monospace" }}>
-                      <span><span style={{ color:C.long }}>●</span> Win (TP hit)</span>
-                      <span><span style={{ color:C.short }}>●</span> Loss (SL hit)</span>
-                      <span style={{ marginLeft:"auto" }}>Each dot = 1 trade  ·  Zero line = breakeven</span>
-                    </div>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {["AAA+","AAA","AA","A"].filter(tier => byTrig[tier]).map((tier, i) => {
+                      const d = byTrig[tier];
+                      const tierColor = tier==="AAA+" ? C.accent : tier==="AAA" ? C.long : tier==="AA" ? C.textMid : C.textDim;
+                      return (
+                        <tr key={tier} style={{ background: i%2===0?"transparent":C.bg+"66", borderBottom:`1px solid ${C.border}22` }}>
+                          <td style={{ padding:"10px 14px" }}>
+                            <span style={{ fontWeight:700, color:tierColor, fontSize:13 }}>Trigger {tier}</span>
+                          </td>
+                          <td style={{ padding:"10px 14px", color:C.text }}>{d.trades}</td>
+                          <td style={{ padding:"10px 14px", color: d.win_rate >= 40 ? C.long : d.win_rate >= 33 ? C.accent : C.warn, fontWeight:600 }}>{d.win_rate}%</td>
+                          <td style={{ padding:"10px 14px", color: d.profit_factor >= 1.5 ? C.long : d.profit_factor >= 1 ? C.accent : C.short, fontWeight:600 }}>{d.profit_factor}x</td>
+                          <td style={{ padding:"10px 14px", color: d.total_pnl >= 0 ? C.long : C.short, fontWeight:700 }}>
+                            {d.total_pnl >= 0 ? "+" : ""}${d.total_pnl.toLocaleString()}
+                          </td>
+                          <td style={{ padding:"10px 14px", color:C.textMid }}>{d.avg_hold_min}m</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Equity curve */}
+            {ov.equity && ov.equity.length > 0 && (() => {
+              const pts   = ov.equity;
+              const lo    = Math.min(0, ...pts);
+              const hi    = Math.max(...pts);
+              const span  = hi - lo || 1;
+              const W     = 780, H = 160, pad = 8;
+              const xStep = (W - pad*2) / (pts.length - 1);
+              const toY   = v => H - pad - ((v - lo) / span) * (H - pad*2);
+              const zero  = toY(0);
+              const pathD = pts.map((v, i) => `${i===0?"M":"L"}${pad + i*xStep},${toY(v)}`).join(" ");
+              const fillD = `${pathD} L${pad+(pts.length-1)*xStep},${H-pad} L${pad},${H-pad} Z`;
+              return (
+                <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:"18px 20px", marginBottom:22 }}>
+                  <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", marginBottom:10, display:"flex", justifyContent:"space-between" }}>
+                    <span>EQUITY CURVE  ({ov.trades} trades · 1 contract)</span>
+                    <span style={{ color:C.long }}>+${hi.toLocaleString()} peak</span>
                   </div>
-                );
-              })()}
-
-              {/* Trade table */}
-              <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, overflow:"hidden", marginBottom:22 }}>
-                <div style={{ padding:"14px 18px", borderBottom:`1px solid ${C.border}`, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-                  <div style={{ fontSize:13, fontWeight:600 }}>Trade Log</div>
-                  <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace" }}>{backtest.stats.wins}W · {backtest.stats.losses}L · {backtest.stats.trades} total</div>
+                  <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:H, display:"block" }}>
+                    <defs>
+                      <linearGradient id="eq-fill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={C.long} stopOpacity="0.18"/>
+                        <stop offset="100%" stopColor={C.long} stopOpacity="0.02"/>
+                      </linearGradient>
+                    </defs>
+                    <line x1={pad} y1={zero} x2={W-pad} y2={zero} stroke={C.border} strokeWidth="1" strokeDasharray="3,3"/>
+                    <path d={fillD} fill="url(#eq-fill)"/>
+                    <path d={pathD} fill="none" stroke={C.long} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
+                  </svg>
+                  <div style={{ display:"flex", gap:14, marginTop:8, fontSize:10, color:C.textDim, fontFamily:"monospace" }}>
+                    <span style={{ color:C.long }}>● {ov.wins} wins</span>
+                    <span style={{ color:C.short }}>● {ov.losses} losses</span>
+                    <span style={{ marginLeft:"auto" }}>Zero line = breakeven</span>
+                  </div>
                 </div>
-                <div style={{ overflowX:"auto" }}>
-                  <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12, fontFamily:"monospace" }}>
-                    <thead>
-                      <tr style={{ borderBottom:`1px solid ${C.border}` }}>
-                        {["#","Date","Time","Dir","Entry","Stop","Target","Exit","Ticks","P&L","Hold","Result"].map(h => (
-                          <th key={h} style={{ padding:"8px 12px", textAlign:"left", fontSize:9, color:C.textDim, letterSpacing:"0.08em", fontWeight:600, whiteSpace:"nowrap" }}>{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {backtest.trades.map((tr, i) => {
-                        const isWin  = tr.win;
-                        const isLong = tr.dir === "LONG";
-                        const rowBg  = i % 2 === 0 ? "transparent" : C.bg+"66";
-                        return (
-                          <tr key={i} style={{ background:rowBg, borderBottom:`1px solid ${C.border}22` }}>
-                            <td style={{ padding:"8px 12px", color:C.textDim }}>{tr.n}</td>
-                            <td style={{ padding:"8px 12px", color:C.text, whiteSpace:"nowrap" }}>{tr.date}</td>
-                            <td style={{ padding:"8px 12px", color:C.textMid, whiteSpace:"nowrap" }}>{tr.time}</td>
-                            <td style={{ padding:"8px 12px" }}>
-                              <span style={{ color: isLong ? C.long : C.short, fontWeight:700 }}>{tr.dir}</span>
-                            </td>
-                            <td style={{ padding:"8px 12px", color:C.text }}>{tr.entry.toLocaleString()}</td>
-                            <td style={{ padding:"8px 12px", color:C.short }}>{tr.stop.toLocaleString()}</td>
-                            <td style={{ padding:"8px 12px", color:C.long }}>{tr.tp.toLocaleString()}</td>
-                            <td style={{ padding:"8px 12px", color: isWin ? C.long : C.short, fontWeight:600 }}>{tr.exit.toLocaleString()}</td>
-                            <td style={{ padding:"8px 12px", color: tr.ticks > 0 ? C.long : C.short, fontWeight:600 }}>{tr.ticks > 0 ? `+${tr.ticks}` : tr.ticks}</td>
-                            <td style={{ padding:"8px 12px", color: isWin ? C.long : C.short, fontWeight:700 }}>
-                              {isWin ? "+" : ""}${Math.abs(tr.pnl).toLocaleString()}
-                            </td>
-                            <td style={{ padding:"8px 12px", color:C.textMid }}>{tr.duration}m</td>
-                            <td style={{ padding:"8px 12px" }}>
-                              <span style={{ fontSize:9, padding:"2px 6px", borderRadius:3, fontWeight:600,
-                                background: tr.reason==="TP" ? C.long+"22" : tr.reason==="SL" ? C.short+"22" : C.border,
-                                color:      tr.reason==="TP" ? C.long      : tr.reason==="SL" ? C.short      : C.textDim,
-                              }}>{tr.reason}</span>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              );
+            })()}
 
-              {/* Disclaimer */}
-              <div style={{ background:C.surface, border:`1px solid ${C.border}44`, borderRadius:10, padding:"16px 20px" }}>
-                <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.06em", marginBottom:6 }}>IMPORTANT DISCLOSURE</div>
-                <p style={{ fontSize:12, color:C.textMid, margin:0, lineHeight:1.7 }}>
-                  {backtest.disclaimer}
-                </p>
-                <p style={{ fontSize:11, color:C.textDim, margin:"8px 0 0", lineHeight:1.6 }}>
-                  Results shown are hypothetical, based on {backtest.period} of historical data on {backtest.instrument} ({backtest.contract}).
-                  Win rate, profit factor, and P&L figures do not account for slippage, commissions, or execution differences.
-                  For educational purposes only. Not financial advice.
-                </p>
+            {/* Trade log — 50 sample trades */}
+            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, overflow:"hidden", marginBottom:22 }}>
+              <div style={{ padding:"14px 18px", borderBottom:`1px solid ${C.border}`, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                <div style={{ fontSize:13, fontWeight:600 }}>Sample Trade Log</div>
+                <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace" }}>50 of {ov.trades} trades shown · all times ET</div>
               </div>
+              <div style={{ overflowX:"auto" }}>
+                <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12, fontFamily:"monospace" }}>
+                  <thead>
+                    <tr style={{ borderBottom:`1px solid ${C.border}` }}>
+                      {["#","Date","Time ET","Trigger","Dir","Entry","Stop","Target","Exit","P&L","Hold","Result"].map(h => (
+                        <th key={h} style={{ padding:"8px 12px", textAlign:"left", fontSize:9, color:C.textDim, letterSpacing:"0.08em", fontWeight:600, whiteSpace:"nowrap" }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {btData.trades.map((tr, i) => {
+                      const isWin  = tr.win;
+                      const isLong = tr.dir === "LONG";
+                      const rowBg  = i % 2 === 0 ? "transparent" : C.bg+"66";
+                      const tierColor = tr.trigger==="AAA+" ? C.accent : tr.trigger==="AAA" ? C.long : tr.trigger==="AA" ? C.textMid : C.textDim;
+                      return (
+                        <tr key={i} style={{ background:rowBg, borderBottom:`1px solid ${C.border}22` }}>
+                          <td style={{ padding:"8px 10px", color:C.textDim }}>{tr.n}</td>
+                          <td style={{ padding:"8px 10px", color:C.text, whiteSpace:"nowrap" }}>{tr.date}</td>
+                          <td style={{ padding:"8px 10px", color:C.textMid, whiteSpace:"nowrap" }}>{tr.time}</td>
+                          <td style={{ padding:"8px 10px" }}>
+                            <span style={{ fontSize:10, fontWeight:700, color:tierColor }}>{tr.trigger}</span>
+                          </td>
+                          <td style={{ padding:"8px 10px" }}>
+                            <span style={{ color: isLong ? C.long : C.short, fontWeight:700 }}>{tr.dir}</span>
+                          </td>
+                          <td style={{ padding:"8px 10px", color:C.text }}>{tr.entry.toLocaleString()}</td>
+                          <td style={{ padding:"8px 10px", color:C.short }}>{tr.stop.toLocaleString()}</td>
+                          <td style={{ padding:"8px 10px", color:C.long }}>{tr.tp.toLocaleString()}</td>
+                          <td style={{ padding:"8px 10px", color: isWin ? C.long : C.short, fontWeight:600 }}>{tr.exit.toLocaleString()}</td>
+                          <td style={{ padding:"8px 10px", color: isWin ? C.long : C.short, fontWeight:700 }}>
+                            {isWin ? "+" : ""}${Math.abs(tr.pnl).toLocaleString()}
+                          </td>
+                          <td style={{ padding:"8px 10px", color:C.textMid }}>{tr.duration}m</td>
+                          <td style={{ padding:"8px 10px" }}>
+                            <span style={{ fontSize:9, padding:"2px 6px", borderRadius:3, fontWeight:600,
+                              background: tr.reason==="TP" ? C.long+"22" : C.short+"22",
+                              color:      tr.reason==="TP" ? C.long      : C.short,
+                            }}>{tr.reason}</span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
-            </>)}
+            {/* Disclaimer */}
+            <div style={{ background:C.surface, border:`1px solid ${C.border}44`, borderRadius:10, padding:"16px 20px" }}>
+              <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.06em", marginBottom:6 }}>IMPORTANT DISCLOSURE</div>
+              <p style={{ fontSize:12, color:C.textMid, margin:0, lineHeight:1.7 }}>
+                Hypothetical results based on walk-forward backtesting on historical data. Past performance is not indicative of future results. All trading involves risk of loss.
+              </p>
+              <p style={{ fontSize:11, color:C.textDim, margin:"8px 0 0", lineHeight:1.6 }}>
+                Results shown are hypothetical, based on {btData.period} of historical 5-min data on {btData.name}.
+                5:1 R:R · Hybrid stop (cycle invalidation or ATR×1.2, whichever triggers first).
+                Win rate, profit factor, and P&L figures do not account for slippage, commissions, or execution differences.
+                For educational purposes only. Not financial advice.
+              </p>
+            </div>
+
           </div>
-        )}
+          );
+        })()}
 
         {activeTab==="history" && (
           <div style={{ padding:22, maxWidth:860 }}>
