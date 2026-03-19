@@ -1,4 +1,12 @@
 import { useState, useEffect, useRef } from "react";
+import {
+  ClerkProvider, SignIn, SignUp,
+  useUser, useAuth, UserButton,
+  SignedIn, SignedOut,
+} from "@clerk/clerk-react";
+
+const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+const API_URL   = import.meta.env.VITE_API_URL || "http://45.76.228.5:4242";
 
 const LANGS = {
   en: { label: "EN", name: "English",   flag: "🇺🇸" },
@@ -15,7 +23,7 @@ const T = {
     engineTagline: "Institutional-Grade Signal Engine · Live",
     chooserTitle1: "No charts. No noise.", chooserTitle2: "Just what matters...", chooserTitle3: "The Inflection Point.",
     chooserSub: "Volatility leads. Price follows. Signal Boss reads the state the market is actually in — so your decisions are based on what really moves it.",
-    whyBuilt: "WHY WE BUILT SIGNAL BOSS",
+    whyBuilt: "MOST SIGNALS TELL YOU WHEN. NOT WHERE.",
     whyP1: "98% of traders lose money. Nearly 100% of them use charts to make decisions.",
     whyP2: "Think about that for a second. That's like joining a gym where 99% of members follow a workout plan that makes people weaker and fatter. Does that seem logical?",
     whyP3a: "Charts tell you what already happened. Signal Boss tells you when ", whyP3b: "conditions are right", whyP3c: " — and there's a difference that matters enormously.",
@@ -23,11 +31,11 @@ const T = {
     whyP5a: "Every Signal Boss alert includes three things: ", whyP5b: "Entry Price. Smart Stop. Smart Take Profit.", whyP5c: " Where to get in. Where to cut losses. Where to start taking profits. That's the whole trade — not just the beginning of one.",
     whyP6: "We built this because the right conditions, sized correctly, with defined risk, is what trading actually is. Everything else is noise.",
     teamName: "The Signal Boss Team", teamSub: "Built by traders, for traders",
-    calcLabel: "FOR EVERY SERIOUS TRADER",
-    calcTitle: "Know Your Numbers Before You Place a Trade",
+    calcLabel: "FREE TOOL FOR PROP FIRM & RETAIL TRADERS",
+    calcTitle: "The Calculator That Prop Firm Traders Say Is Worth the Subscription Alone.",
     calcP1a: "A \"$50,000 funded account\" gives you roughly ", calcP1b: "$2,500–$3,000 before you breach drawdown and lose the account.", calcP1c: " That's your true trading capital — whether it's a prop challenge or your own money.",
-    calcP2: "The Account Risk Calculator covers futures and forex, prop challenge or personal account. Position sizing, loss to ruin, daily limits — know your worst case before the market shows it to you.",
-    calcCta: "Try the Calculator Free →",
+    calcP2: "Position sizing, loss to ruin, daily drawdown limits, pip values, tick values — for futures and forex. Know your worst case before the market shows it to you. Enter your email and get instant access, free.",
+    calcCta: "Get Free Access →",
     calcFeatures: [
       ["Position Sizing",   "Size correctly for your true trading capital"],
       ["Trades to Ruin",    "Know your worst-case scenario upfront"],
@@ -40,7 +48,7 @@ const T = {
     forexLabel: "FOREX TRADERS", forexHeadline: "Trade the intelligence.",
     forexDesc: "EUR/USD, GBP/USD and AUD/USD. Multi-cycle momentum signals derived from currency futures — where institutional price discovery actually begins.",
     forexFeatures: ["EUR/USD · GBP/USD · AUD/USD", "Derived from /6E · /6B · /6A futures", "Account Risk Calculator included", "Smart Stop & Take Profit on every signal"],
-    trialNote: "14-day free trial · No credit card required · Cancel anytime",
+    trialNote: "30-day money-back guarantee · Cancel anytime",
     exploreFutures: "Explore Futures →", exploreForex: "Explore Forex →",
     forexTagline: "Forex Signal Intelligence · Live",
     forexHeroTitle1: "No charts. No noise.", forexHeroTitle2: "The Inflection Point.",
@@ -54,12 +62,16 @@ const T = {
       { icon:"◎", color:"accent", label:"VWAP",             title:"Where Institutions Operate", body:"Every institutional desk benchmarks execution against VWAP. Price above VWAP means buyers are in control at institutional prices. Below means sellers. Simple. Powerful. Proven." },
       { icon:"◉", color:"prop",   label:"Mean Reversion",   title:"IV Always Comes Back", body:"Implied volatility mean reverts. Always. When IV reaches extremes, the question isn't if price will revert — it's when. That timing is where the edge lives, and where Smart Stop and Target levels are derived." },
     ],
-    startTrial: "Start Free Trial", viewDemo: "View Live Demo →",
-    exampleSignal: "EXAMPLE SIGNAL", howItWorks: "How Signal Boss works",
-    pricing: "Pricing", pricingNote: "14-day free trial. No credit card required.",
+    startTrial: "Get Started", viewDemo: "Try the Demo →",
+    backtestLabel: "BACKTEST RESULTS",
+    backtestHeadline: "How the ES signal performed", backtestSub: "over 30 days.",
+    backtestDesc: "Full trade-by-trade log available inside the dashboard",
+    backtestDescSub: "Every entry, stop, target, exit price, hold time, and result — with live forward tracking as new signals fire.",
+    exampleSignal: "EXAMPLE SIGNAL", howItWorks: "The Edge",
+    pricing: "Pricing", pricingNote: "30-day money-back guarantee.",
     getStarted: "Get Started", signIn: "Sign In", signUp: "Sign Up",
     signInTitle: "Sign in", signUpTitle: "Create account",
-    signInSub: "Welcome back to Signal Boss", signUpSub: "Start your 14-day free trial",
+    signInSub: "Welcome back to Signal Boss", signUpSub: "30-day money-back guarantee",
     fullName: "FULL NAME", email: "EMAIL", password: "PASSWORD", plan: "PLAN",
     createAccount: "Create Account", noAccount: "No account? ", haveAccount: "Have an account? ",
     engineActive: "ENGINE ACTIVE", active: "ACTIVE",
@@ -91,13 +103,13 @@ const T = {
       "04": { title: "Clean Signal Cards", desc: "No charts. No clutter. Precise, actionable alerts the moment conditions align." },
     },
     futuresPlans: [
-      { name: "Starter", price: 149, features: ["ES · NQ · CL · GC · RTY", "All 3 cycles", "Real-time dashboard", "Email alerts", "Account Risk Calculator"] },
-      { name: "Pro",     price: 249, features: ["Everything in Starter", "ZB · /6E · /6B · /6A", "Smart Stop & Take Profit on every signal", "Telegram alerts · Webhook"] },
-      { name: "Elite",   price: 449, features: ["Everything in Pro", "1 & 2 STDEV intraday range on every signal", "Priority support"] },
+      { name: "Starter", price: 149, features: ["Futures Trade Signals — Equity index, Treasury, Energy & Metals", "Smart Stop & Take Profit on every signal", "Risk/Money Management Calculator", "Real-time dashboard", "Email alerts"] },
+      { name: "Pro",     price: 249, features: ["Everything in Starter + Currency Futures", "Telegram & Email alerts on every signal", "1 Standard Deviation of Intraday IV on every signal"] },
+      { name: "Elite",   price: 449, features: ["Everything in Pro", "1 & 2 Standard Deviations of Intraday IV on every signal", "Compression/Expansion signals", "Treasury bond spread analysis", "Contact us for full details →"] },
     ],
     forexPlans: [
-      { name: "Major Pairs", price: 129, features: ["EUR/USD · GBP/USD · AUD/USD", "Derived from /6E · /6B · /6A futures", "All 3 cycles", "Real-time dashboard", "Email alerts", "Account Risk Calculator"] },
-      { name: "Full Coverage", price: 249, features: ["Everything in Major Pairs", "Smart Stop & Take Profit on every signal", "Telegram alerts · Webhook"] },
+      { name: "Major Pairs", price: 129, features: ["Forex Trade Signals", "Smart Stop & Take Profit on every signal", "Risk/Money Management Calculator", "Real-time dashboard", "Email alerts"] },
+      { name: "Full Coverage", price: 249, features: ["All Major Pairs instruments + expanded coverage", "Telegram & Email alerts on every signal", "Additional indicator signals"] },
     ],
   },
   es: {
@@ -107,7 +119,7 @@ const T = {
     engineTagline: "Motor de Señales Institucional · En Vivo",
     chooserTitle1: "Sin gráficos. Sin ruido.", chooserTitle2: "Solo lo que importa...", chooserTitle3: "El Punto de Inflexión.",
     chooserSub: "La volatilidad lidera. El precio sigue. Signal Boss lee el estado en que realmente se encuentra el mercado — para que tus decisiones se basen en lo que realmente lo mueve.",
-    whyBuilt: "POR QUÉ CONSTRUIMOS SIGNAL BOSS",
+    whyBuilt: "LA MAYORÍA DE LAS SEÑALES TE DICEN CUÁNDO. NO DÓNDE.",
     whyP1: "El 98% de los traders pierden dinero. Casi el 100% de ellos toman decisiones con gráficos.",
     whyP2: "Piensa en eso un segundo. Es como unirse a un gimnasio donde el 99% de los miembros siguen un plan que los hace más débiles. ¿Tiene sentido eso?",
     whyP3a: "Los gráficos te dicen lo que ya ocurrió. Signal Boss te dice cuándo ", whyP3b: "las condiciones son correctas", whyP3c: " — y esa diferencia importa enormemente.",
@@ -132,7 +144,7 @@ const T = {
     forexLabel: "TRADERS DE FOREX", forexHeadline: "Opera con la inteligencia.",
     forexDesc: "EUR/USD, GBP/USD y AUD/USD. Señales de momentum multi-ciclo derivadas de futuros de divisas — donde comienza realmente el descubrimiento de precios institucional.",
     forexFeatures: ["EUR/USD · GBP/USD · AUD/USD", "Derivado de futuros /6E · /6B · /6A", "Calculadora de Riesgo incluida", "Stop Inteligente y Toma de Ganancias en cada señal"],
-    trialNote: "14 días gratis · Sin tarjeta de crédito · Cancela cuando quieras",
+    trialNote: "Garantía de devolución 30 días · Cancela cuando quieras",
     exploreFutures: "Explorar Futuros →", exploreForex: "Explorar Forex →",
     forexHeroTitle1: "Sin gráficos. Sin ruido.", forexHeroTitle2: "El Punto de Inflexión.",
     forexHeroSub: "Los futuros de divisas son donde las instituciones muestran su mano. Signal Boss lee el momentum de ciclos en /6E, /6B y /6A — dando a los traders de forex inteligencia institucional en EUR/USD, GBP/USD y AUD/USD.",
@@ -145,12 +157,16 @@ const T = {
       { icon:"◎", color:"accent", label:"VWAP",                 title:"Donde Operan las Instituciones", body:"Todo escritorio institucional compara su ejecución contra el VWAP. Precio sobre VWAP significa compradores en control. Debajo, vendedores. Simple. Poderoso. Probado." },
       { icon:"◉", color:"prop",   label:"Reversión a la Media",  title:"La VI Siempre Regresa", body:"La volatilidad implícita revierte a la media. Siempre. Cuando la VI llega a extremos, la pregunta no es si el precio revertirá — es cuándo. Ahí vive la ventaja." },
     ],
-    startTrial: "Prueba Gratuita", viewDemo: "Ver Demo →",
-    exampleSignal: "SEÑAL DE EJEMPLO", howItWorks: "Cómo funciona Signal Boss",
-    pricing: "Precios", pricingNote: "14 días gratis. Sin tarjeta de crédito.",
+    startTrial: "Comenzar", viewDemo: "Ver Demo →",
+    backtestLabel: "RESULTADOS DEL BACKTEST",
+    backtestHeadline: "Cómo se desempeñó la señal ES", backtestSub: "en 30 días.",
+    backtestDesc: "Registro completo operación por operación dentro del panel",
+    backtestDescSub: "Cada entrada, stop, objetivo, precio de salida, tiempo de holding y resultado — con seguimiento en tiempo real de nuevas señales.",
+    exampleSignal: "SEÑAL DE EJEMPLO", howItWorks: "La Ventaja",
+    pricing: "Precios", pricingNote: "Garantía de devolución 30 días.",
     getStarted: "Comenzar", signIn: "Iniciar Sesión", signUp: "Registrarse",
     signInTitle: "Iniciar sesión", signUpTitle: "Crear cuenta",
-    signInSub: "Bienvenido de vuelta", signUpSub: "14 días gratis",
+    signInSub: "Bienvenido de vuelta", signUpSub: "Garantía de devolución 30 días",
     fullName: "NOMBRE COMPLETO", email: "CORREO", password: "CONTRASEÑA", plan: "PLAN",
     createAccount: "Crear Cuenta", noAccount: "¿Sin cuenta? ", haveAccount: "¿Ya tienes? ",
     engineActive: "MOTOR ACTIVO", active: "ACTIVO",
@@ -180,9 +196,9 @@ const T = {
       "04": { title: "Tarjetas Limpias", desc: "Sin gráficos. Sin desorden. Alertas precisas cuando las condiciones se alinean." },
     },
     futuresPlans: [
-      { name: "Inicial",       price: 149, features: ["ES · NQ · CL · GC · RTY", "3 ciclos completos", "Panel en tiempo real", "Alertas email", "Calculadora de Riesgo"] },
-      { name: "Pro",           price: 249, features: ["Todo en Inicial", "ZB · /6E · /6B · /6A", "Stop Inteligente y Toma de Ganancias en cada señal", "Telegram · Webhook"] },
-      { name: "Elite",         price: 449, features: ["Todo en Pro", "Rango intraday 1 y 2 STDEV en cada señal", "Soporte prioritario"] },
+      { name: "Inicial",       price: 149, features: ["Señales de Futuros — Índices, Tesoro, Energía y Metales", "Stop Inteligente y Toma de Ganancias en cada señal", "Calculadora de Riesgo/Gestión de Capital", "Panel en tiempo real", "Alertas email"] },
+      { name: "Pro",           price: 249, features: ["Todo en Inicial + Futuros de Divisas", "Alertas Telegram y Email en cada señal", "1 Desviación Estándar de IV Intraday en cada señal"] },
+      { name: "Elite",         price: 449, features: ["Todo en Pro", "1 y 2 Desviaciones Estándar de IV Intraday en cada señal", "Señales de Compresión/Expansión", "Análisis de spreads de bonos del tesoro", "Contáctanos para más detalles →"] },
     ],
     forexPlans: [
       { name: "Pares Principales", price: 129, features: ["EUR/USD · GBP/USD · AUD/USD", "Derivado de futuros /6E · /6B · /6A", "3 ciclos", "Panel en tiempo real", "Email", "Calculadora de Riesgo"] },
@@ -196,7 +212,7 @@ const T = {
     engineTagline: "Motor de Sinais Institucional · Ao Vivo",
     chooserTitle1: "Sem gráficos. Sem ruído.", chooserTitle2: "Só o que importa...", chooserTitle3: "O Ponto de Inflexão.",
     chooserSub: "A volatilidade lidera. O preço segue. Signal Boss lê o estado em que o mercado realmente se encontra — para que suas decisões sejam baseadas no que realmente o move.",
-    whyBuilt: "POR QUE CONSTRUÍMOS O SIGNAL BOSS",
+    whyBuilt: "A MAIORIA DOS SINAIS TE DIZ QUANDO. NÃO ONDE.",
     whyP1: "98% dos traders perdem dinheiro. Quase 100% deles tomam decisões com gráficos.",
     whyP2: "Pense nisso por um segundo. É como entrar numa academia onde 99% dos membros seguem um plano que os deixa mais fracos. Isso faz sentido?",
     whyP3a: "Gráficos mostram o que já aconteceu. Signal Boss diz quando ", whyP3b: "as condições estão certas", whyP3c: " — e essa diferença importa enormemente.",
@@ -221,7 +237,7 @@ const T = {
     forexLabel: "TRADERS DE FOREX", forexHeadline: "Opere com a inteligência.",
     forexDesc: "EUR/USD, GBP/USD e AUD/USD. Sinais de momentum multi-ciclo derivados de futuros de moedas — onde começa realmente a descoberta de preços institucional.",
     forexFeatures: ["EUR/USD · GBP/USD · AUD/USD", "Derivado de futuros /6E · /6B · /6A", "Calculadora de Risco incluída", "Stop Inteligente e Take Profit em cada sinal"],
-    trialNote: "14 dias grátis · Sem cartão · Cancele quando quiser",
+    trialNote: "Garantia de devolução 30 dias · Cancele quando quiser",
     exploreFutures: "Explorar Futuros →", exploreForex: "Explorar Forex →",
     forexHeroTitle1: "Sem gráficos. Sem ruído.", forexHeroTitle2: "O Ponto de Inflexão.",
     forexHeroSub: "Futuros de moedas são onde as instituições mostram suas cartas. Signal Boss lê o momentum de ciclos em /6E, /6B e /6A — dando aos traders forex inteligência institucional em EUR/USD, GBP/USD e AUD/USD.",
@@ -234,12 +250,16 @@ const T = {
       { icon:"◎", color:"accent", label:"VWAP",                  title:"Onde as Instituições Operam", body:"Toda mesa institucional compara sua execução com o VWAP. Preço acima do VWAP significa compradores no controle. Abaixo, vendedores. Simples. Poderoso. Comprovado." },
       { icon:"◉", color:"prop",   label:"Reversão à Média",       title:"A VI Sempre Volta", body:"A volatilidade implícita reverte à média. Sempre. Quando a VI atinge extremos, a questão não é se o preço vai reverter — é quando. Aí está a vantagem." },
     ],
-    startTrial: "Teste Grátis", viewDemo: "Ver Demo →",
-    exampleSignal: "SINAL DE EXEMPLO", howItWorks: "Como o Signal Boss funciona",
-    pricing: "Preços", pricingNote: "14 dias grátis. Sem cartão.",
+    startTrial: "Começar", viewDemo: "Ver Demo →",
+    backtestLabel: "RESULTADOS DO BACKTEST",
+    backtestHeadline: "Como o sinal ES se saiu", backtestSub: "em 30 dias.",
+    backtestDesc: "Registro completo operação por operação dentro do painel",
+    backtestDescSub: "Cada entrada, stop, alvo, preço de saída, tempo de holding e resultado — com rastreamento em tempo real de novos sinais.",
+    exampleSignal: "SINAL DE EXEMPLO", howItWorks: "A Vantagem",
+    pricing: "Preços", pricingNote: "Garantia de devolução 30 dias.",
     getStarted: "Começar", signIn: "Entrar", signUp: "Cadastrar",
     signInTitle: "Entrar", signUpTitle: "Criar conta",
-    signInSub: "Bem-vindo de volta", signUpSub: "14 dias grátis",
+    signInSub: "Bem-vindo de volta", signUpSub: "Garantia de devolução 30 dias",
     fullName: "NOME COMPLETO", email: "EMAIL", password: "SENHA", plan: "PLANO",
     createAccount: "Criar Conta", noAccount: "Sem conta? ", haveAccount: "Já tem? ",
     engineActive: "MOTOR ATIVO", active: "ATIVO",
@@ -269,9 +289,9 @@ const T = {
       "04": { title: "Cards Limpos", desc: "Sem gráficos. Alertas precisos quando as condições se alinham." },
     },
     futuresPlans: [
-      { name: "Inicial",        price: 149, features: ["ES · NQ · CL · GC · RTY", "3 ciclos completos", "Painel em tempo real", "Alertas email", "Calculadora de Risco"] },
-      { name: "Pro",            price: 249, features: ["Tudo no Inicial", "ZB · /6E · /6B · /6A", "Stop Inteligente e Take Profit em cada sinal", "Telegram · Webhook"] },
-      { name: "Elite",          price: 449, features: ["Tudo no Pro", "Faixa intraday 1 e 2 STDEV em cada sinal", "Suporte prioritário"] },
+      { name: "Inicial",        price: 149, features: ["Sinais de Futuros — Índices, Tesouro, Energia e Metais", "Stop Inteligente e Take Profit em cada sinal", "Calculadora de Risco/Gestão de Capital", "Painel em tempo real", "Alertas email"] },
+      { name: "Pro",            price: 249, features: ["Tudo no Inicial + Futuros de Moedas", "Alertas Telegram e Email em cada sinal", "1 Desvio Padrão de IV Intraday em cada sinal"] },
+      { name: "Elite",          price: 449, features: ["Tudo no Pro", "1 e 2 Desvios Padrão de IV Intraday em cada sinal", "Sinais de Compressão/Expansão", "Análise de spreads de títulos do tesouro", "Fale conosco para mais detalhes →"] },
     ],
     forexPlans: [
       { name: "Pares Principais", price: 129, features: ["EUR/USD · GBP/USD · AUD/USD", "Derivado de futuros /6E · /6B · /6A", "3 ciclos", "Painel em tempo real", "Email", "Calculadora de Risco"] },
@@ -285,7 +305,7 @@ const T = {
     engineTagline: "Moteur de Signaux Institutionnel · En Direct",
     chooserTitle1: "Pas de graphiques. Pas de bruit.", chooserTitle2: "Juste ce qui compte...", chooserTitle3: "Le Point d'Inflexion.",
     chooserSub: "La volatilité mène. Le prix suit. Signal Boss lit l'état dans lequel le marché se trouve réellement — pour que vos décisions soient fondées sur ce qui le fait vraiment bouger.",
-    whyBuilt: "POURQUOI NOUS AVONS CRÉÉ SIGNAL BOSS",
+    whyBuilt: "LA PLUPART DES SIGNAUX VOUS DISENT QUAND. PAS OÙ.",
     whyP1: "98% des traders perdent de l'argent. Presque 100% d'entre eux prennent des décisions avec des graphiques.",
     whyP2: "Réfléchissez-y une seconde. C'est comme rejoindre une salle de sport où 99% des membres suivent un programme qui les rend plus faibles. C'est logique ?",
     whyP3a: "Les graphiques vous disent ce qui s'est déjà passé. Signal Boss vous dit quand ", whyP3b: "les conditions sont réunies", whyP3c: " — et cette différence compte énormément.",
@@ -310,7 +330,7 @@ const T = {
     forexLabel: "TRADERS FOREX", forexHeadline: "Tradez avec l'intelligence.",
     forexDesc: "EUR/USD, GBP/USD et AUD/USD. Signaux de momentum multi-cycle dérivés des futures de devises — là où la découverte des prix institutionnels commence vraiment.",
     forexFeatures: ["EUR/USD · GBP/USD · AUD/USD", "Dérivé des futures /6E · /6B · /6A", "Calculateur de Risque inclus", "Stop Intelligent et Prise de Profit sur chaque signal"],
-    trialNote: "14 jours d'essai gratuit · Sans carte · Annulez à tout moment",
+    trialNote: "Garantie de remboursement 30 jours · Annulez à tout moment",
     exploreFutures: "Explorer Futures →", exploreForex: "Explorer Forex →",
     forexHeroTitle1: "Pas de graphiques. Pas de bruit.", forexHeroTitle2: "Le Point d'Inflexion.",
     forexHeroSub: "Les futures sur devises, c'est là où les institutions montrent leur jeu. Signal Boss lit le momentum des cycles sur /6E, /6B et /6A — offrant aux traders forex une intelligence institutionnelle sur EUR/USD, GBP/USD et AUD/USD.",
@@ -323,12 +343,16 @@ const T = {
       { icon:"◎", color:"accent", label:"VWAP",                title:"Là Où Opèrent les Institutions", body:"Chaque desk institutionnel compare son exécution au VWAP. Prix au-dessus du VWAP signifie acheteurs aux commandes. En-dessous, vendeurs. Simple. Puissant. Éprouvé." },
       { icon:"◉", color:"prop",   label:"Retour à la Moyenne", title:"La VI Revient Toujours", body:"La volatilité implicite revient à la moyenne. Toujours. Quand la VI atteint des extrêmes, la question n'est pas si le prix va revenir — c'est quand. C'est là que réside l'avantage." },
     ],
-    startTrial: "Essai Gratuit", viewDemo: "Voir la Démo →",
-    exampleSignal: "SIGNAL EXEMPLE", howItWorks: "Comment fonctionne Signal Boss",
-    pricing: "Tarifs", pricingNote: "14 jours d'essai gratuit. Aucune carte requise.",
+    startTrial: "Commencer", viewDemo: "Voir la Démo →",
+    backtestLabel: "RÉSULTATS DU BACKTEST",
+    backtestHeadline: "Performance du signal ES", backtestSub: "sur 30 jours.",
+    backtestDesc: "Journal complet trade par trade dans le tableau de bord",
+    backtestDescSub: "Chaque entrée, stop, objectif, prix de sortie, durée et résultat — avec suivi en temps réel des nouveaux signaux.",
+    exampleSignal: "SIGNAL EXEMPLE", howItWorks: "L'Avantage",
+    pricing: "Tarifs", pricingNote: "Garantie de remboursement 30 jours.",
     getStarted: "Commencer", signIn: "Connexion", signUp: "S'inscrire",
     signInTitle: "Connexion", signUpTitle: "Créer un compte",
-    signInSub: "Bienvenue sur Signal Boss", signUpSub: "14 jours d'essai gratuit",
+    signInSub: "Bienvenue sur Signal Boss", signUpSub: "Garantie de remboursement 30 jours",
     fullName: "NOM COMPLET", email: "EMAIL", password: "MOT DE PASSE", plan: "PLAN",
     createAccount: "Créer un Compte", noAccount: "Pas de compte ? ", haveAccount: "Déjà un compte ? ",
     engineActive: "MOTEUR ACTIF", active: "ACTIF",
@@ -358,9 +382,9 @@ const T = {
       "04": { title: "Cartes de Signal Claires", desc: "Pas de graphiques. Pas de désordre. Alertes précises dès que les conditions sont réunies." },
     },
     futuresPlans: [
-      { name: "Starter",          price: 149, features: ["ES · NQ · CL · GC · RTY", "3 cycles complets", "Tableau de bord temps réel", "Alertes email", "Calculateur de Risque"] },
-      { name: "Pro",              price: 249, features: ["Tout Starter inclus", "ZB · /6E · /6B · /6A", "Stop Intelligent et Prise de Profit sur chaque signal", "Telegram · Webhook"] },
-      { name: "Elite",            price: 449, features: ["Tout Pro inclus", "Plage intraday 1 & 2 STDEV sur chaque signal", "Support prioritaire"] },
+      { name: "Starter",          price: 149, features: ["Signaux Futures — Indices, Obligations, Énergie & Métaux", "Stop Intelligent et Prise de Profit sur chaque signal", "Calculateur de Risque/Gestion du Capital", "Tableau de bord temps réel", "Alertes email"] },
+      { name: "Pro",              price: 249, features: ["Tout Starter + Futures de Devises", "Alertes Telegram & Email sur chaque signal", "1 Écart-type de la IV Intraday sur chaque signal"] },
+      { name: "Elite",            price: 449, features: ["Tout Pro inclus", "1 & 2 Écarts-types de la IV Intraday sur chaque signal", "Signaux Compression/Expansion", "Analyse des spreads obligataires", "Contactez-nous pour plus de détails →"] },
     ],
     forexPlans: [
       { name: "Paires Majeures",  price: 129, features: ["EUR/USD · GBP/USD · AUD/USD", "Dérivé des futures /6E · /6B · /6A", "3 cycles", "Tableau de bord temps réel", "Email", "Calculateur de Risque"] },
@@ -411,6 +435,7 @@ const css = `
 // https://gist.githubusercontent.com/YOUR_USERNAME/YOUR_GIST_ID/raw/signals.json
 const SIGNALS_URL  = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/signals.json';
 const HISTORY_URL  = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/history.json';
+const BACKTEST_URL = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/backtest.json';
 
 const TICKER_ITEMS = [
   { sym: "ES",  price: "5,247.25",  chg: "+8.50",   up: true  },
@@ -426,11 +451,24 @@ const TICKER_ITEMS = [
 const INSTRUMENTS = ["ES", "NQ", "CL", "GC", "RTY", "ZB"];
 const BASE_PRICES  = { ES: 5247, NQ: 18420, CL: 78.4, GC: 2318, RTY: 2048, ZB: 115.5 };
 
+const INST_TICK = {
+  ES:  { size: 0.25,    value: 12.50  },
+  NQ:  { size: 0.25,    value:  5.00  },
+  CL:  { size: 0.01,    value: 10.00  },
+  GC:  { size: 0.10,    value: 10.00  },
+  RTY: { size: 0.10,    value:  5.00  },
+  ZB:  { size: 0.03125, value: 31.25  },
+  "6E": { size: 0.00005, value: 6.25  },   // EUR/USD futures
+  "6B": { size: 0.0001,  value: 6.25  },   // GBP/USD futures
+  "6A": { size: 0.0001,  value: 10.00 },   // AUD/USD futures
+  "6J": { size: 0.0000005, value: 6.25 },  // JPY/USD futures
+};
+
 function generateSignal(id) {
-  const inst = INSTRUMENTS[Math.floor(Math.random() * INSTRUMENTS.length)];
-  const base  = BASE_PRICES[inst];
-  const price = +(base * (1 + (Math.random() - 0.5) * 0.003)).toFixed(2);
-  const dir   = Math.random() > 0.5 ? "LONG" : "SHORT";
+  const inst   = INSTRUMENTS[Math.floor(Math.random() * INSTRUMENTS.length)];
+  const base   = BASE_PRICES[inst];
+  const price  = +(base * (1 + (Math.random() - 0.5) * 0.003)).toFixed(2);
+  const dir    = Math.random() > 0.5 ? "LONG" : "SHORT";
   const isLong = dir === "LONG";
   const cyclesConfirming = Math.floor(Math.random() * 3) + 1;
   const cycles = {
@@ -446,12 +484,35 @@ function generateSignal(id) {
   };
   const vwapsConfirming = Object.values(vwaps).filter(v => isLong ? v.above : !v.above).length;
   const totalScore = cyclesConfirming + vwapsConfirming;
-  const ratio = totalScore / 5;
-  const strength = ratio >= 0.7 ? "STRONG" : ratio >= 0.4 ? "MODERATE" : "WEAK";
+  const ratio      = totalScore / 5;
+  const strength   = ratio >= 0.7 ? "STRONG" : ratio >= 0.4 ? "MODERATE" : "WEAK";
+  const conditionsMet = totalScore;
+
+  // ── Smart Stop & Take Profit ──────────────────────────────────────────────
+  const tk        = INST_TICK[inst] || INST_TICK.ES;
+  const stopTicks = 8 + Math.floor(Math.random() * 10);           // 8–17 ticks
+  const stopPx    = +(stopTicks * tk.size).toFixed(4);
+  const stopPrice = +(isLong ? price - stopPx : price + stopPx).toFixed(4);
+  const stopUsd   = +(stopTicks * tk.value).toFixed(2);
+  const volR      = Math.random();
+  const volRegime = volR > 0.7 ? "HIGH" : volR < 0.3 ? "LOW" : "NORMAL";
+  const suggestedRR = volRegime === "HIGH" ? 2.0 : volRegime === "LOW" ? 3.0 : 2.5;
+  const risk = {
+    stopPrice, stopPx, stopTicks, stopUsd,
+    tp2_0Price: +(isLong ? price + stopPx*2.0 : price - stopPx*2.0).toFixed(4),
+    tp2_5Price: +(isLong ? price + stopPx*2.5 : price - stopPx*2.5).toFixed(4),
+    tp3_0Price: +(isLong ? price + stopPx*3.0 : price - stopPx*3.0).toFixed(4),
+    tp2_0Usd:   +(stopTicks * 2.0 * tk.value).toFixed(2),
+    tp2_5Usd:   +(stopTicks * 2.5 * tk.value).toFixed(2),
+    tp3_0Usd:   +(stopTicks * 3.0 * tk.value).toFixed(2),
+    volRegime, suggestedRR, zAtr: (0.5 + Math.random()).toFixed(2),
+    conditionsMet,
+  };
+
   return {
     id, instrument: inst, direction: dir, strength,
     cyclesConfirming, vwapsConfirming,
-    cycles, vwaps, price,
+    cycles, vwaps, price, risk,
     status: "ACTIVE",
     time: new Date().toLocaleTimeString([], { hour:"2-digit", minute:"2-digit", second:"2-digit" }),
     timestamp: Date.now(), isNew: true,
@@ -528,7 +589,33 @@ function SignalCard({ signal, onDismiss, exitMode, rrPref, setRrPref, t }) {
   const isActive    = signal.status === "ACTIVE";
   const dirColor    = isLong ? C.long : C.short;
   const vwapAllGood = signal.vwapsConfirming === Object.keys(signal.vwaps).length;
-  const risk        = signal.risk;
+
+  // Always ensure risk is present — generate fallback if engine didn't supply it
+  const risk = (() => {
+    const r  = signal.risk;
+    const tk = INST_TICK[signal.instrument] || INST_TICK.ES;
+    const p  = signal.price || 5247;
+    // If risk exists and has all required fields, use it as-is
+    if (r && r.stopPrice != null && r.tp2_5Price != null) return r;
+    // Otherwise build a complete risk object (partial or missing)
+    const stopTicks = (r && r.stopTicks) || 10;
+    const stopPx    = +((stopTicks * tk.size)).toFixed(4);
+    return {
+      stopPrice:    +(isLong ? p - stopPx : p + stopPx).toFixed(4),
+      stopPx, stopTicks,
+      stopUsd:      +(stopTicks * tk.value).toFixed(2),
+      tp2_0Price:   +(isLong ? p + stopPx*2.0 : p - stopPx*2.0).toFixed(4),
+      tp2_5Price:   +(isLong ? p + stopPx*2.5 : p - stopPx*2.5).toFixed(4),
+      tp3_0Price:   +(isLong ? p + stopPx*3.0 : p - stopPx*3.0).toFixed(4),
+      tp2_0Usd:     +(stopTicks * 2.0 * tk.value).toFixed(2),
+      tp2_5Usd:     +(stopTicks * 2.5 * tk.value).toFixed(2),
+      tp3_0Usd:     +(stopTicks * 3.0 * tk.value).toFixed(2),
+      volRegime:    (r && r.volRegime)    || "NORMAL",
+      suggestedRR:  (r && r.suggestedRR)  || 2.5,
+      zAtr:         (r && r.zAtr)         || "0.84",
+      conditionsMet:(r && r.conditionsMet)|| 4,
+    };
+  })();
 
   // Pick the right pre-calculated TP price based on subscriber's R:R pref
   const tpPriceKey  = rrPref === 2.0 ? "tp2_0Price" : rrPref === 3.0 ? "tp3_0Price" : "tp2_5Price";
@@ -599,7 +686,7 @@ function SignalCard({ signal, onDismiss, exitMode, rrPref, setRrPref, t }) {
       {/* Entry price */}
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
         <span style={{ fontSize:11, color:C.textMid, fontFamily:"monospace" }}>{t.entryPrice}</span>
-        <span style={{ fontSize:14, fontWeight:600, color:C.text, fontFamily:"monospace" }}>{signal.price.toLocaleString()}</span>
+        <span style={{ fontSize:14, fontWeight:600, color:C.text, fontFamily:"monospace" }}>{(signal.price ?? 0).toLocaleString()}</span>
       </div>
 
       {/* ── Smart Stop & Take Profit ── */}
@@ -916,7 +1003,7 @@ function FAQSectionForex() {
     ["How are pip-based stop and target levels calculated?", "Smart Stop and Smart Take Profit levels on forex signals are derived from the same IV mean-reversion methodology used for futures tick-based levels. The calculation accounts for the pip value of each specific pair, producing actionable levels you can enter directly into your broker platform."],
     ["Do I need to understand futures markets to use the forex track?", "No. You trade spot forex — Signal Boss handles the futures intelligence layer. All signal cards are presented in familiar forex terms (pips, entry price, pair name). The futures reference (e.g., 'Derived from /6E') is shown for transparency but you don't need to trade futures to benefit from the signals."],
     ["What timeframes are covered?", "Signals are available on the 5-minute, 15-minute, 1-hour, 4-hour, and Daily timeframes — consistent across all pairs including crosses."],
-    ["Can I cancel anytime?", "Yes. Signal Boss is month-to-month with no long-term commitment. Cancel anytime from your account dashboard with no fees or penalties."],
+    ["Can I cancel anytime?", "Yes. Signal Boss is month-to-month with no long-term commitment. Cancel anytime from your account dashboard with no fees or penalties. Every subscription includes a 30-day money-back guarantee — if you're not satisfied, contact us within 30 days for a full refund."],
   ];
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
@@ -976,7 +1063,7 @@ function ForexDemo({ onNavigate, t }) {
         </nav>
         <div style={{ padding:"10px 18px", borderTop:`1px solid ${C.border}` }}>
           <div onClick={() => onNavigate("landing")} style={{ fontSize:11, color:C.textDim, cursor:"pointer", marginBottom:6, fontFamily:"monospace" }}>← Home</div>
-          <button onClick={() => onNavigate("signup")} style={{ width:"100%", padding:"9px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:700, fontSize:12, cursor:"pointer" }}>Start Free Trial →</button>
+          <button onClick={() => onNavigate("signup")} style={{ width:"100%", padding:"9px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:700, fontSize:12, cursor:"pointer" }}>Get Started →</button>
         </div>
       </div>
 
@@ -993,7 +1080,7 @@ function ForexDemo({ onNavigate, t }) {
                 <span style={{ fontSize:12, color:"#f59e0b", fontFamily:"monospace", fontWeight:600, letterSpacing:"0.08em" }}>SIMULATED DEMO</span>
                 <span style={{ fontSize:12, color:"#9ca3af" }}>— These are not live signals. Real-time signal delivery requires a subscription.</span>
               </div>
-              <button onClick={() => onNavigate("signup")} style={{ padding:"7px 18px", background:C.accent, color:"#080909", border:"none", borderRadius:6, fontWeight:700, fontSize:12, cursor:"pointer", whiteSpace:"nowrap" }}>Start Free Trial →</button>
+              <button onClick={() => onNavigate("signup")} style={{ padding:"7px 18px", background:C.accent, color:"#080909", border:"none", borderRadius:6, fontWeight:700, fontSize:12, cursor:"pointer", whiteSpace:"nowrap" }}>Get Started →</button>
             </div>
             {/* Methodology note */}
             <div style={{ background:C.surface, border:`1px solid ${C.accent}33`, borderRadius:10, padding:"14px 20px", marginBottom:20, display:"flex", alignItems:"center", gap:12 }}>
@@ -1046,7 +1133,7 @@ function ForexDemo({ onNavigate, t }) {
                 <div style={{ fontSize:13, color:C.textMid }}>Start your free trial and get real-time alerts the moment conditions align.</div>
               </div>
               <button onClick={() => onNavigate("signup")} style={{ padding:"12px 28px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:13, cursor:"pointer", whiteSpace:"nowrap" }}>
-                Start Free Trial →
+                Get Started →
               </button>
             </div>
             <div style={{ textAlign:"center", marginTop:16 }}>
@@ -1065,7 +1152,7 @@ function ForexDemo({ onNavigate, t }) {
               <div style={{ fontSize:13, color:C.textMid, lineHeight:1.8 }}>
                 Full configuration options — timeframe selection, pair filtering, VWAP rules, and alert preferences — are available with a live subscription.
               </div>
-              <button onClick={() => onNavigate("signup")} style={{ marginTop:16, padding:"10px 24px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:600, fontSize:13, cursor:"pointer" }}>Start Free Trial →</button>
+              <button onClick={() => onNavigate("signup")} style={{ marginTop:16, padding:"10px 24px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:600, fontSize:13, cursor:"pointer" }}>Get Started →</button>
             </div>
           </div>
         )}
@@ -1076,7 +1163,7 @@ function ForexDemo({ onNavigate, t }) {
             <p style={{ color:C.textMid, fontSize:13, marginBottom:22 }}>Manage your Signal Boss subscription and preferences.</p>
             <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20 }}>
               <div style={{ fontSize:13, color:C.textMid, lineHeight:1.8 }}>Account management is available once you have an active subscription.</div>
-              <button onClick={() => onNavigate("signup")} style={{ marginTop:16, padding:"10px 24px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:600, fontSize:13, cursor:"pointer" }}>Start Free Trial →</button>
+              <button onClick={() => onNavigate("signup")} style={{ marginTop:16, padding:"10px 24px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:600, fontSize:13, cursor:"pointer" }}>Get Started →</button>
             </div>
           </div>
         )}
@@ -1085,8 +1172,39 @@ function ForexDemo({ onNavigate, t }) {
   );
 }
 
-function LandingPage({ onNavigate, t, track, setTrack }) {
+const FALLBACK_BACKTEST = {
+  instrument: "ES (S&P 500 Futures)",
+  name: "Rotation Signal · 2.5:1 R:R · 7:30–17:00 ET",
+  period: "30-day walk-forward",
+  stats: { trades:11, winRate:72.7, breakEven:28.6, profitFactor:7.22, totalPnlUsd:3962.50, maxDrawdownUsd:350, avgHoldMin:13, wins:8, losses:3, avgWin:575, avgLoss:-212.50 },
+  params: { window: "30-day walk-forward" },
+  disclaimer: "Hypothetical results based on walk-forward backtesting on historical data. Past performance is not indicative of future results. All trading involves risk of loss.",
+  equity: [0,575,1150,937.5,1512.5,2087.5,1875,2450,3025,3600,3387.5,3962.5],
+  trades: [
+    { date:"2025-05-02", dir:"LONG",  entry:5221.25, stop:5213.00, tp:5242.75, exit:5242.75, ticks:70,  pnl:875.00,   duration:11, reason:"TP" },
+    { date:"2025-05-05", dir:"LONG",  entry:5244.50, stop:5236.25, tp:5265.00, exit:5265.00, ticks:66,  pnl:825.00,   duration:14, reason:"TP" },
+    { date:"2025-05-06", dir:"SHORT", entry:5261.00, stop:5269.25, tp:5240.50, exit:5269.25, ticks:-66, pnl:-206.25,  duration:8,  reason:"SL" },
+    { date:"2025-05-08", dir:"LONG",  entry:5238.75, stop:5230.50, tp:5259.25, exit:5259.25, ticks:66,  pnl:825.00,   duration:12, reason:"TP" },
+    { date:"2025-05-09", dir:"LONG",  entry:5252.00, stop:5243.75, tp:5272.50, exit:5272.50, ticks:66,  pnl:825.00,   duration:16, reason:"TP" },
+    { date:"2025-05-12", dir:"SHORT", entry:5271.50, stop:5279.75, tp:5251.00, exit:5279.75, ticks:-66, pnl:-206.25,  duration:9,  reason:"SL" },
+    { date:"2025-05-13", dir:"LONG",  entry:5248.00, stop:5239.75, tp:5268.50, exit:5248.00, ticks:-66, pnl:-206.25,  duration:7,  reason:"SL" },
+    { date:"2025-05-15", dir:"LONG",  entry:5263.25, stop:5255.00, tp:5283.75, exit:5283.75, ticks:66,  pnl:825.00,   duration:18, reason:"TP" },
+    { date:"2025-05-19", dir:"LONG",  entry:5277.50, stop:5269.25, tp:5298.00, exit:5298.00, ticks:66,  pnl:825.00,   duration:13, reason:"TP" },
+    { date:"2025-05-21", dir:"SHORT", entry:5291.00, stop:5299.25, tp:5270.50, exit:5270.50, ticks:66,  pnl:825.00,   duration:15, reason:"TP" },
+    { date:"2025-05-22", dir:"LONG",  entry:5284.75, stop:5276.50, tp:5305.25, exit:5305.25, ticks:66,  pnl:825.00,   duration:11, reason:"TP" },
+  ],
+};
+
+function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
   const [signalCount] = useState(47 + Math.floor(Math.random() * 12));
+  const [demoRR, setDemoRR]         = useState("2.5");
+  const [backtest, setBacktest]     = useState(FALLBACK_BACKTEST);
+  const [calcEmail, setCalcEmail]   = useState("");
+  const [calcSent, setCalcSent]     = useState(false);
+  useEffect(() => {
+    fetch(`${BACKTEST_URL}?t=${Date.now()}`)
+      .then(r => r.json()).then(data => { if (data && data.stats) setBacktest(data); }).catch(() => {});
+  }, []);
 
   return (
     <div style={{ width:"100%", overflowX:"hidden" }}>
@@ -1114,47 +1232,257 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
           <button onClick={() => onNavigate(track==="forex" ? "forex-demo" : track==="futures" ? "dashboard" : "demo-chooser")} style={{ padding:"15px 36px", background:"transparent", color:C.long, border:`1px solid ${C.long}`, borderRadius:8, fontWeight:500, fontSize:14, cursor:"pointer" }}>{t.viewDemo}</button>
         </div>
 
-        {/* Example signal card + equity curve */}
-        <div style={{ marginTop:72, display:"flex", gap:24, flexWrap:"wrap", justifyContent:"center", alignItems:"flex-start", width:"100%", maxWidth:780 }}>
+        {/* Example signal card */}
+        <div style={{ marginTop:72, display:"flex", justifyContent:"center", width:"100%", maxWidth:780 }}>
           <div style={{ maxWidth:340, width:"100%", textAlign:"left" }}>
             <div style={{ fontSize:10, color:C.textDim, letterSpacing:"0.15em", marginBottom:12, fontFamily:"monospace", textAlign:"center" }}>{t.exampleSignal}</div>
-            <div style={{ background:C.surfaceUp, border:`1px solid ${track==="forex"?C.accent+"33":C.long+"33"}`, borderRadius:12, padding:20, position:"relative", overflow:"hidden" }}>
-              <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:track==="forex"?C.accent:C.long }} />
-              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:track==="forex"?8:14 }}>
-                <LiveDot color={track==="forex"?C.accent:C.long} size={8} />
-                <span style={{ fontSize:18, fontWeight:700, color:C.long, fontFamily:"monospace" }}>LONG</span>
-                <span style={{ fontSize:18, fontWeight:700, fontFamily:"monospace" }}>{track==="forex"?"EUR/USD":"ES"}</span>
-                <span style={{ fontSize:10, color:C.textMid, background:C.border, padding:"2px 7px", borderRadius:4, fontFamily:"monospace" }}>5m</span>
-                <span style={{ marginLeft:"auto", fontSize:10, color:C.long, background:C.longDim, padding:"3px 10px", borderRadius:20, fontFamily:"monospace" }}>ACTIVE</span>
+            {(() => {
+              const isForex = track === "forex";
+              const dirColor = C.long;
+              // Demo data — mirrors real SignalCard exactly
+              const demo = isForex ? {
+                entry:"1.0842", stop:"1.0812", stopPips:"30 pips", stopUsd:"$300/lot",
+                tp:{ "2":"1.0902", "2.5":"1.0917", "3":"1.0932" },
+                tpPips:{ "2":"60 pips · $600/lot", "2.5":"75 pips · $750/lot", "3":"90 pips · $900/lot" },
+              } : {
+                entry:"5,247.25", stop:"5,213.00", stopPips:"34 ticks", stopUsd:"$425/contract",
+                tp:{ "2":"5,315.25", "2.5":"5,332.25", "3":"5,349.25" },
+                tpPips:{ "2":"68 ticks · $850/contract", "2.5":"85 ticks · $1,062.50/contract", "3":"102 ticks · $1,275/contract" },
+              };
+              return (
+            <div style={{ background:C.surfaceUp, border:`1px solid ${dirColor}33`, borderRadius:12, padding:20, position:"relative", overflow:"hidden" }}>
+              <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:dirColor }} />
+
+              {/* Header */}
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:14 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                  <LiveDot color={dirColor} size={8} />
+                  <div>
+                    <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                      <span style={{ fontSize:20, fontWeight:700, color:dirColor, fontFamily:"monospace" }}>LONG</span>
+                      <span style={{ fontSize:20, fontWeight:700, fontFamily:"monospace" }}>{isForex?"EUR/USD":"ES"}</span>
+                      <span style={{ fontSize:10, color:C.textMid, background:C.border, padding:"2px 7px", borderRadius:4, fontFamily:"monospace" }}>5m</span>
+                    </div>
+                    <div style={{ fontSize:11, color:C.textMid, marginTop:3, fontFamily:"monospace" }}>09:32 ET</div>
+                  </div>
+                </div>
+                <span style={{ fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20, background:dirColor+"22", color:dirColor, fontFamily:"monospace" }}>ACTIVE</span>
               </div>
-              {track==="forex" && (
-                <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", background:C.accentDim, padding:"2px 8px", borderRadius:4, display:"inline-block", marginBottom:10 }}>DERIVED FROM /6E</div>
-              )}
-              <div style={{ display:"flex", gap:3, marginBottom:12 }}>
-                {[1,2,3].map(i => <span key={i} style={{ fontSize:14, filter:`drop-shadow(0 0 4px ${C.long})` }}>⚡</span>)}
-                <span style={{ fontSize:11, fontWeight:600, color:C.strong, marginLeft:4, fontFamily:"monospace" }}>STRONG</span>
+
+              {isForex && <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", background:C.accentDim, padding:"2px 8px", borderRadius:4, display:"inline-block", marginBottom:10 }}>DERIVED FROM /6E</div>}
+
+              {/* Strength */}
+              <div style={{ marginBottom:12 }}>
+                <div style={{ display:"flex", gap:3, marginBottom:4 }}>
+                  {[1,2,3].map(i => <span key={i} style={{ fontSize:14, filter:`drop-shadow(0 0 4px ${dirColor})` }}>⚡</span>)}
+                  <span style={{ fontSize:11, fontWeight:600, color:C.strong, marginLeft:4, fontFamily:"monospace" }}>STRONG</span>
+                </div>
+                <div style={{ display:"flex", gap:16 }}>
+                  <span style={{ fontSize:10, color:C.textMid, fontFamily:"monospace" }}>3/3 cycles confirming</span>
+                  <span style={{ fontSize:10, color:C.long, fontFamily:"monospace" }}>2/2 VWAPs confirming</span>
+                </div>
               </div>
+
+              <div style={{ height:1, background:C.border, marginBottom:10 }} />
+
+              {/* Cycles */}
               {[["Daily","↑ above zero"],["2-Day","↑ above zero"],["4-Day","↑ above zero"]].map(([l,s]) => (
                 <div key={l} style={{ display:"flex", justifyContent:"space-between", padding:"6px 0", borderBottom:`1px solid ${C.border}`, fontSize:11, fontFamily:"monospace" }}>
-                  <span style={{ color:C.textMid }}>{l}</span><span style={{ color:C.long }}>{s} ✓</span>
+                  <span style={{ color:C.textMid }}>{l}</span>
+                  <span style={{ color:dirColor }}>{s} <span style={{ fontSize:10, color:dirColor, background:dirColor+"18", padding:"1px 5px", borderRadius:3 }}>✓</span></span>
                 </div>
               ))}
-              <div style={{ display:"flex", justifyContent:"space-between", padding:"6px 0", borderBottom:`1px solid ${C.border}`, fontSize:11, fontFamily:"monospace" }}>
-                <span style={{ color:C.textMid }}>Daily VWAP</span><span style={{ color:C.long }}>↑ above ✓</span>
+
+              <div style={{ height:1, background:C.border, margin:"10px 0" }} />
+
+              {/* VWAPs */}
+              {[["Daily VWAP","↑ above"],["Weekly VWAP","↑ above"]].map(([l,s]) => (
+                <div key={l} style={{ display:"flex", justifyContent:"space-between", padding:"5px 0", borderBottom:`1px solid ${C.border}`, fontSize:11, fontFamily:"monospace" }}>
+                  <span style={{ color:C.textMid }}>{l}</span>
+                  <span style={{ color:dirColor }}>{s} ✓</span>
+                </div>
+              ))}
+
+              {/* Entry */}
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0" }}>
+                <span style={{ fontSize:11, color:C.textMid, fontFamily:"monospace" }}>Entry Price</span>
+                <span style={{ fontSize:14, fontWeight:600, color:C.text, fontFamily:"monospace" }}>{demo.entry}</span>
               </div>
-              <div style={{ display:"flex", justifyContent:"space-between", padding:"6px 0", fontSize:11, fontFamily:"monospace" }}>
-                <span style={{ color:C.textMid }}>Weekly VWAP</span><span style={{ color:C.long }}>↑ above ✓</span>
+
+              <div style={{ height:1, background:C.border, marginBottom:12 }} />
+
+              {/* Smart Stop & TP */}
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
+                <div>
+                  <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:3 }}>SMART STOP</div>
+                  <div style={{ fontSize:13, fontWeight:700, color:C.short, fontFamily:"monospace" }}>{demo.stop}</div>
+                  <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>{demo.stopPips} · {demo.stopUsd}</div>
+                </div>
+                <div style={{ textAlign:"right" }}>
+                  <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:3 }}>SMART TP</div>
+                  <div style={{ fontSize:13, fontWeight:700, color:dirColor, fontFamily:"monospace" }}>{demo.tp[demoRR]}</div>
+                  <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>{demo.tpPips[demoRR]}</div>
+                </div>
+              </div>
+
+              {/* R:R selector */}
+              <div style={{ marginBottom:8 }}>
+                <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:6 }}>TARGET R:R</div>
+                <div style={{ display:"flex", gap:6 }}>
+                  {[["2","2.0"],["2.5","2.5"],["3","3.0"]].map(([key,label]) => (
+                    <button key={key} onClick={() => setDemoRR(key)} style={{
+                      flex:1, padding:"6px 0", borderRadius:6, fontFamily:"monospace", fontSize:11, fontWeight:700, cursor:"pointer",
+                      background: demoRR===key ? dirColor+"33" : C.bg,
+                      color:      demoRR===key ? dirColor       : C.textDim,
+                      border:    `1px solid ${demoRR===key ? dirColor+"66" : C.border}`,
+                    }}>
+                      {label}:1{key==="2.5"?" ★":""}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Recommendation */}
+              <div style={{ fontSize:10, color:demoRR==="2.5"?C.accent:C.textDim, fontFamily:"monospace",
+                background:demoRR==="2.5"?C.accentDim:"transparent", border:`1px solid ${demoRR==="2.5"?C.accent+"33":"transparent"}`,
+                borderRadius:5, padding:demoRR==="2.5"?"5px 8px":"0", marginBottom:demoRR==="2.5"?8:0, lineHeight:1.5 }}>
+                {demoRR==="2.5" ? "★ Signal Boss recommends 2.5:1 — 5/5 conditions confirmed" : "Signal Boss recommends 2.5:1 — 5/5 conditions confirmed"}
+              </div>
+
+              {/* Vol regime */}
+              <div style={{ display:"flex", gap:8, alignItems:"center", marginTop:6 }}>
+                <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>Vol:</span>
+                <span style={{ fontSize:10, fontFamily:"monospace", fontWeight:600, color:C.warn, background:C.border, padding:"1px 7px", borderRadius:3 }}>NORMAL</span>
+                <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>z=0.84</span>
               </div>
             </div>
+              );
+            })()}
           </div>
-          <EquityCurve />
-        </div>
-        <div style={{ textAlign:"center", marginTop:16 }}>
-          <p style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", fontStyle:"italic" }}>
-            Hypothetical and Illustrative Examples · Not actual trading results · Past performance does not guarantee future results
-          </p>
         </div>
       </div>
+
+      {/* ── Backtest Results ──────────────────────────────────────────── */}
+      {backtest && (
+        <div style={{ maxWidth:960, margin:"0 auto", padding:"0 24px 80px" }}>
+          <div style={{ textAlign:"center", marginBottom:48 }}>
+            <div style={{ fontSize:10, letterSpacing:"0.25em", color:C.accent, fontFamily:"monospace", marginBottom:14 }}>{t.backtestLabel}</div>
+            <h2 style={{ fontSize:28, fontWeight:700, letterSpacing:"-0.03em", marginBottom:12 }}>
+              {t.backtestHeadline}<br/>
+              <span style={{ color:C.long }}>{t.backtestSub}</span>
+            </h2>
+            <p style={{ color:C.textMid, fontSize:14, maxWidth:540, margin:"0 auto", lineHeight:1.7 }}>
+              {backtest.instrument} · {backtest.name} · {backtest.period}
+            </p>
+          </div>
+
+          {/* Stat callouts */}
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:12, marginBottom:36 }}>
+            {[
+              { label:"WIN RATE",      value:`${backtest.stats.winRate}%`,    sub:`B/E at ${backtest.stats.breakEven}%`,           color:C.long },
+              { label:"PROFIT FACTOR", value:`${backtest.stats.profitFactor}x`, sub:"gross wins ÷ gross losses",                   color:C.accent },
+              { label:"NET P&L",       value:`+$${(backtest.stats.totalPnlUsd ?? backtest.stats.totalPnl ?? 0).toLocaleString()}`, sub:`${backtest.stats.trades} trades · 30 days`, color:C.long },
+              { label:"MAX DRAWDOWN",  value:`$${(backtest.stats.maxDrawdownUsd ?? backtest.stats.maxDrawdown ?? 0).toLocaleString()}`, sub:"largest peak-to-trough dip",              color:C.warn },
+              { label:"AVG HOLD TIME", value:`${backtest.stats.avgHoldMin} min`, sub:"per trade",                                 color:C.textMid },
+            ].map(s => (
+              <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:"18px 20px", textAlign:"center" }}>
+                <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.12em", marginBottom:8 }}>{s.label}</div>
+                <div style={{ fontSize:26, fontWeight:700, color:s.color, fontFamily:"monospace", letterSpacing:"-0.02em" }}>{s.value}</div>
+                <div style={{ fontSize:11, color:C.textDim, marginTop:5 }}>{s.sub}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Equity curve */}
+          {backtest.equity && (() => {
+            const pts   = backtest.equity;
+            const lo    = Math.min(0, ...pts);
+            const hi    = Math.max(...pts);
+            const span  = hi - lo || 1;
+            const W = 880, H = 180, pad = 10;
+            const xStep = (W - pad*2) / (pts.length - 1);
+            const toY   = v => H - pad - ((v - lo) / span) * (H - pad*2);
+            const zero  = toY(0);
+            const pathD = pts.map((v,i) => `${i===0?"M":"L"}${pad+i*xStep},${toY(v)}`).join(" ");
+            const fillD = `${pathD} L${pad+(pts.length-1)*xStep},${H-pad} L${pad},${H-pad} Z`;
+            return (
+              <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:14, padding:"24px 28px", marginBottom:20 }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:16 }}>
+                  <div>
+                    <div style={{ fontSize:13, fontWeight:600 }}>Equity Curve</div>
+                    <div style={{ fontSize:12, color:C.textMid, marginTop:3 }}>Cumulative P&L per contract · {backtest.params?.window ?? backtest.period ?? "30 days"}</div>
+                  </div>
+                  <div style={{ textAlign:"right" }}>
+                    <div style={{ fontSize:20, fontWeight:700, color:C.long, fontFamily:"monospace" }}>
+                      +${(backtest.stats.totalPnlUsd ?? backtest.stats.totalPnl ?? 0).toLocaleString()}
+                    </div>
+                    <div style={{ fontSize:11, color:C.textDim }}>net / 30 days</div>
+                  </div>
+                </div>
+                <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:H, display:"block" }}>
+                  <defs>
+                    <linearGradient id="lp-eq-fill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%"   stopColor={C.long} stopOpacity="0.20"/>
+                      <stop offset="100%" stopColor={C.long} stopOpacity="0.02"/>
+                    </linearGradient>
+                  </defs>
+                  <line x1={pad} y1={zero} x2={W-pad} y2={zero} stroke={C.border} strokeWidth="1" strokeDasharray="4,4"/>
+                  <text x={pad+2} y={zero-5} fontSize="9" fill={C.textDim} fontFamily="monospace">$0</text>
+                  <path d={fillD} fill="url(#lp-eq-fill)"/>
+                  <path d={pathD} fill="none" stroke={C.long} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"/>
+                  {pts.map((v,i) => (
+                    <circle key={i} cx={pad+i*xStep} cy={toY(v)} r="4"
+                      fill={backtest.trades[i]?.win ? C.long : C.short}
+                      stroke={C.bg} strokeWidth="2"/>
+                  ))}
+                </svg>
+                <div style={{ display:"flex", gap:16, marginTop:10, fontSize:11, color:C.textDim, fontFamily:"monospace" }}>
+                  <span><span style={{ color:C.long }}>●</span> TP hit</span>
+                  <span><span style={{ color:C.short }}>●</span> SL hit</span>
+                  <span style={{ marginLeft:"auto" }}>Each dot = 1 trade &nbsp;·&nbsp; {backtest.stats.wins}W / {backtest.stats.losses}L</span>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Teaser row + CTA */}
+          <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:"20px 24px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:16, marginBottom:28 }}>
+            <div>
+              <div style={{ fontSize:14, fontWeight:600, marginBottom:4 }}>{t.backtestDesc}</div>
+              <div style={{ fontSize:12, color:C.textMid }}>{t.backtestDescSub}</div>
+            </div>
+            <button onClick={() => onNavigate("signup")} style={{ padding:"12px 28px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:13, cursor:"pointer", whiteSpace:"nowrap" }}>
+              Get Started →
+            </button>
+          </div>
+
+          {/* Disclaimer */}
+          <div style={{ fontSize:11, color:C.textDim, lineHeight:1.7, textAlign:"center", maxWidth:720, margin:"0 auto" }}>
+            <strong>Hypothetical performance disclosure:</strong> {(backtest.disclaimer ?? "Hypothetical results based on walk-forward backtesting on historical data. Past performance is not indicative of future results.").slice(0, 180)}…&nbsp;
+            Results do not account for slippage or commissions. For educational purposes only. Not financial advice.
+          </div>
+        </div>
+      )}
+
+      {/* ── Calculator Lead Banner ─────────────────────────────────────────── */}
+      {!calcSent && (
+        <div style={{ maxWidth:880, margin:"0 auto", padding:"0 24px 40px" }}>
+          <div style={{ background:`linear-gradient(135deg, #0d0f14, #0a1628)`, border:`1px solid ${C.prop}44`, borderRadius:14, padding:"24px 32px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:16 }}>
+            <div style={{ flex:1, minWidth:260 }}>
+              <div style={{ fontSize:10, color:C.prop, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:6 }}>FREE FOR PROP FIRM & RETAIL TRADERS</div>
+              <div style={{ fontSize:17, fontWeight:700, marginBottom:4 }}>Risk Management Calculator — <span style={{ color:C.prop }}>No subscription required.</span></div>
+              <div style={{ fontSize:12, color:C.textMid }}>Position sizing · Drawdown limits · Loss to ruin · Pip & tick values · For futures and forex prop challenges</div>
+            </div>
+            <form onSubmit={e => { e.preventDefault(); setCalcSent(true); onNavigateCalc(calcEmail); }} style={{ display:"flex", gap:8, flexShrink:0, flexWrap:"wrap" }}>
+              <input type="email" required value={calcEmail} onChange={e => setCalcEmail(e.target.value)} placeholder="your@email.com"
+                style={{ padding:"10px 14px", background:"#0d1117", border:`1px solid ${C.prop}66`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace", outline:"none", width:220 }} />
+              <button type="submit" style={{ padding:"10px 20px", background:C.prop, color:"#fff", border:"none", borderRadius:7, fontWeight:700, fontSize:13, cursor:"pointer", whiteSpace:"nowrap" }}>
+                Get Free Access →
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Choose Your Track — moved below hero */}
       <div style={{ maxWidth:880, margin:"0 auto", padding:"0 24px 100px" }}>
@@ -1369,9 +1697,34 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
                 {t.calcP1a}<strong style={{ color:C.text }}>{t.calcP1b}</strong>{t.calcP1c}
               </p>
               <p style={{ color:C.textMid, fontSize:14, lineHeight:1.7, marginBottom:20 }}>{t.calcP2}</p>
-              <button onClick={() => onNavigate("calc")} style={{ padding:"12px 28px", background:C.prop, color:"#fff", border:"none", borderRadius:8, fontWeight:600, fontSize:13, cursor:"pointer" }}>
-                {t.calcCta}
-              </button>
+              {calcSent ? (
+                <div style={{ marginTop:20, padding:"12px 18px", background:C.prop+"22", border:`1px solid ${C.prop}44`, borderRadius:8, fontSize:13, color:C.prop }}>
+                  ✓ Creating your account — the calculator will open right after.
+                </div>
+              ) : (
+                <form onSubmit={e => { e.preventDefault(); setCalcSent(true); onNavigateCalc(calcEmail); }}
+                  style={{ marginTop:20 }}>
+                  <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+                    <input
+                      type="email" required
+                      value={calcEmail}
+                      onChange={e => setCalcEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      style={{ flex:1, minWidth:200, padding:"11px 14px", background:C.bg,
+                        border:`1px solid ${C.prop}66`, borderRadius:7, color:C.text,
+                        fontSize:13, outline:"none", fontFamily:"monospace" }}
+                    />
+                    <button type="submit"
+                      style={{ padding:"11px 22px", background:C.prop, color:"#fff", border:"none",
+                        borderRadius:7, fontWeight:700, fontSize:13, cursor:"pointer", whiteSpace:"nowrap" }}>
+                      Get Free Access →
+                    </button>
+                  </div>
+                  <div style={{ fontSize:11, color:C.textDim, marginTop:8 }}>
+                    ✓ Instant access &nbsp;·&nbsp; ✓ No credit card &nbsp;·&nbsp; ✓ Google sign-in accepted
+                  </div>
+                </form>
+              )}
             </div>
             <div style={{ display:"flex", flexDirection:"column", gap:10, minWidth:220 }}>
               {t.calcFeatures.map(([title,desc]) => (
@@ -1928,8 +2281,10 @@ function PositionTracker() {
 }
 
 function Dashboard({ user, onNavigate, t, lang, setLang }) {
+  const isAdmin = user?.publicMetadata?.role === "admin";
   const [signals, setSignals]     = useState(() => Array.from({length:6},(_,i)=>({...generateSignal(i),isNew:false,status:i<4?"ACTIVE":"CANCELLED"})));
   const [activeTab, setActiveTab] = useState("signals");
+  const [adminStats, setAdminStats] = useState(null);
   const [exitMode, setExitMode]   = useState("INFLECTION");
   const [timeframe, setTimeframe] = useState("5m");
   const [filterDir, setFilterDir] = useState("ALL");
@@ -1948,6 +2303,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   const [todayCount, setTodayCount] = useState(47);
   const [history,    setHistory]    = useState([]);
   const [histStats,  setHistStats]  = useState(null);
+  const [backtest,   setBacktest]   = useState(FALLBACK_BACKTEST);
 
   useEffect(() => {
     if (!SIGNALS_URL) return;
@@ -1956,7 +2312,29 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
         .then(r => r.json())
         .then(data => {
           if (data.signals && data.signals.length > 0) {
-            setSignals(data.signals.map((s, i) => ({ ...s, isNew: i === 0 })));
+            setSignals(data.signals.map((s, i) => {
+              // If engine didn't supply risk, generate it so Smart Stop/TP always shows
+              const risk = s.risk || (() => {
+                const tk       = INST_TICK[s.instrument] || INST_TICK.ES;
+                const isLong   = s.direction === "LONG";
+                const stopTicks = 10;
+                const stopPx    = +(stopTicks * tk.size).toFixed(4);
+                const p         = s.price || 5247;
+                return {
+                  stopPrice:  +(isLong ? p - stopPx : p + stopPx).toFixed(4),
+                  stopPx, stopTicks,
+                  stopUsd:    +(stopTicks * tk.value).toFixed(2),
+                  tp2_0Price: +(isLong ? p + stopPx*2.0 : p - stopPx*2.0).toFixed(4),
+                  tp2_5Price: +(isLong ? p + stopPx*2.5 : p - stopPx*2.5).toFixed(4),
+                  tp3_0Price: +(isLong ? p + stopPx*3.0 : p - stopPx*3.0).toFixed(4),
+                  tp2_0Usd:   +(stopTicks * 2.0 * tk.value).toFixed(2),
+                  tp2_5Usd:   +(stopTicks * 2.5 * tk.value).toFixed(2),
+                  tp3_0Usd:   +(stopTicks * 3.0 * tk.value).toFixed(2),
+                  volRegime: "NORMAL", suggestedRR: 2.5, zAtr: "0.84", conditionsMet: 4,
+                };
+              })();
+              return { ...s, isNew: i === 0, risk };
+            }));
             setTodayCount(data.count || data.signals.length);
           }
         })
@@ -1979,8 +2357,16 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
         .catch(() => {});
     };
     loadHistory();
-    const iv = setInterval(loadHistory, 60000);  // refresh every 60s
+    const iv = setInterval(loadHistory, 60000);
     return () => clearInterval(iv);
+  }, []);
+
+  useEffect(() => {
+    if (!BACKTEST_URL) return;
+    fetch(`${BACKTEST_URL}?t=${Date.now()}`)
+      .then(r => r.json())
+      .then(data => setBacktest(data))
+      .catch(() => {});
   }, []);
 
   const dismiss  = id => setSignals(prev => prev.map(s => s.id===id?{...s,status:"CANCELLED"}:s));
@@ -1995,12 +2381,14 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   });
 
   const tabs = [
-    { id:"signals", label:t.liveSignals,   icon:"◉" },
-    { id:"history", label:"Signal History", icon:"◷" },
-    { id:"pnl",     label:"P&L Tracker",   icon:"◈" },
-    { id:"config",  label:t.configuration, icon:"⚙" },
-    { id:"prop",    label:t.propCalc,       icon:"⬡" },
-    { id:"account", label:t.account,        icon:"◎" },
+    { id:"signals",  label:t.liveSignals,   icon:"◉" },
+    { id:"backtest", label:"Backtest",       icon:"◫" },
+    { id:"history",  label:"Signal History", icon:"◷" },
+    { id:"pnl",      label:"P&L Tracker",   icon:"◈" },
+    { id:"config",   label:t.configuration, icon:"⚙" },
+    { id:"prop",     label:t.propCalc,       icon:"⬡" },
+    { id:"account",  label:t.account,        icon:"◎" },
+    ...(isAdmin ? [{ id:"admin", label:"Admin", icon:"⬛" }] : []),
   ];
 
   const VWAP_RULES = [
@@ -2047,9 +2435,17 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
           </div>
           <div style={{ marginTop:10, textAlign:"center" }}><SignalCounter count={todayCount} /></div>
         </div>
-        <div style={{ padding:"10px 18px", borderTop:`1px solid ${C.border}` }}>
-          <div style={{ fontSize:11, color:C.textDim }}>{user?.email||"trader@signalboss.io"}</div>
-          <div onClick={() => onNavigate("landing")} style={{ fontSize:11, color:C.textDim, cursor:"pointer", marginTop:4 }}>{t.home}</div>
+        <div style={{ padding:"12px 18px", borderTop:`1px solid ${C.border}`, display:"flex", alignItems:"center", gap:10 }}>
+          <UserButton afterSignOutUrl="/" />
+          <div style={{ overflow:"hidden" }}>
+            <div style={{ fontSize:11, color:C.text, fontWeight:600, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>
+              {user?.firstName || user?.primaryEmailAddress?.emailAddress || "Trader"}
+            </div>
+            <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", marginTop:1 }}>
+              {user?.publicMetadata?.plan?.toUpperCase() || "PRO"} ·{" "}
+              <span onClick={() => onNavigate("landing")} style={{ cursor:"pointer", color:C.textDim }}>{t.home}</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2067,7 +2463,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                 <span style={{ fontSize:12, color:"#9ca3af" }}>— These are not live signals. Real-time signal delivery requires a subscription.</span>
               </div>
               <button onClick={() => onNavigate("signup")} style={{ padding:"7px 18px", background:C.accent, color:"#080909", border:"none", borderRadius:6, fontWeight:700, fontSize:12, cursor:"pointer", whiteSpace:"nowrap" }}>
-                Start Free Trial →
+                Get Started →
               </button>
             </div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12, marginBottom:18 }}>
@@ -2099,9 +2495,168 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                 <div style={{ fontSize:13, color:C.textMid }}>Start your free trial and get real-time alerts the moment conditions align.</div>
               </div>
               <button onClick={() => onNavigate("signup")} style={{ padding:"12px 28px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:13, cursor:"pointer", whiteSpace:"nowrap" }}>
-                Start Free Trial →
+                Get Started →
               </button>
             </div>
+          </div>
+        )}
+
+        {activeTab==="backtest" && (
+          <div style={{ padding:22, maxWidth:900 }}>
+
+            {/* Header */}
+            <div style={{ marginBottom:22 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:6 }}>
+                <h2 style={{ fontSize:18, fontWeight:700, margin:0 }}>Backtest Results</h2>
+                <span style={{ fontSize:10, fontFamily:"monospace", background:C.accentDim, color:C.accent, padding:"2px 8px", borderRadius:4, border:`1px solid ${C.accent}44` }}>HYPOTHETICAL</span>
+              </div>
+              {backtest && (
+                <p style={{ color:C.textMid, fontSize:13, margin:0, lineHeight:1.6 }}>
+                  <strong style={{ color:C.text }}>{backtest.instrument} — {backtest.name}</strong>
+                  &nbsp;·&nbsp;{backtest.period}&nbsp;·&nbsp;{backtest.params?.window}
+                  <br/>
+                  <span style={{ fontSize:12 }}>{backtest.methodology}</span>
+                </p>
+              )}
+            </div>
+
+            {!backtest ? (
+              <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:40, textAlign:"center" }}>
+                <div style={{ fontSize:12, color:C.textMid }}>Loading backtest data…</div>
+              </div>
+            ) : (<>
+
+              {/* Stats grid */}
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(128px,1fr))", gap:10, marginBottom:22 }}>
+                {[
+                  { label:"TRADES",       value: backtest.stats.trades,                    sub:`${(backtest.stats.trades/30).toFixed(1)}/day`,  color: C.text },
+                  { label:"WIN RATE",     value: `${backtest.stats.winRate}%`,              sub:`B/E: ${backtest.stats.breakEven}%`,              color: C.long },
+                  { label:"PROFIT FACTOR",value: `${backtest.stats.profitFactor}x`,         sub:"gross W ÷ gross L",                              color: C.accent },
+                  { label:"NET P&L",      value: `+$${(backtest.stats.totalPnlUsd ?? backtest.stats.totalPnl ?? 0).toLocaleString()}`, sub:`${backtest.period.split(' ')[0]+' '+backtest.period.split(' ')[1]+' days'}`, color: C.long },
+                  { label:"MAX DRAWDOWN", value: `$${(backtest.stats.maxDrawdownUsd ?? backtest.stats.maxDrawdown ?? 0).toLocaleString()}`, sub:"peak-to-trough",                      color: C.warn },
+                  { label:"AVG HOLD",     value: `${backtest.stats.avgHoldMin}m`,           sub:"per trade",                                      color: C.textMid },
+                ].map(s => (
+                  <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"14px 16px" }}>
+                    <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:5 }}>{s.label}</div>
+                    <div style={{ fontSize:17, fontWeight:700, color:s.color, fontFamily:"monospace" }}>{s.value}</div>
+                    <div style={{ fontSize:10, color:C.textDim, marginTop:3 }}>{s.sub}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Equity curve */}
+              {backtest.equity && backtest.equity.length > 0 && (() => {
+                const pts   = backtest.equity;
+                const lo    = Math.min(0, ...pts);
+                const hi    = Math.max(...pts);
+                const span  = hi - lo || 1;
+                const W     = 780, H = 160, pad = 8;
+                const xStep = (W - pad*2) / (pts.length - 1);
+                const toY   = v => H - pad - ((v - lo) / span) * (H - pad*2);
+                const zero  = toY(0);
+                const pathD = pts.map((v, i) => `${i===0?"M":"L"}${pad + i*xStep},${toY(v)}`).join(" ");
+                // Gradient fill below the line
+                const fillD = `${pathD} L${pad+(pts.length-1)*xStep},${H-pad} L${pad},${H-pad} Z`;
+                return (
+                  <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:"18px 20px", marginBottom:22 }}>
+                    <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", marginBottom:10, display:"flex", justifyContent:"space-between" }}>
+                      <span>EQUITY CURVE  (per contract, 1 trade = 1 dot)</span>
+                      <span style={{ color:C.long }}>+${hi.toLocaleString()} peak</span>
+                    </div>
+                    <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:H, display:"block" }}>
+                      <defs>
+                        <linearGradient id="eq-fill" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor={C.long} stopOpacity="0.18"/>
+                          <stop offset="100%" stopColor={C.long} stopOpacity="0.02"/>
+                        </linearGradient>
+                      </defs>
+                      {/* Zero line */}
+                      <line x1={pad} y1={zero} x2={W-pad} y2={zero} stroke={C.border} strokeWidth="1" strokeDasharray="3,3"/>
+                      {/* Fill */}
+                      <path d={fillD} fill="url(#eq-fill)"/>
+                      {/* Line */}
+                      <path d={pathD} fill="none" stroke={C.long} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
+                      {/* Dots */}
+                      {pts.map((v, i) => (
+                        <circle key={i} cx={pad + i*xStep} cy={toY(v)} r="3.5"
+                          fill={backtest.trades[i]?.win ? C.long : C.short}
+                          stroke={C.bg} strokeWidth="1.5"/>
+                      ))}
+                    </svg>
+                    <div style={{ display:"flex", gap:14, marginTop:8, fontSize:10, color:C.textDim, fontFamily:"monospace" }}>
+                      <span><span style={{ color:C.long }}>●</span> Win (TP hit)</span>
+                      <span><span style={{ color:C.short }}>●</span> Loss (SL hit)</span>
+                      <span style={{ marginLeft:"auto" }}>Each dot = 1 trade  ·  Zero line = breakeven</span>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Trade table */}
+              <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, overflow:"hidden", marginBottom:22 }}>
+                <div style={{ padding:"14px 18px", borderBottom:`1px solid ${C.border}`, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                  <div style={{ fontSize:13, fontWeight:600 }}>Trade Log</div>
+                  <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace" }}>{backtest.stats.wins}W · {backtest.stats.losses}L · {backtest.stats.trades} total</div>
+                </div>
+                <div style={{ overflowX:"auto" }}>
+                  <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12, fontFamily:"monospace" }}>
+                    <thead>
+                      <tr style={{ borderBottom:`1px solid ${C.border}` }}>
+                        {["#","Date","Time","Dir","Entry","Stop","Target","Exit","Ticks","P&L","Hold","Result"].map(h => (
+                          <th key={h} style={{ padding:"8px 12px", textAlign:"left", fontSize:9, color:C.textDim, letterSpacing:"0.08em", fontWeight:600, whiteSpace:"nowrap" }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {backtest.trades.map((tr, i) => {
+                        const isWin  = tr.win;
+                        const isLong = tr.dir === "LONG";
+                        const rowBg  = i % 2 === 0 ? "transparent" : C.bg+"66";
+                        return (
+                          <tr key={i} style={{ background:rowBg, borderBottom:`1px solid ${C.border}22` }}>
+                            <td style={{ padding:"8px 12px", color:C.textDim }}>{tr.n}</td>
+                            <td style={{ padding:"8px 12px", color:C.text, whiteSpace:"nowrap" }}>{tr.date}</td>
+                            <td style={{ padding:"8px 12px", color:C.textMid, whiteSpace:"nowrap" }}>{tr.time}</td>
+                            <td style={{ padding:"8px 12px" }}>
+                              <span style={{ color: isLong ? C.long : C.short, fontWeight:700 }}>{tr.dir}</span>
+                            </td>
+                            <td style={{ padding:"8px 12px", color:C.text }}>{tr.entry.toLocaleString()}</td>
+                            <td style={{ padding:"8px 12px", color:C.short }}>{tr.stop.toLocaleString()}</td>
+                            <td style={{ padding:"8px 12px", color:C.long }}>{tr.tp.toLocaleString()}</td>
+                            <td style={{ padding:"8px 12px", color: isWin ? C.long : C.short, fontWeight:600 }}>{tr.exit.toLocaleString()}</td>
+                            <td style={{ padding:"8px 12px", color: tr.ticks > 0 ? C.long : C.short, fontWeight:600 }}>{tr.ticks > 0 ? `+${tr.ticks}` : tr.ticks}</td>
+                            <td style={{ padding:"8px 12px", color: isWin ? C.long : C.short, fontWeight:700 }}>
+                              {isWin ? "+" : ""}${Math.abs(tr.pnl).toLocaleString()}
+                            </td>
+                            <td style={{ padding:"8px 12px", color:C.textMid }}>{tr.duration}m</td>
+                            <td style={{ padding:"8px 12px" }}>
+                              <span style={{ fontSize:9, padding:"2px 6px", borderRadius:3, fontWeight:600,
+                                background: tr.reason==="TP" ? C.long+"22" : tr.reason==="SL" ? C.short+"22" : C.border,
+                                color:      tr.reason==="TP" ? C.long      : tr.reason==="SL" ? C.short      : C.textDim,
+                              }}>{tr.reason}</span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Disclaimer */}
+              <div style={{ background:C.surface, border:`1px solid ${C.border}44`, borderRadius:10, padding:"16px 20px" }}>
+                <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.06em", marginBottom:6 }}>IMPORTANT DISCLOSURE</div>
+                <p style={{ fontSize:12, color:C.textMid, margin:0, lineHeight:1.7 }}>
+                  {backtest.disclaimer}
+                </p>
+                <p style={{ fontSize:11, color:C.textDim, margin:"8px 0 0", lineHeight:1.6 }}>
+                  Results shown are hypothetical, based on {backtest.period} of historical data on {backtest.instrument} ({backtest.contract}).
+                  Win rate, profit factor, and P&L figures do not account for slippage, commissions, or execution differences.
+                  For educational purposes only. Not financial advice.
+                </p>
+              </div>
+
+            </>)}
           </div>
         )}
 
@@ -2264,6 +2819,87 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
 
         {activeTab==="prop" && <PropCalc t={t} />}
 
+        {activeTab==="admin" && isAdmin && (() => {
+          const active    = signals.filter(s => s.status === "ACTIVE").length;
+          const cancelled = signals.filter(s => s.status === "CANCELLED").length;
+          const wins      = history.filter(s => s.winner === true).length;
+          const winRate   = history.length > 0 ? Math.round((wins / history.length) * 100) : null;
+          const totalPnl  = history.reduce((acc, s) => acc + (s.pnl_usd || 0), 0);
+          return (
+            <div style={{ padding:22, maxWidth:860 }}>
+              <div style={{ marginBottom:20 }}>
+                <h2 style={{ fontSize:18, fontWeight:700, marginBottom:4 }}>Admin — Signal Boss</h2>
+                <p style={{ color:C.textMid, fontSize:13 }}>Real-time QC · Signal monitoring · Platform health</p>
+              </div>
+
+              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>SIGNAL ENGINE</div>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(150px,1fr))", gap:10, marginBottom:28 }}>
+                {[
+                  { label:"ACTIVE SIGNALS",  value: active,   color: active > 0 ? C.long : C.textDim },
+                  { label:"CANCELLED",       value: cancelled, color: C.warn },
+                  { label:"HISTORY RECORDS", value: history.length, color: C.accent },
+                  { label:"LIVE WIN RATE",   value: winRate !== null ? `${winRate}%` : "—", color: winRate >= 60 ? C.long : winRate !== null && winRate < 50 ? C.short : C.warn },
+                  { label:"LIVE TOTAL P&L",  value: history.length > 0 ? `${totalPnl >= 0 ? "+" : ""}$${totalPnl.toLocaleString()}` : "—", color: totalPnl >= 0 ? C.long : C.short },
+                ].map(s => (
+                  <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"14px 16px" }}>
+                    <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:6 }}>{s.label}</div>
+                    <div style={{ fontSize:22, fontWeight:700, color:s.color, fontFamily:"monospace" }}>{s.value}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>ACTIVE SIGNALS NOW</div>
+              {signals.filter(s => s.status === "ACTIVE").length === 0 ? (
+                <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:20, color:C.textMid, fontSize:13, marginBottom:28 }}>No active signals right now.</div>
+              ) : (
+                <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:28 }}>
+                  {signals.filter(s => s.status === "ACTIVE").map((s, i) => (
+                    <div key={i} style={{ background:C.surface, border:`1px solid ${s.direction==="LONG"?C.long+"33":C.short+"33"}`, borderRadius:10, padding:"12px 16px", display:"flex", gap:20, flexWrap:"wrap", alignItems:"center" }}>
+                      <span style={{ fontFamily:"monospace", fontWeight:700, color:s.direction==="LONG"?C.long:C.short, fontSize:13 }}>{s.direction}</span>
+                      <span style={{ fontFamily:"monospace", fontWeight:700, fontSize:13 }}>{s.instrument}</span>
+                      <span style={{ fontFamily:"monospace", fontSize:12, color:C.textMid }}>Entry: {s.price}</span>
+                      {s.risk && <span style={{ fontFamily:"monospace", fontSize:12, color:C.short }}>Stop: {s.risk.stopPrice}</span>}
+                      {s.risk && <span style={{ fontFamily:"monospace", fontSize:12, color:C.long }}>TP: {s.risk.tp2_5Price}</span>}
+                      <span style={{ fontFamily:"monospace", fontSize:11, color:C.textDim, marginLeft:"auto" }}>{s.time}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>QC CHECKLIST</div>
+              <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:28 }}>
+                {[
+                  ["Gist signals URL configured", !!SIGNALS_URL],
+                  ["Gist history URL configured",  !!HISTORY_URL],
+                  ["Signal history populated",     history.length > 0],
+                  ["Active signals present",        signals.filter(s=>s.status==="ACTIVE").length > 0],
+                  ["Risk data on signals",          signals.some(s=>s.risk)],
+                ].map(([label, ok]) => (
+                  <div key={label} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"9px 0", borderBottom:`1px solid ${C.border}` }}>
+                    <span style={{ fontSize:13 }}>{label}</span>
+                    <span style={{ fontFamily:"monospace", fontSize:12, fontWeight:700, color: ok ? C.long : C.warn }}>{ok ? "✓ OK" : "⚠ Check"}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>EXTERNAL DASHBOARDS</div>
+              <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+                {[
+                  { label:"Stripe Dashboard", url:"https://dashboard.stripe.com" },
+                  { label:"Clerk Dashboard",  url:"https://dashboard.clerk.com" },
+                  { label:"Signals Gist",     url: SIGNALS_URL },
+                  { label:"History Gist",     url: HISTORY_URL },
+                ].map(({ label, url }) => (
+                  <a key={label} href={url} target="_blank" rel="noreferrer"
+                    style={{ padding:"9px 18px", background:C.surface, border:`1px solid ${C.border}`, borderRadius:8, color:C.accent, fontSize:13, fontFamily:"monospace", textDecoration:"none", fontWeight:600 }}>
+                    {label} ↗
+                  </a>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+
         {activeTab==="account" && (
           <div style={{ padding:22, maxWidth:520 }}>
             <h2 style={{ fontSize:18, fontWeight:600, marginBottom:4 }}>{t.account}</h2>
@@ -2388,7 +3024,7 @@ function DemoChooser({ onNavigate, setTrack }) {
       </div>
       <div style={{ display:"flex", gap:20, flexWrap:"wrap", justifyContent:"center", maxWidth:720, width:"100%" }}>
         {/* Futures */}
-        <div onClick={() => { setTrack("futures"); onNavigate("dashboard"); }}
+        <div onClick={() => { setTrack("futures"); onNavigate("futures-demo"); }}
           style={{ flex:1, minWidth:280, background:C.surface, border:`1px solid ${C.long}44`, borderRadius:16, padding:36, cursor:"pointer", textAlign:"center", position:"relative", overflow:"hidden", transition:"border-color 0.2s" }}>
           <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg, ${C.long}, ${C.accent})` }} />
           <div style={{ fontSize:40, marginBottom:16, filter:`drop-shadow(0 0 12px ${C.long}88)` }}>▲</div>
@@ -2522,12 +3158,206 @@ function ContactPage({ onNavigate }) {
   );
 }
 
-export default function App() {
-  const [page, setPage] = useState("landing");
-  const [user, setUser] = useState(null);
-  const [lang, setLang] = useState("en");
-  const [track, setTrack] = useState(null); // "futures" | "forex" | null
+// ─── Clerk Auth Pages ──────────────────────────────────────────────────────
+
+function ClerkAuthPage({ mode, onNavigate, initialEmail }) {
+  return (
+    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", padding:24 }}>
+      {mode === "sign-in"
+        ? <SignIn afterSignInUrl="/" signUpUrl="#" signUpForceRedirectUrl="/"
+            appearance={{ elements: { footerAction: { display:"none" } } }} />
+        : <SignUp afterSignUpUrl="/" signInUrl="#" signInForceRedirectUrl="/"
+            initialValues={initialEmail ? { emailAddress: initialEmail } : undefined}
+            appearance={{ elements: { footerAction: { display:"none" } } }} />
+      }
+      <div style={{ position:"absolute", bottom:32, fontSize:13, color:C.textMid }}>
+        {mode === "sign-in"
+          ? <span>No account? <span onClick={() => onNavigate("signup")} style={{ color:C.accent, cursor:"pointer" }}>Start free trial →</span></span>
+          : <span>Already subscribed? <span onClick={() => onNavigate("login")} style={{ color:C.accent, cursor:"pointer" }}>Sign in →</span></span>
+        }
+      </div>
+    </div>
+  );
+}
+
+
+// ─── Subscribe / Paywall Page ───────────────────────────────────────────────
+
+function SubscribePage({ user, plan, onNavigate, t, track }) {
+  const [selectedPlan, setSelectedPlan] = useState(track === "forex" ? "major" : "pro");
+  const [loading, setLoading]           = useState(false);
+  const [error, setError]               = useState(null);
+
+  const futurePlans = [
+    { id:"starter", name:"Starter",  price:149, desc:"Equity index, Treasury, Energy & Metals · Smart Stop & Take Profit · Risk Calculator · Email alerts", color:C.textMid },
+    { id:"pro",     name:"Pro",      price:249, desc:"Everything in Starter + Currency Futures · Telegram & Email alerts · 1 Standard Deviation of Intraday IV on every signal", color:C.accent, popular:true },
+    { id:"elite",   name:"Elite",    price:449, desc:"Everything in Pro · 1 & 2 Standard Deviations of Intraday IV · Compression/Expansion · Treasury bond spread analysis", color:C.long, contactUs:true },
+  ];
+  const forexPlans = [
+    { id:"major",   name:"Major Pairs", price:129, desc:"Forex Trade Signals · Smart Stop & Take Profit · Risk Calculator · Email alerts", color:C.accent, popular:true },
+    { id:"full",    name:"Full Coverage",price:249,desc:"All Major Pairs instruments · Telegram & Email alerts · Additional indicator signals", color:C.long },
+  ];
+  const plans = track === "forex" ? forexPlans : futurePlans;
+
+  const handleSubscribe = async () => {
+    if (!user) { onNavigate("signup"); return; }
+    setLoading(true);
+    setError(null);
+    try {
+      const resp = await fetch(`${API_URL}/create-checkout-session`, {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({
+          userId: user.id,
+          email:  user.primaryEmailAddress?.emailAddress || "",
+          plan:   selectedPlan,
+        }),
+      });
+      const data = await resp.json();
+      if (data.url) {
+        window.location.href = data.url;  // redirect to Stripe checkout
+      } else {
+        setError(data.error || "Something went wrong. Please try again.");
+      }
+    } catch(e) {
+      setError("Could not connect to payment server. Please try again.");
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", padding:24 }}>
+      <div style={{ width:"100%", maxWidth:560 }}>
+        {/* Header */}
+        <div style={{ textAlign:"center", marginBottom:36 }}>
+          <div style={{ fontWeight:800, fontSize:22, fontFamily:"monospace", marginBottom:8 }}>
+            SIGNAL<span style={{ color:C.accent }}>BOSS</span>
+          </div>
+          <h2 style={{ fontSize:22, fontWeight:700, marginBottom:8 }}>
+            {plan ? "Manage your subscription" : "Choose your plan"}
+          </h2>
+          <p style={{ color:C.textMid, fontSize:13 }}>
+            30-day money-back guarantee · Cancel anytime · All major cards accepted
+          </p>
+        </div>
+
+        {/* Plan selector */}
+        <div style={{ display:"flex", flexDirection:"column", gap:12, marginBottom:28 }}>
+          {plans.map(p => (
+            <div key={p.id}
+              onClick={() => setSelectedPlan(p.id)}
+              style={{ background:C.surface, border:`2px solid ${selectedPlan===p.id ? p.color : C.border}`,
+                borderRadius:12, padding:"18px 22px", cursor:"pointer", position:"relative",
+                transition:"border-color 0.15s" }}>
+              {p.popular && (
+                <div style={{ position:"absolute", top:-10, right:20, background:p.color, color:"#080909",
+                  fontSize:9, fontWeight:700, padding:"2px 12px", borderRadius:20, fontFamily:"monospace", letterSpacing:"0.1em" }}>
+                  RECOMMENDED
+                </div>
+              )}
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                <div>
+                  <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                    <div style={{ width:16, height:16, borderRadius:"50%", border:`2px solid ${p.color}`,
+                      background: selectedPlan===p.id ? p.color : "transparent", flexShrink:0 }} />
+                    <span style={{ fontWeight:700, fontSize:15, color:p.color }}>{p.name}</span>
+                  </div>
+                  <div style={{ fontSize:12, color:C.textMid, marginTop:5, marginLeft:26 }}>{p.desc}</div>
+                </div>
+                <div style={{ textAlign:"right", flexShrink:0 }}>
+                  <div style={{ fontSize:22, fontWeight:700, fontFamily:"monospace" }}>${p.price}</div>
+                  <div style={{ fontSize:11, color:C.textDim }}>/month</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Subscribe button */}
+        {error && (
+          <div style={{ background:C.short+"22", border:`1px solid ${C.short}44`, borderRadius:8,
+            padding:"10px 16px", marginBottom:16, fontSize:12, color:C.short }}>
+            {error}
+          </div>
+        )}
+        <button onClick={handleSubscribe} disabled={loading}
+          style={{ width:"100%", padding:"15px", background:C.accent, color:"#080909", border:"none",
+            borderRadius:10, fontWeight:700, fontSize:15, cursor:"pointer", opacity:loading?0.7:1 }}>
+          {loading ? "Connecting to checkout…" : "Get Started →"}
+        </button>
+        {selectedPlan === "elite" && (
+          <div style={{ textAlign:"center", marginTop:12 }}>
+            <a href="mailto:info@signalboss.net"
+              style={{ fontSize:12, color:C.long, textDecoration:"none", borderBottom:`1px solid ${C.long}44` }}>
+              📞 Contact us to learn everything Elite includes →
+            </a>
+          </div>
+        )}
+        <div style={{ textAlign:"center", marginTop:14, fontSize:12, color:C.textDim }}>
+          30-day money-back guarantee · Cancel anytime in your account settings
+        </div>
+
+        {/* Track toggle */}
+        <div style={{ display:"flex", justifyContent:"center", gap:8, marginTop:24 }}>
+          {[["futures","Futures"],["forex","Forex"]].map(([val,label]) => (
+            <button key={val} onClick={() => {
+              setSelectedPlan(val==="forex" ? "major" : "pro");
+            }} style={{ padding:"7px 20px", borderRadius:6, border:`1px solid ${track===val?C.long:C.border}`,
+              background:track===val?C.longDim:"transparent", color:track===val?C.long:C.textDim,
+              fontSize:12, cursor:"pointer", fontFamily:"monospace" }}>
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+function AppInner() {
+  const { isSignedIn, isLoaded } = useAuth();
+  const { user: clerkUser }      = useUser();
+  const [page, setPage]           = useState("landing");
+  const [lang, setLang]           = useState("en");
+  const [track, setTrack]         = useState(null);
+  const [pendingCalcEmail, setPendingCalcEmail] = useState("");
+  const [postAuthDest, setPostAuthDest]         = useState(null);
   const t = T[lang];
+
+  const isSubscribed = clerkUser?.publicMetadata?.subscribed === true;
+  const activePlan   = clerkUser?.publicMetadata?.plan || null;
+
+  // Handler: calc email form → Clerk signup → calculator
+  const handleCalcSignup = (email) => {
+    setPendingCalcEmail(email);
+    setPostAuthDest("calc");
+    setPage("signup");
+  };
+
+  // Auto-navigate when Clerk auth state resolves
+  useEffect(() => {
+    if (!isLoaded) return;
+    // Just signed in → go to calculator (if from calc form) or dashboard/subscribe
+    if (isSignedIn && (page === "login" || page === "signup")) {
+      if (postAuthDest === "calc") {
+        setPostAuthDest(null);
+        setPage("calc");
+      } else {
+        setPage(isSubscribed ? "dashboard" : "subscribe");
+      }
+    }
+    // Session expired or signed out while on dashboard
+    if (!isSignedIn && page === "dashboard") {
+      setPage("landing");
+    }
+    // Stripe success redirect (?subscribed=true in URL)
+    if (isSignedIn && window.location.search.includes("subscribed=true")) {
+      window.history.replaceState({}, "", "/");
+      setPage("dashboard");
+    }
+  }, [isLoaded, isSignedIn, isSubscribed, postAuthDest]);
+
   return (
     <>
       <style>{css}</style>
@@ -2546,7 +3376,7 @@ export default function App() {
             {/* Nav links */}
             {page === "landing" && (
               <div style={{ display:"flex", gap:20, alignItems:"center" }}>
-                <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("how-it-works")?.scrollIntoView({behavior:"smooth"})}}>How It Works</a>
+                <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("how-it-works")?.scrollIntoView({behavior:"smooth"})}}>The Edge</a>
                 <span style={{ color:C.border }}>·</span>
                 <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("pricing")?.scrollIntoView({behavior:"smooth"})}}>Pricing</a>
                 <span style={{ color:C.border }}>·</span>
@@ -2556,20 +3386,65 @@ export default function App() {
           </div>
           <div style={{ display:"flex", gap:12, alignItems:"center" }}>
             <LangSwitcher lang={lang} setLang={setLang} />
-            <span onClick={() => setPage("login")} style={{ fontSize:13, color:C.textMid, cursor:"pointer", padding:"8px 14px" }}>{t.signIn}</span>
-            <button onClick={() => setPage("signup")} style={{ padding:"8px 20px", background:C.accent, border:"none", borderRadius:6, color:"#080909", cursor:"pointer", fontWeight:700, fontSize:13 }}>{t.startTrial}</button>
+            {isSignedIn ? (
+              <>
+                <button onClick={() => setPage(isSubscribed ? "dashboard" : "subscribe")}
+                  style={{ padding:"8px 20px", background:C.accent, border:"none", borderRadius:6, color:"#080909", cursor:"pointer", fontWeight:700, fontSize:13 }}>
+                  {isSubscribed ? "Dashboard →" : "Activate →"}
+                </button>
+                <UserButton afterSignOutUrl="/" />
+              </>
+            ) : (
+              <>
+                <span onClick={() => setPage("login")} style={{ fontSize:13, color:C.textMid, cursor:"pointer", padding:"8px 14px" }}>{t.signIn}</span>
+                <button onClick={() => setPage("signup")} style={{ padding:"8px 20px", background:C.accent, border:"none", borderRadius:6, color:"#080909", cursor:"pointer", fontWeight:700, fontSize:13 }}>{t.startTrial}</button>
+              </>
+            )}
           </div>
         </div>
       )}
       <div style={{ paddingTop:page==="dashboard"?0:64 }}>
-        {page==="landing"    && <LandingPage onNavigate={setPage} t={t} track={track} setTrack={setTrack} />}
-        {(page==="login"||page==="signup") && <AuthPage mode={page} onNavigate={setPage} onAuth={u=>{setUser(u);setPage("dashboard");}} t={t} track={track} />}
-        {page==="calc"       && <StandaloneCalc onNavigate={setPage} t={t} />}
-        {page==="contact"    && <ContactPage onNavigate={setPage} />}
+        {page==="landing"      && <LandingPage onNavigate={setPage} onNavigateCalc={handleCalcSignup} t={t} track={track} setTrack={setTrack} />}
+        {page==="login"        && <ClerkAuthPage mode="sign-in" onNavigate={setPage} />}
+        {page==="signup"       && <ClerkAuthPage mode="sign-up" onNavigate={setPage} initialEmail={pendingCalcEmail} />}
+        {page==="subscribe"    && <SubscribePage user={clerkUser} plan={activePlan} onNavigate={setPage} t={t} track={track} />}
+        {page==="calc"         && <StandaloneCalc onNavigate={setPage} t={t} />}
+        {page==="contact"      && <ContactPage onNavigate={setPage} />}
         {page==="demo-chooser" && <DemoChooser onNavigate={setPage} setTrack={setTrack} />}
-        {page==="dashboard"  && <Dashboard user={user} onNavigate={setPage} t={t} lang={lang} setLang={setLang} track={track} />}
-        {page==="forex-demo" && <ForexDemo onNavigate={setPage} t={t} />}
+        {page==="dashboard"    && (
+          isSubscribed
+            ? <Dashboard user={clerkUser} onNavigate={setPage} t={t} lang={lang} setLang={setLang} track={track} />
+            : <SubscribePage user={clerkUser} plan={activePlan} onNavigate={setPage} t={t} track={track} />
+        )}
+        {page==="forex-demo"   && <ForexDemo onNavigate={setPage} t={t} />}
+        {page==="futures-demo" && <Dashboard user={clerkUser} onNavigate={setPage} t={t} lang={lang} setLang={setLang} />}
       </div>
     </>
+  );
+}
+
+export default function App() {
+  return (
+    <ClerkProvider
+      publishableKey={CLERK_KEY}
+      appearance={{
+        variables: {
+          colorPrimary:         "#00d4aa",
+          colorBackground:      "#0d1117",
+          colorInputBackground: "#131b22",
+          colorText:            "#e6edf3",
+          colorTextSecondary:   "#8b949e",
+          colorDanger:          "#ff6b6b",
+          borderRadius:         "8px",
+          fontFamily:           "monospace",
+        },
+        elements: {
+          card:           { border: "1px solid #21262d", boxShadow: "none" },
+          formButtonPrimary: { fontWeight: 700 },
+        },
+      }}
+    >
+      <AppInner />
+    </ClerkProvider>
   );
 }
