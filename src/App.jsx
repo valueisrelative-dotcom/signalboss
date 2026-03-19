@@ -461,7 +461,6 @@ const INST_TICK = {
   "6E": { size: 0.00005, value: 6.25  },   // EUR/USD futures
   "6B": { size: 0.0001,  value: 6.25  },   // GBP/USD futures
   "6A": { size: 0.0001,  value: 10.00 },   // AUD/USD futures
-  "6J": { size: 0.0000005, value: 6.25 },  // JPY/USD futures
 };
 
 const SESSIONS = ["Asian","London","Bond Open","NY Open","NY Midday","Overnight"];
@@ -817,7 +816,7 @@ function SignalCard({ signal, onDismiss, exitMode, rrPref, setRrPref, t }) {
       )}
 
       <div style={{ display:"flex", justifyContent:"flex-end", marginTop:10 }}>
-        <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", background:C.border, padding:"2px 8px", borderRadius:3 }}>{t.exit}: {exitMode}</span>
+        <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>⏱ {signal.time || new Date().toLocaleTimeString([], { hour:"2-digit", minute:"2-digit", second:"2-digit" })} ET</span>
       </div>
     </div>
   );
