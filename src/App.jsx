@@ -680,8 +680,8 @@ function SignalCard({ signal, onDismiss, exitMode, rrPref, setRrPref, t }) {
   // Recommendation label
   const recLabel = risk ? (
     risk.suggestedRR === rrPref
-      ? `★ Signal Boss recommends ${risk.suggestedRR}:1 — ${risk.conditionsMet}/5 conditions confirmed`
-      : `Signal Boss recommends ${risk.suggestedRR}:1 — ${risk.conditionsMet}/5 conditions confirmed`
+      ? `★ Signal Boss recommends ${risk.suggestedRR}:1 — ${risk.conditionsMet}/5 conditions exist`
+      : `Signal Boss recommends ${risk.suggestedRR}:1 — ${risk.conditionsMet}/5 conditions exist`
   ) : null;
 
   const rrOptions = [2.0, 2.5, 3.0];
@@ -1413,7 +1413,7 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
               <div style={{ fontSize:10, color:demoRR==="2.5"?C.accent:C.textDim, fontFamily:"monospace",
                 background:demoRR==="2.5"?C.accentDim:"transparent", border:`1px solid ${demoRR==="2.5"?C.accent+"33":"transparent"}`,
                 borderRadius:5, padding:demoRR==="2.5"?"5px 8px":"0", marginBottom:demoRR==="2.5"?8:0, lineHeight:1.5 }}>
-                {demoRR==="2.5" ? "★ Signal Boss recommends 2.5:1 — 5/5 conditions confirmed" : "Signal Boss recommends 2.5:1 — 5/5 conditions confirmed"}
+                {demoRR==="2.5" ? "★ Signal Boss recommends 2.5:1 — 5/5 conditions exist" : "Signal Boss recommends 2.5:1 — 5/5 conditions exist"}
               </div>
 
               {/* Vol regime */}
