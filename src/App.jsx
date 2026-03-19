@@ -464,33 +464,70 @@ const INST_TICK = {
   "6J": { size: 0.0000005, value: 6.25 },  // JPY/USD futures
 };
 
+const SESSIONS = ["Asian","London","Bond Open","NY Open","NY Midday","Overnight"];
+function getSessionLabel() {
+  const h = new Date().getHours(), m = new Date().getMinutes(), t = h*60+m;
+  if (t >= 17*60) return "Overnight";
+  if (t >= 16*60) return "NY Close";
+  if (t >= 12*60) return "NY Midday";
+  if (t >= 9*60+30) return "NY Open";
+  if (t >= 8*60+20) return "Bond Open";
+  if (t >= 3*60)  return "London";
+  return "Asian";
+}
+
 function generateSignal(id) {
   const inst   = INSTRUMENTS[Math.floor(Math.random() * INSTRUMENTS.length)];
   const base   = BASE_PRICES[inst];
   const price  = +(base * (1 + (Math.random() - 0.5) * 0.003)).toFixed(2);
   const dir    = Math.random() > 0.5 ? "LONG" : "SHORT";
   const isLong = dir === "LONG";
-  const cyclesConfirming = Math.floor(Math.random() * 3) + 1;
+
+  // Randomly pick how many and which cycles rotated
+  const numRotated = Math.floor(Math.random() * 3) + 1;
+  const allCycles  = ["1-Day","3-Day","6-Day"];
+  const shuffled   = [...allCycles].sort(() => Math.random() - 0.5);
+  const rotated    = shuffled.slice(0, numRotated);
+  const cyclesConfirming = numRotated;
+
   const cycles = {
-    daily:   { zero: cyclesConfirming >= 1 ? (isLong?"above":"below") : (isLong?"below":"above"), label: "1-Day",  reset: "9:30 AM" },
-    twoDay:  { zero: cyclesConfirming >= 2 ? (isLong?"above":"below") : (isLong?"below":"above"), label: "3-Day",  reset: "8:20 AM" },
-    fourDay: { zero: cyclesConfirming >= 3 ? (isLong?"above":"below") : (isLong?"below":"above"), label: "6-Day",  reset: "8:20 AM" },
+    daily:   { zero: rotated.includes("1-Day") ? (isLong?"above":"below") : (isLong?"below":"above"), label:"1-Day",  reset:"9:30 AM" },
+    twoDay:  { zero: rotated.includes("3-Day") ? (isLong?"above":"below") : (isLong?"below":"above"), label:"3-Day",  reset:"8:20 AM" },
+    fourDay: { zero: rotated.includes("6-Day") ? (isLong?"above":"below") : (isLong?"below":"above"), label:"6-Day",  reset:"8:20 AM" },
   };
+
   const vwapDaily  = +(price * (1 + (Math.random()-0.5)*0.004)).toFixed(2);
   const vwapWeekly = +(price * (1 + (Math.random()-0.5)*0.008)).toFixed(2);
   const vwaps = {
-    daily:  { value: vwapDaily,  above: price > vwapDaily,  label: "Daily VWAP"  },
-    weekly: { value: vwapWeekly, above: price > vwapWeekly, label: "Weekly VWAP" },
+    daily:  { value: vwapDaily,  above: price > vwapDaily,  label:"Daily VWAP"  },
+    weekly: { value: vwapWeekly, above: price > vwapWeekly, label:"Weekly VWAP" },
   };
   const vwapsConfirming = Object.values(vwaps).filter(v => isLong ? v.above : !v.above).length;
-  const totalScore = cyclesConfirming + vwapsConfirming;
-  const ratio      = totalScore / 5;
-  const strength   = ratio >= 0.7 ? "STRONG" : ratio >= 0.4 ? "MODERATE" : "WEAK";
-  const conditionsMet = totalScore;
 
-  // ── Smart Stop & Take Profit ──────────────────────────────────────────────
+  // Trigger tier
+  const proximityBars = Math.floor(Math.random() * 8);
+  const isFresh = Math.random() > 0.45;
+  const rotNote = isFresh ? "Fresh rotation" : "Extended — size accordingly";
+  let trigger, triggerDetail;
+  if (numRotated === 3 && proximityBars <= 3) {
+    trigger       = "AAA+";
+    triggerDetail = `All 3 cycles within ${proximityBars} bars · ${rotNote}`;
+  } else if (numRotated === 3) {
+    trigger       = "AAA";
+    triggerDetail = `All 3 cycles within ${proximityBars} bars · ${rotNote}`;
+  } else if (numRotated === 2) {
+    trigger       = "AA";
+    triggerDetail = `${rotated.join(" + ")} rotated · ${rotNote}`;
+  } else {
+    trigger       = "A";
+    triggerDetail = `${rotated[0]} rotated · ${rotNote}`;
+  }
+  const emaContext = Math.random() > 0.3 ? "trend aligned" : "counter-trend";
+  const strength   = trigger === "A" ? "WEAK" : trigger === "AA" ? "MODERATE" : "STRONG";
+
+  // Smart Stop & Take Profit
   const tk        = INST_TICK[inst] || INST_TICK.ES;
-  const stopTicks = 8 + Math.floor(Math.random() * 10);           // 8–17 ticks
+  const stopTicks = 8 + Math.floor(Math.random() * 10);
   const stopPx    = +(stopTicks * tk.size).toFixed(4);
   const stopPrice = +(isLong ? price - stopPx : price + stopPx).toFixed(4);
   const stopUsd   = +(stopTicks * tk.value).toFixed(2);
@@ -506,13 +543,15 @@ function generateSignal(id) {
     tp2_5Usd:   +(stopTicks * 2.5 * tk.value).toFixed(2),
     tp3_0Usd:   +(stopTicks * 3.0 * tk.value).toFixed(2),
     volRegime, suggestedRR, zAtr: (0.5 + Math.random()).toFixed(2),
-    conditionsMet,
+    conditionsMet: numRotated + vwapsConfirming,
   };
 
   return {
-    id, instrument: inst, direction: dir, strength,
-    cyclesConfirming, vwapsConfirming,
+    id, instrument: inst, direction: dir,
+    trigger, triggerDetail, emaContext,
+    strength, cyclesConfirming, vwapsConfirming,
     cycles, vwaps, price, risk,
+    session: getSessionLabel(),
     status: "ACTIVE",
     time: new Date().toLocaleTimeString([], { hour:"2-digit", minute:"2-digit", second:"2-digit" }),
     timestamp: Date.now(), isNew: true,
@@ -537,14 +576,30 @@ function LiveDot({ color, size = 7 }) {
   );
 }
 
-function StrengthBolts({ count, strength }) {
-  const color = strength==="WEAK" ? C.weak : strength==="MODERATE" ? C.mod : C.strong;
+function TriggerBolts({ trigger }) {
+  const t = trigger || "A";
+  const isPlus  = t === "AAA+";
+  const boltCount = isPlus ? 4 : t === "AAA" ? 3 : t === "AA" ? 2 : 1;
+  const color = t === "A" ? C.weak : t === "AA" ? C.mod : C.strong;
   return (
     <div style={{ display:"flex", gap:3, alignItems:"center" }}>
-      {[1,2,3].map(i => <span key={i} style={{ fontSize:14, opacity:i<=count?1:0.15, filter:i<=count?`drop-shadow(0 0 4px ${color})`:"none" }}>⚡</span>)}
-      <span style={{ fontSize:11, fontWeight:600, color, marginLeft:4, fontFamily:"'IBM Plex Mono','Courier New',monospace" }}>{strength}</span>
+      {[1,2,3,4].map(i => (
+        <span key={i} style={{
+          fontSize:14,
+          opacity: i <= boltCount ? 1 : 0.12,
+          filter:  i <= boltCount ? `drop-shadow(0 0 4px ${color})` : "none",
+        }}>⚡</span>
+      ))}
+      <span style={{ fontSize:11, fontWeight:700, color, marginLeft:4, fontFamily:"'IBM Plex Mono','Courier New',monospace", letterSpacing:"0.05em" }}>
+        Trigger {t}
+      </span>
     </div>
   );
+}
+// backward-compat alias
+function StrengthBolts({ count, strength, trigger }) {
+  const t = trigger || (strength==="STRONG"?"AAA": strength==="MODERATE"?"AA":"A");
+  return <TriggerBolts trigger={t} />;
 }
 
 function VwapRow({ label, value, above, direction, t }) {
@@ -660,12 +715,23 @@ function SignalCard({ signal, onDismiss, exitMode, rrPref, setRrPref, t }) {
         </div>
       </div>
 
-      {/* Strength */}
+      {/* Trigger tier */}
       <div style={{ marginBottom:12 }}>
-        <StrengthBolts count={signal.cyclesConfirming} strength={signal.strength} />
-        <div style={{ display:"flex", gap:16, marginTop:4 }}>
-          <span style={{ fontSize:10, color:C.textMid, fontFamily:"monospace" }}>{signal.cyclesConfirming}/3 {t.cyclesConfirming}</span>
-          <span style={{ fontSize:10, color:vwapAllGood?C.long:C.warn, fontFamily:"monospace" }}>{signal.vwapsConfirming}/2 {t.vwapsConfirming}</span>
+        <TriggerBolts trigger={signal.trigger || (signal.strength==="STRONG"?"AAA":signal.strength==="MODERATE"?"AA":"A")} />
+        {signal.triggerDetail && (
+          <div style={{ fontSize:10, color:C.textMid, fontFamily:"monospace", marginTop:4 }}>{signal.triggerDetail}</div>
+        )}
+        <div style={{ display:"flex", gap:12, marginTop:4, flexWrap:"wrap" }}>
+          {signal.emaContext && (
+            <span style={{ fontSize:10, fontFamily:"monospace", color: signal.emaContext==="trend aligned" ? C.long : C.warn }}>
+              17 EMA: {signal.emaContext}
+            </span>
+          )}
+          {signal.session && (
+            <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>
+              {signal.session}
+            </span>
+          )}
         </div>
       </div>
 
@@ -697,7 +763,7 @@ function SignalCard({ signal, onDismiss, exitMode, rrPref, setRrPref, t }) {
           {/* Stop row */}
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
             <div>
-              <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:3 }}>SMART STOP</div>
+              <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:3 }}>SMART STOP · REFERENCE</div>
               <div style={{ fontSize:13, fontWeight:700, color:C.short, fontFamily:"monospace" }}>{risk.stopPrice.toLocaleString()}</div>
               <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>{risk.stopTicks} ticks · ${risk.stopUsd.toLocaleString()}/contract</div>
             </div>
@@ -1025,9 +1091,9 @@ function FAQSectionForex() {
 
 function ForexDemo({ onNavigate, t }) {
   const pairs = [
-    { pair:"EUR/USD", future:"/6E", dir:"LONG",  bolts:3, strength:"STRONG",  cycles:[["Daily","↑ above zero"],["2-Day","↑ above zero"],["4-Day","↑ above zero"]], vwaps:[["Daily VWAP","↑ above"],["Weekly VWAP","↑ above"]], entry:"1.0842", color:C.long },
-    { pair:"GBP/USD", future:"/6B", dir:"LONG",  bolts:2, strength:"MODERATE",cycles:[["Daily","↑ above zero"],["2-Day","↑ above zero"],["4-Day","↓ below zero"]], vwaps:[["Daily VWAP","↑ above"],["Weekly VWAP","↑ above"]], entry:"1.2634", color:C.long },
-    { pair:"AUD/USD", future:"/6A", dir:"SHORT", bolts:2, strength:"MODERATE",cycles:[["Daily","↓ below zero"],["2-Day","↓ below zero"],["4-Day","↑ above zero"]], vwaps:[["Daily VWAP","↓ below"],["Weekly VWAP","↑ above"]], entry:"0.6481", color:C.short },
+    { pair:"EUR/USD", future:"/6E", dir:"LONG",  trigger:"AAA+", detail:"All 3 cycles within 1 bar · Fresh rotation", ema:"trend aligned", session:"NY Open",    cycles:[["1-Day","↑ above zero"],["3-Day","↑ above zero"],["6-Day","↑ above zero"]], vwaps:[["Daily VWAP","↑ above"],["Weekly VWAP","↑ above"]], entry:"1.0842", color:C.long },
+    { pair:"GBP/USD", future:"/6B", dir:"LONG",  trigger:"AA",   detail:"1-Day + 3-Day rotated · Fresh rotation",        ema:"trend aligned", session:"London",    cycles:[["1-Day","↑ above zero"],["3-Day","↑ above zero"],["6-Day","↓ below zero"]], vwaps:[["Daily VWAP","↑ above"],["Weekly VWAP","↑ above"]], entry:"1.2634", color:C.long },
+    { pair:"AUD/USD", future:"/6A", dir:"SHORT", trigger:"AA",   detail:"1-Day + 6-Day rotated · Extended — size accordingly", ema:"counter-trend", session:"Asian", cycles:[["1-Day","↓ below zero"],["3-Day","↑ above zero"],["6-Day","↓ below zero"]], vwaps:[["Daily VWAP","↓ below"],["Weekly VWAP","↑ above"]], entry:"0.6481", color:C.short },
   ];
   const [activeTab, setActiveTab] = useState("signals");
 
@@ -1102,9 +1168,13 @@ function ForexDemo({ onNavigate, t }) {
                   <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.08em", marginBottom:10, background:C.accentDim, padding:"3px 8px", borderRadius:4, display:"inline-block" }}>
                     DERIVED FROM {p.future}
                   </div>
-                  <div style={{ display:"flex", gap:3, marginBottom:12, alignItems:"center" }}>
-                    {[1,2,3].map(i => <span key={i} style={{ fontSize:13, opacity:i<=p.bolts?1:0.15, filter:i<=p.bolts?`drop-shadow(0 0 4px ${p.color})`:"none" }}>⚡</span>)}
-                    <span style={{ fontSize:11, fontWeight:600, color:p.bolts===3?C.strong:p.bolts===2?C.mod:C.weak, marginLeft:4, fontFamily:"monospace" }}>{p.strength}</span>
+                  <div style={{ marginBottom:12 }}>
+                    <TriggerBolts trigger={p.trigger} />
+                    <div style={{ fontSize:10, color:C.textMid, fontFamily:"monospace", marginTop:4 }}>{p.detail}</div>
+                    <div style={{ display:"flex", gap:10, marginTop:4 }}>
+                      <span style={{ fontSize:10, fontFamily:"monospace", color: p.ema==="trend aligned" ? C.long : C.warn }}>17 EMA: {p.ema}</span>
+                      <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>{p.session}</span>
+                    </div>
                   </div>
                   {p.cycles.map(([label, val]) => (
                     <div key={label} style={{ display:"flex", justifyContent:"space-between", padding:"5px 0", borderBottom:`1px solid ${C.border}`, fontSize:11, fontFamily:"monospace" }}>
@@ -1271,15 +1341,13 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
 
               {isForex && <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", background:C.accentDim, padding:"2px 8px", borderRadius:4, display:"inline-block", marginBottom:10 }}>DERIVED FROM /6E</div>}
 
-              {/* Strength */}
+              {/* Trigger */}
               <div style={{ marginBottom:12 }}>
-                <div style={{ display:"flex", gap:3, marginBottom:4 }}>
-                  {[1,2,3].map(i => <span key={i} style={{ fontSize:14, filter:`drop-shadow(0 0 4px ${dirColor})` }}>⚡</span>)}
-                  <span style={{ fontSize:11, fontWeight:600, color:C.strong, marginLeft:4, fontFamily:"monospace" }}>STRONG</span>
-                </div>
-                <div style={{ display:"flex", gap:16 }}>
-                  <span style={{ fontSize:10, color:C.textMid, fontFamily:"monospace" }}>3/3 cycles confirming</span>
-                  <span style={{ fontSize:10, color:C.long, fontFamily:"monospace" }}>2/2 VWAPs confirming</span>
+                <TriggerBolts trigger="AAA+" />
+                <div style={{ fontSize:10, color:C.textMid, fontFamily:"monospace", marginTop:4 }}>All 3 cycles within 2 bars · Fresh rotation</div>
+                <div style={{ display:"flex", gap:12, marginTop:4 }}>
+                  <span style={{ fontSize:10, color:C.long, fontFamily:"monospace" }}>17 EMA: trend aligned</span>
+                  <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>NY Open</span>
                 </div>
               </div>
 
@@ -1314,7 +1382,7 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
               {/* Smart Stop & TP */}
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
                 <div>
-                  <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:3 }}>SMART STOP</div>
+                  <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:3 }}>SMART STOP · REFERENCE</div>
                   <div style={{ fontSize:13, fontWeight:700, color:C.short, fontFamily:"monospace" }}>{demo.stop}</div>
                   <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>{demo.stopPips} · {demo.stopUsd}</div>
                 </div>
@@ -2373,10 +2441,10 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   const active   = signals.filter(s => s.status==="ACTIVE");
   const longs    = active.filter(s => s.direction==="LONG").length;
   const shorts   = active.filter(s => s.direction==="SHORT").length;
-  const strong   = active.filter(s => s.strength==="STRONG").length;
+  const strong   = active.filter(s => s.trigger==="AAA" || s.trigger==="AAA+").length;
   const filtered = signals.filter(s => {
     if (filterDir!=="ALL" && s.direction!==filterDir) return false;
-    if (filterStr!=="ALL" && s.strength!==filterStr) return false;
+    if (filterStr!=="ALL" && s.trigger!==filterStr) return false;
     return true;
   });
 
@@ -2478,9 +2546,11 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                 <button key={d} onClick={() => setFilterDir(d)} className="tab-btn" style={{ padding:"5px 14px", borderRadius:5, fontSize:11, fontFamily:"monospace", fontWeight:600, background:filterDir===d?(d==="LONG"?C.longDim:d==="SHORT"?C.shortDim:C.accentDim):C.surface, color:filterDir===d?(d==="LONG"?C.long:d==="SHORT"?C.short:C.accent):C.textMid, border:`1px solid ${filterDir===d?(d==="LONG"?C.long+"33":d==="SHORT"?C.short+"33":C.accent+"33"):C.border}` }}>{d}</button>
               ))}
               <div style={{ width:1, height:18, background:C.border, margin:"0 4px" }} />
-              <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>{t.strength}</span>
-              {["ALL","STRONG","MODERATE","WEAK"].map(s => (
-                <button key={s} onClick={() => setFilterStr(s)} className="tab-btn" style={{ padding:"5px 14px", borderRadius:5, fontSize:11, fontFamily:"monospace", background:filterStr===s?C.accentDim:C.surface, color:filterStr===s?C.accent:C.textMid, border:`1px solid ${filterStr===s?C.accent+"33":C.border}` }}>{s}</button>
+              <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>TRIGGER</span>
+              {["ALL","AAA+","AAA","AA","A"].map(s => (
+                <button key={s} onClick={() => setFilterStr(s)} className="tab-btn" style={{ padding:"5px 14px", borderRadius:5, fontSize:11, fontFamily:"monospace", background:filterStr===s?C.accentDim:C.surface, color:filterStr===s?C.accent:C.textMid, border:`1px solid ${filterStr===s?C.accent+"33":C.border}` }}>
+                  {s === "ALL" ? "ALL" : `Trigger ${s}`}
+                </button>
               ))}
             </div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(310px,1fr))", gap:14 }}>
