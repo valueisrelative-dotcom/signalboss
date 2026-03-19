@@ -3384,13 +3384,9 @@ const BACKTEST_STATIC = {
 function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
   const [signalCount] = useState(47 + Math.floor(Math.random() * 12));
   const [demoRR, setDemoRR]         = useState("2.5");
-  const [backtest, setBacktest]     = useState(FALLBACK_BACKTEST);
+  const [lpBtInst, setLpBtInst]     = useState("NQ");
   const [calcEmail, setCalcEmail]   = useState("");
   const [calcSent, setCalcSent]     = useState(false);
-  useEffect(() => {
-    fetch(`${BACKTEST_URL}?t=${Date.now()}`)
-      .then(r => r.json()).then(data => { if (data && data.stats) setBacktest(data); }).catch(() => {});
-  }, []);
 
   return (
     <div style={{ width:"100%", overflowX:"hidden" }}>
@@ -3547,27 +3543,47 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
       </div>
 
       {/* ── Backtest Results ──────────────────────────────────────────── */}
-      {backtest && (
+      {(() => {
+        const lpBt = BACKTEST_STATIC[lpBtInst];
+        const ov   = lpBt.overall;
+        const pts  = ov.equity || [];
+        const isES = lpBtInst === "ES";
+        return (
         <div style={{ maxWidth:960, margin:"0 auto", padding:"0 24px 80px" }}>
-          <div style={{ textAlign:"center", marginBottom:48 }}>
+          <div style={{ textAlign:"center", marginBottom:36 }}>
             <div style={{ fontSize:10, letterSpacing:"0.25em", color:C.accent, fontFamily:"monospace", marginBottom:14 }}>{t.backtestLabel}</div>
             <h2 style={{ fontSize:28, fontWeight:700, letterSpacing:"-0.03em", marginBottom:12 }}>
-              {t.backtestHeadline}<br/>
-              <span style={{ color:C.long }}>{t.backtestSub}</span>
+              Real numbers.<br/><span style={{ color:C.long }}>Real historical data.</span>
             </h2>
-            <p style={{ color:C.textMid, fontSize:14, maxWidth:540, margin:"0 auto", lineHeight:1.7 }}>
-              {backtest.instrument} · {backtest.name} · {backtest.period}
+            <p style={{ color:C.textMid, fontSize:14, maxWidth:560, margin:"0 auto 24px", lineHeight:1.7 }}>
+              Walk-forward backtest · 5-min bars · {lpBt.period} · Tier-based stops
             </p>
+            {/* Instrument toggle */}
+            <div style={{ display:"inline-flex", gap:8, background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:6 }}>
+              {[
+                { sym:"NQ", label:"NQ · Single 5:1", sub:"max alpha" },
+                { sym:"ES", label:"ES · Scaled 2:1+5:1", sub:"lower drawdown" },
+              ].map(({ sym, label, sub }) => (
+                <button key={sym} onClick={() => setLpBtInst(sym)} style={{
+                  padding:"8px 18px", borderRadius:7, cursor:"pointer", border:"none",
+                  background: lpBtInst===sym ? C.accent : "transparent",
+                  color:      lpBtInst===sym ? "#080909" : C.textMid,
+                  fontWeight: 700, fontSize:12, fontFamily:"monospace",
+                }}>
+                  {label}<span style={{ fontSize:10, fontWeight:400, display:"block", opacity:0.7 }}>{sub}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Stat callouts */}
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:12, marginBottom:36 }}>
             {[
-              { label:"WIN RATE",      value:`${backtest.stats.winRate}%`,    sub:`B/E at ${backtest.stats.breakEven}%`,           color:C.long },
-              { label:"PROFIT FACTOR", value:`${backtest.stats.profitFactor}x`, sub:"gross wins ÷ gross losses",                   color:C.accent },
-              { label:"NET P&L",       value:`+$${(backtest.stats.totalPnlUsd ?? backtest.stats.totalPnl ?? 0).toLocaleString()}`, sub:`${backtest.stats.trades} trades · 30 days`, color:C.long },
-              { label:"MAX DRAWDOWN",  value:`$${(backtest.stats.maxDrawdownUsd ?? backtest.stats.maxDrawdown ?? 0).toLocaleString()}`, sub:"largest peak-to-trough dip",              color:C.warn },
-              { label:"AVG HOLD TIME", value:`${backtest.stats.avgHoldMin} min`, sub:"per trade",                                 color:C.textMid },
+              { label:"WIN RATE",      value:`${ov.win_rate}%`,                    sub: isES ? "any profit (TP1 or TP2)" : `B/E at ${(1/(1+lpBt.rr)*100).toFixed(1)}%`, color:C.long },
+              { label:"PROFIT FACTOR", value:`${ov.profit_factor}x`,               sub:"gross wins ÷ gross losses",         color:C.accent },
+              { label:"NET P&L",       value:`+$${ov.total_pnl.toLocaleString()}`, sub:`${ov.trades} trades · ${lpBt.period}`, color:C.long },
+              { label:"MAX DRAWDOWN",  value:`$${ov.max_drawdown.toLocaleString()}`, sub:"peak-to-trough",                   color:C.warn },
+              { label:"AVG HOLD TIME", value:`${ov.avg_hold_min} min`,             sub:"per trade",                         color:C.textMid },
             ].map(s => (
               <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:"18px 20px", textAlign:"center" }}>
                 <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.12em", marginBottom:8 }}>{s.label}</div>
@@ -3578,8 +3594,7 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
           </div>
 
           {/* Equity curve */}
-          {backtest.equity && (() => {
-            const pts   = backtest.equity;
+          {pts.length > 1 && (() => {
             const lo    = Math.min(0, ...pts);
             const hi    = Math.max(...pts);
             const span  = hi - lo || 1;
@@ -3594,13 +3609,11 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:16 }}>
                   <div>
                     <div style={{ fontSize:13, fontWeight:600 }}>Equity Curve</div>
-                    <div style={{ fontSize:12, color:C.textMid, marginTop:3 }}>Cumulative P&L per contract · {backtest.params?.window ?? backtest.period ?? "30 days"}</div>
+                    <div style={{ fontSize:12, color:C.textMid, marginTop:3 }}>Cumulative P&L · 1 contract · {lpBt.period}</div>
                   </div>
                   <div style={{ textAlign:"right" }}>
-                    <div style={{ fontSize:20, fontWeight:700, color:C.long, fontFamily:"monospace" }}>
-                      +${(backtest.stats.totalPnlUsd ?? backtest.stats.totalPnl ?? 0).toLocaleString()}
-                    </div>
-                    <div style={{ fontSize:11, color:C.textDim }}>net / 30 days</div>
+                    <div style={{ fontSize:20, fontWeight:700, color:C.long, fontFamily:"monospace" }}>+${ov.total_pnl.toLocaleString()}</div>
+                    <div style={{ fontSize:11, color:C.textDim }}>{lpBt.exit_strategy.split("·")[0].trim()}</div>
                   </div>
                 </div>
                 <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:H, display:"block" }}>
@@ -3614,16 +3627,11 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
                   <text x={pad+2} y={zero-5} fontSize="9" fill={C.textDim} fontFamily="monospace">$0</text>
                   <path d={fillD} fill="url(#lp-eq-fill)"/>
                   <path d={pathD} fill="none" stroke={C.long} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"/>
-                  {pts.map((v,i) => (
-                    <circle key={i} cx={pad+i*xStep} cy={toY(v)} r="4"
-                      fill={backtest.trades[i]?.win ? C.long : C.short}
-                      stroke={C.bg} strokeWidth="2"/>
-                  ))}
                 </svg>
                 <div style={{ display:"flex", gap:16, marginTop:10, fontSize:11, color:C.textDim, fontFamily:"monospace" }}>
-                  <span><span style={{ color:C.long }}>●</span> TP hit</span>
-                  <span><span style={{ color:C.short }}>●</span> SL hit</span>
-                  <span style={{ marginLeft:"auto" }}>Each dot = 1 trade &nbsp;·&nbsp; {backtest.stats.wins}W / {backtest.stats.losses}L</span>
+                  <span style={{ color:C.long }}>● {ov.wins} wins</span>
+                  <span style={{ color:C.short }}>● {ov.losses} losses</span>
+                  <span style={{ marginLeft:"auto" }}>Zero line = breakeven · {ov.trades} total trades</span>
                 </div>
               </div>
             );
@@ -3642,11 +3650,12 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
 
           {/* Disclaimer */}
           <div style={{ fontSize:11, color:C.textDim, lineHeight:1.7, textAlign:"center", maxWidth:720, margin:"0 auto" }}>
-            <strong>Hypothetical performance disclosure:</strong> {(backtest.disclaimer ?? "Hypothetical results based on walk-forward backtesting on historical data. Past performance is not indicative of future results.").slice(0, 180)}…&nbsp;
+            <strong>Hypothetical performance disclosure:</strong> Results are based on walk-forward backtesting on historical 5-min bar data. Past performance is not indicative of future results. All trading involves risk of loss.&nbsp;
             Results do not account for slippage or commissions. For educational purposes only. Not financial advice.
           </div>
         </div>
-      )}
+        );
+      })()}
 
       {/* ── Calculator Lead Banner ─────────────────────────────────────────── */}
       {!calcSent && (
