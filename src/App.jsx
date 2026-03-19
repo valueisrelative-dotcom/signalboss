@@ -816,7 +816,7 @@ function SignalCard({ signal, onDismiss, exitMode, rrPref, setRrPref, t }) {
       )}
 
       <div style={{ display:"flex", justifyContent:"flex-end", marginTop:10 }}>
-        <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>⏱ {signal.time || new Date().toLocaleTimeString([], { hour:"2-digit", minute:"2-digit", second:"2-digit" })} ET</span>
+        <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>ENTRY NY: {signal.time || new Date().toLocaleTimeString([], { hour:"2-digit", minute:"2-digit", second:"2-digit" })}</span>
       </div>
     </div>
   );
