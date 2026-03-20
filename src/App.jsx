@@ -738,7 +738,21 @@ function SignalCard({ signal, onDismiss, exitMode, rrPref, setRrPref, t }) {
         {signal.triggerDetail && (
           <div style={{ fontSize:10, color:C.textMid, fontFamily:"monospace", marginTop:4 }}>{signal.triggerDetail}</div>
         )}
-        <div style={{ display:"flex", gap:12, marginTop:4, flexWrap:"wrap" }}>
+
+        {/* Tier timestamps */}
+        {signal.tierTimestamps && Object.keys(signal.tierTimestamps).length > 0 && (
+          <div style={{ marginTop:8, padding:"6px 8px", background:C.bg, borderRadius:6, border:`1px solid ${C.border}` }}>
+            <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:4 }}>TIER TRIGGERED</div>
+            {['A','AA','AAA','AAA+'].filter(tier => signal.tierTimestamps[tier]).map(tier => (
+              <div key={tier} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:2 }}>
+                <span style={{ fontSize:10, fontFamily:"monospace", color:C.textDim, minWidth:36 }}>{tier}</span>
+                <span style={{ fontSize:10, fontFamily:"monospace", color:C.textMid }}>{signal.tierTimestamps[tier]}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div style={{ display:"flex", gap:12, marginTop:6, flexWrap:"wrap" }}>
           {signal.emaContext && (
             <span style={{ fontSize:10, fontFamily:"monospace", color: signal.emaContext==="trend aligned" ? C.long : C.warn }}>
               17 EMA: {signal.emaContext}
