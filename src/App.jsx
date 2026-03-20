@@ -3,6 +3,7 @@ import {
   ClerkProvider, SignIn, SignUp,
   useUser, useAuth, UserButton,
   SignedIn, SignedOut,
+  dark,
 } from "@clerk/clerk-react";
 
 const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -4663,7 +4664,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
           <div style={{ marginTop:10, textAlign:"center" }}><SignalCounter count={todayCount} /></div>
         </div>
         <div style={{ padding:"12px 18px", borderTop:`1px solid ${C.border}`, display:"flex", alignItems:"center", gap:10 }}>
-          <UserButton afterSignOutUrl="/" />
+          <UserButton afterSignOutUrl="/" appearance={{ baseTheme: dark }} />
           <div style={{ overflow:"hidden" }}>
             <div style={{ fontSize:11, color:C.text, fontWeight:600, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>
               {user?.firstName || user?.primaryEmailAddress?.emailAddress || "Trader"}
@@ -5672,7 +5673,7 @@ function AppInner() {
                   {isSubscribed ? "Dashboard →" : "Activate →"}
                 </button>
                 <div style={{ border:`1px solid ${C.silverBorder}`, borderRadius:"50%", padding:2, boxShadow:`0 0 0 1px ${C.accent}33` }}>
-                  <UserButton afterSignOutUrl="/" />
+                  <UserButton afterSignOutUrl="/" appearance={{ baseTheme: dark }} />
                 </div>
               </>
             ) : (
