@@ -3421,6 +3421,12 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
   const [lpBtInst, setLpBtInst]     = useState("ES");
   const [calcEmail, setCalcEmail]   = useState("");
   const [calcSent, setCalcSent]     = useState(false);
+  const [heroPhase, setHeroPhase]   = useState(0); // 0=question, 1=headline
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setHeroPhase(1), 4500);
+    return () => clearTimeout(t1);
+  }, []);
 
   return (
     <div style={{ width:"100%", overflowX:"hidden" }}>
@@ -3433,15 +3439,27 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
           {track==="forex" ? t.forexTagline : track==="futures" ? t.tagline : t.engineTagline}
         </div>
         <div style={{ marginBottom:24 }}><SignalCounter count={signalCount} /></div>
-        <h1 style={{ fontSize:"clamp(44px,6.5vw,86px)", fontWeight:700, lineHeight:1.08, marginBottom:24, letterSpacing:"-0.04em", maxWidth:800 }}>
-          {track==="forex"
-            ? <>{t.forexHeroTitle1}<br /><span style={{ color:C.accent }}>{t.forexHeroTitle2}</span></>
-            : track==="futures"
-            ? <>{t.heroTitle1}<br /><span style={{ color:C.accent }}>{t.heroTitle2}</span></>
-            : <>{t.chooserTitle1}<br />{t.chooserTitle2}<br /><span style={{ color:C.accent }}>{t.chooserTitle3}</span></>}
-        </h1>
-        <p style={{ fontSize:18, color:"#b8cccc", maxWidth:560, lineHeight:1.8, marginBottom:52 }}>
-          {track==="forex" ? t.forexHeroSub : t.chooserSub}
+        <div style={{ position:"relative", minHeight:"clamp(160px,18vw,260px)", display:"flex", alignItems:"center", justifyContent:"center", width:"100%", maxWidth:800, marginBottom:24 }}>
+          {/* Phase 0 — Question */}
+          <div style={{ position:"absolute", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===0 ? 1 : 0, pointerEvents:"none" }}>
+            <p style={{ fontSize:"clamp(13px,1.4vw,17px)", color:"#6a8888", fontStyle:"italic", marginBottom:16, letterSpacing:"0.04em" }}>Ask yourself a simple question:</p>
+            <h1 style={{ fontSize:"clamp(28px,4vw,54px)", fontWeight:700, lineHeight:1.15, letterSpacing:"-0.03em", color:"#d0e0e0" }}>
+              If charts alone were the answer…<br />why are you not already generating<br />consistent wealth using them?
+            </h1>
+          </div>
+          {/* Phase 1 — Headline */}
+          <div style={{ position:"absolute", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===1 ? 1 : 0, pointerEvents: heroPhase===1 ? "auto" : "none" }}>
+            <h1 style={{ fontSize:"clamp(44px,6.5vw,86px)", fontWeight:700, lineHeight:1.08, letterSpacing:"-0.04em" }}>
+              {track==="forex"
+                ? <>{t.forexHeroTitle1}<br /><span style={{ color:C.accent }}>{t.forexHeroTitle2}</span></>
+                : track==="futures"
+                ? <>{t.heroTitle1}<br /><span style={{ color:C.accent }}>{t.heroTitle2}</span></>
+                : <>{t.chooserTitle1}<br />{t.chooserTitle2}<br /><span style={{ color:C.accent }}>{t.chooserTitle3}</span></>}
+            </h1>
+          </div>
+        </div>
+        <p style={{ fontSize:"clamp(17px,1.8vw,22px)", color:"#d0e4e4", maxWidth:620, lineHeight:1.75, marginBottom:52, fontWeight:500, transition:"opacity 0.8s ease", opacity: heroPhase===1 ? 1 : 0 }}>
+          Volatility leads. Price follows. Signal Boss reads the state the market is actually in — so your decisions are based on what really moves it.
         </p>
         <div style={{ display:"flex", gap:14, flexWrap:"wrap", justifyContent:"center" }}>
           <button onClick={() => onNavigate("signup")} style={{ padding:"15px 36px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:600, fontSize:14, cursor:"pointer" }}>{t.startTrial}</button>
