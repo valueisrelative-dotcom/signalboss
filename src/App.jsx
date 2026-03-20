@@ -3442,9 +3442,9 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
         <div style={{ position:"relative", minHeight:"clamp(160px,18vw,260px)", display:"flex", alignItems:"center", justifyContent:"center", width:"100%", maxWidth:800, marginBottom:24 }}>
           {/* Phase 0 — Question */}
           <div style={{ position:"absolute", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===0 ? 1 : 0, pointerEvents:"none" }}>
-            <p style={{ fontSize:"clamp(13px,1.4vw,17px)", color:"#6a8888", fontStyle:"italic", marginBottom:16, letterSpacing:"0.04em" }}>Ask yourself a simple question:</p>
-            <h1 style={{ fontSize:"clamp(28px,4vw,54px)", fontWeight:700, lineHeight:1.15, letterSpacing:"-0.03em", color:"#d0e0e0" }}>
-              If charts alone were the answer…<br />why are you not already generating<br />consistent wealth using them?
+            <p style={{ fontSize:"clamp(13px,1.4vw,17px)", color:C.accent, fontStyle:"italic", marginBottom:16, letterSpacing:"0.08em", fontFamily:"monospace", textTransform:"uppercase" }}>Ask yourself a simple question:</p>
+            <h1 style={{ fontSize:"clamp(28px,4vw,54px)", fontWeight:700, lineHeight:1.2, letterSpacing:"-0.03em", color:"#ffffff" }}>
+              If charts alone were the answer…<br />why are you not already generating<br /><span style={{ color:C.long }}>consistent wealth</span> using them?
             </h1>
           </div>
           {/* Phase 1 — Headline */}
