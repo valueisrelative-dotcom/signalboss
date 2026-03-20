@@ -4439,7 +4439,9 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
       fetch(`${SIGNALS_URL}?t=${Date.now()}`)
         .then(r => r.json())
         .then(data => {
-          if (data.signals && data.signals.length > 0) {
+          if (data.signals && data.signals.length === 0) {
+            setSignals([]);
+          } else if (data.signals && data.signals.length > 0) {
             setSignals(data.signals.map((s, i) => {
               // If engine didn't supply risk, generate it so Smart Stop/TP always shows
               const risk = s.risk || (() => {
