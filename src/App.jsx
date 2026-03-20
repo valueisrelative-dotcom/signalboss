@@ -5478,7 +5478,7 @@ function SubscribePage({ user, plan, onNavigate, t, track }) {
     setLoading(true);
     setError(null);
     try {
-      const resp = await fetch(`${API_URL}/create-checkout-session`, {
+      const resp = await fetch(`/api/create-checkout-session`, {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({
