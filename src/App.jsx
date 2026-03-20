@@ -4583,7 +4583,8 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
 
         {activeTab==="signals" && (
           <div style={{ padding:22 }}>
-            {/* Demo notice */}
+            {/* Demo notice — hidden for admin */}
+            {!isAdmin && (
             <div style={{ marginBottom:18, background:"#0e0a04", border:`1px solid #f59e0b44`, borderRadius:10, padding:"12px 18px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12 }}>
               <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                 <span style={{ fontSize:14 }}>⚠</span>
@@ -4594,6 +4595,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                 Get Started →
               </button>
             </div>
+            )}
             <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12, marginBottom:18 }}>
               <StatTile label={t.activeSignals} value={active.length} color={C.accent} />
               <StatTile label={t.long}   value={longs}  color={C.long}  sub={t.active.toLowerCase()} />
