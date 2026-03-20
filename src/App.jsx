@@ -3384,7 +3384,7 @@ const BACKTEST_STATIC = {
 function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
   const [signalCount] = useState(47 + Math.floor(Math.random() * 12));
   const [demoRR, setDemoRR]         = useState("2.5");
-  const [lpBtInst, setLpBtInst]     = useState("NQ");
+  const [lpBtInst, setLpBtInst]     = useState("ES");
   const [calcEmail, setCalcEmail]   = useState("");
   const [calcSent, setCalcSent]     = useState(false);
 
@@ -3558,21 +3558,45 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
             <p style={{ color:C.textMid, fontSize:14, maxWidth:560, margin:"0 auto 24px", lineHeight:1.7 }}>
               Walk-forward backtest · 5-min bars · {lpBt.period} · Tier-based stops
             </p>
-            {/* Instrument toggle */}
-            <div style={{ display:"inline-flex", gap:8, background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:6 }}>
+            {/* Instrument cards */}
+            <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap" }}>
               {[
-                { sym:"NQ", label:"NQ · Single 5:1", sub:"max alpha" },
-                { sym:"ES", label:"ES · Scaled 2:1+5:1", sub:"lower drawdown" },
-              ].map(({ sym, label, sub }) => (
-                <button key={sym} onClick={() => setLpBtInst(sym)} style={{
-                  padding:"8px 18px", borderRadius:7, cursor:"pointer", border:"none",
-                  background: lpBtInst===sym ? C.accent : "transparent",
-                  color:      lpBtInst===sym ? "#080909" : C.textMid,
-                  fontWeight: 700, fontSize:12, fontFamily:"monospace",
-                }}>
-                  {label}<span style={{ fontSize:10, fontWeight:400, display:"block", opacity:0.7 }}>{sub}</span>
-                </button>
-              ))}
+                { sym:"ES", label:"E-mini S&P 500", tag:"Scaled Exit · 2:1 + 5:1", pnl:"+$6,219", wr:"51.8%", pf:"1.66x", dd:"$850", color:C.accent, tagColor:C.accent },
+                { sym:"NQ", label:"E-mini Nasdaq-100", tag:"Single Target · 5:1",  pnl:"+$22,225", wr:"42.3%", pf:"1.97x", dd:"$4,510", color:C.long, tagColor:C.long },
+              ].map(({ sym, label, tag, pnl, wr, pf, dd, color, tagColor }) => {
+                const active = lpBtInst === sym;
+                return (
+                  <button key={sym} onClick={() => setLpBtInst(sym)} style={{
+                    padding:"18px 22px", borderRadius:14, cursor:"pointer", textAlign:"left",
+                    background: active ? color+"14" : C.surface,
+                    border: `1.5px solid ${active ? color : C.border}`,
+                    boxShadow: active ? `0 0 18px ${color}28, 0 2px 8px ${color}14` : "none",
+                    transition:"all 0.18s", minWidth:200, flex:"1 1 200px", maxWidth:280,
+                  }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
+                      <span style={{ fontSize:18, fontWeight:800, fontFamily:"monospace", color: active ? color : C.text }}>{sym}</span>
+                      <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color:tagColor, background:tagColor+"1a", padding:"2px 8px", borderRadius:4, border:`1px solid ${tagColor}33` }}>{tag}</span>
+                    </div>
+                    <div style={{ fontSize:11, color:C.textDim, marginBottom:10 }}>{label}</div>
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"6px 14px" }}>
+                      {[
+                        { l:"NET P&L", v:pnl, c:C.long },
+                        { l:"WIN RATE", v:wr,  c:active ? color : C.text },
+                        { l:"PROF. FACTOR", v:pf,  c:active ? color : C.text },
+                        { l:"MAX DD", v:dd,  c:C.warn },
+                      ].map(({ l, v, c }) => (
+                        <div key={l}>
+                          <div style={{ fontSize:8, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.08em" }}>{l}</div>
+                          <div style={{ fontSize:13, fontWeight:700, color:c, fontFamily:"monospace" }}>{v}</div>
+                        </div>
+                      ))}
+                    </div>
+                    {active && (
+                      <div style={{ marginTop:10, fontSize:9, color:color, fontFamily:"monospace", fontWeight:600, letterSpacing:"0.06em" }}>● VIEWING RESULTS BELOW</div>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
