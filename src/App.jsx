@@ -3438,7 +3438,7 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
           <LiveDot color={track==="forex"?C.accent:C.long} size={6} />
           {track==="forex" ? t.forexTagline : track==="futures" ? t.tagline : t.engineTagline}
         </div>
-        <div style={{ marginBottom:24 }}><SignalCounter count={signalCount} /></div>
+        <div style={{ marginBottom:24, transition:"opacity 0.8s ease", opacity: heroPhase===1 ? 1 : 0 }}><SignalCounter count={signalCount} /></div>
         <div style={{ position:"relative", minHeight:"clamp(160px,18vw,260px)", display:"flex", alignItems:"center", justifyContent:"center", width:"100%", maxWidth:800, marginBottom:24 }}>
           {/* Phase 0 — Question */}
           <div style={{ position:"absolute", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===0 ? 1 : 0, pointerEvents:"none" }}>
