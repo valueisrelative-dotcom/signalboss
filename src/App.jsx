@@ -395,12 +395,12 @@ const T = {
 
 const C = {
   bg: "#080909", surface: "#0c0e0f", surfaceUp: "#0e1210", surfaceDn: "#120e0e",
-  silver: "#0f1318", silverUp: "#141a20", silverBorder: "#1e2832",
+  silver: "#111820", silverUp: "#18222c", silverBorder: "#263444",
   border: "#161a1a", borderHi: "#1f2626",
   long: "#00e5a0", longDim: "#00e5a012", longGlow: "#00e5a030",
   short: "#ff4560", shortDim: "#ff456012", shortGlow: "#ff456030",
   neutral: "#4a5568", accent: "#c8a96e", accentDim: "#c8a96e18",
-  text: "#eaeeee", textMid: "#9ab0b0", textDim: "#4a5e5e",
+  text: "#eaeeee", textMid: "#b8cccc", textDim: "#6a8888",
   weak: "#c8a96e", mod: "#e8c97e", strong: "#ffffff",
   warn: "#f59e0b", warnDim: "#f59e0b15",
   prop: "#a78bfa", propDim: "#a78bfa15",
