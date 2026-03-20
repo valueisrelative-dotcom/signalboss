@@ -740,7 +740,7 @@ function SignalCard({ signal, onDismiss, exitMode, rrPref, setRrPref, t }) {
         )}
 
         {/* Tier timestamps */}
-        {signal.tierTimestamps && Object.keys(signal.tierTimestamps).length > 0 && (
+        {signal.tierTimestamps && Object.keys(signal.tierTimestamps || {}).length > 0 && (
           <div style={{ marginTop:8, padding:"6px 8px", background:C.bg, borderRadius:6, border:`1px solid ${C.border}` }}>
             <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:4 }}>TIER TRIGGERED</div>
             {['A','AA','AAA','AAA+'].filter(tier => signal.tierTimestamps[tier]).map(tier => (
