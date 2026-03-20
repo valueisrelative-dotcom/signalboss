@@ -114,10 +114,10 @@ const T = {
     propTitle: "Account Risk Calculator",
     propSub: "Position sizing and risk management for every serious trader — prop challenge or personal account",
     features: {
-      "01": { title: "IV Inflection Signals", desc: "Signals fire when short-term implied volatility reaches an inflection point, confirmed by volume-weighted price. No ambiguity." },
-      "02": { title: "VWAP Trend Filter", desc: "Price must be confirmed by Volume based price, keeping you in winning trades longer." },
-      "03": { title: "Confluence Scoring", desc: "1 cycle = early entry. 2 cycles = moderate conviction. 3 cycles = maximum strength." },
-      "04": { title: "Clean Signal Cards", desc: "No charts. No clutter. Precise, actionable alerts the moment conditions align." },
+      "01": { title: "The Signal Fires", desc: "When volatility shifts and price confirms, you get an alert. Entry price, stop, and target — all included. Nothing to calculate." },
+      "02": { title: "Context Is Built In", desc: "Every signal tells you whether you're trading with or against the big money. No second-guessing the setup." },
+      "03": { title: "Strength Is Graded", desc: "Trigger A is early. Trigger AA is stronger. Trigger AAA is when everything lines up. You decide how aggressive you want to be." },
+      "04": { title: "Just Take the Trade", desc: "No charts. No noise. A clean card with everything you need — the moment conditions align." },
     },
     futuresPlans: [
       { name: "Starter", price: 149, features: ["Futures Trade Signals — Equity index, Treasury, Energy & Metals", "Smart Stop & Take Profit on every signal", "Risk/Money Management Calculator", "Real-time dashboard", "Email alerts"] },
