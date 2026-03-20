@@ -3506,27 +3506,31 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
               </div>
 
               {/* R:R selector */}
-              <div style={{ marginBottom:8 }}>
-                <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:6 }}>TARGET R:R</div>
-                <div style={{ display:"flex", gap:6 }}>
-                  {[["2","2.0"],["2.5","2.5"],["3","3.0"]].map(([key,label]) => (
-                    <button key={key} onClick={() => setDemoRR(key)} style={{
-                      flex:1, padding:"6px 0", borderRadius:6, fontFamily:"monospace", fontSize:11, fontWeight:700, cursor:"pointer",
-                      background: demoRR===key ? dirColor+"33" : C.bg,
-                      color:      demoRR===key ? dirColor       : C.textDim,
-                      border:    `1px solid ${demoRR===key ? dirColor+"66" : C.border}`,
-                    }}>
-                      {label}:1{key==="2.5"?" ★":""}
-                    </button>
-                  ))}
+              <div style={{ marginBottom:10 }}>
+                <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:8 }}>TARGET R:R</div>
+                <div style={{ display:"flex", gap:8 }}>
+                  {[
+                    { key:"2",   label:"2.0:1", sub:"Conservative", star:false },
+                    { key:"2.5", label:"2.5:1", sub:"Recommended ★", star:true  },
+                    { key:"3",   label:"3.0:1", sub:"Aggressive",    star:false },
+                  ].map(({ key, label, sub, star }) => {
+                    const active = demoRR === key;
+                    const cardColor = star ? C.accent : dirColor;
+                    return (
+                      <button key={key} onClick={() => setDemoRR(key)} style={{
+                        flex:1, padding:"10px 6px", borderRadius:9, fontFamily:"monospace", cursor:"pointer", textAlign:"center",
+                        background: active ? cardColor+"18" : C.bg,
+                        border:    `1.5px solid ${active ? cardColor : C.border}`,
+                        boxShadow:  active ? `0 0 12px ${cardColor}28` : "none",
+                        transition:"all 0.15s",
+                      }}>
+                        <div style={{ fontSize:13, fontWeight:800, color: active ? cardColor : C.textMid, marginBottom:3 }}>{label}</div>
+                        <div style={{ fontSize:9, color: active ? cardColor+"bb" : C.textDim, fontWeight: star ? 700 : 400 }}>{sub}</div>
+                        {active && <div style={{ width:16, height:2, background:cardColor, borderRadius:2, margin:"6px auto 0" }}/>}
+                      </button>
+                    );
+                  })}
                 </div>
-              </div>
-
-              {/* Recommendation */}
-              <div style={{ fontSize:10, color:demoRR==="2.5"?C.accent:C.textDim, fontFamily:"monospace",
-                background:demoRR==="2.5"?C.accentDim:"transparent", border:`1px solid ${demoRR==="2.5"?C.accent+"33":"transparent"}`,
-                borderRadius:5, padding:demoRR==="2.5"?"5px 8px":"0", marginBottom:demoRR==="2.5"?8:0, lineHeight:1.5 }}>
-                {demoRR==="2.5" ? "★ Signal Boss recommends 2.5:1 — 5/5 conditions exist" : "Signal Boss recommends 2.5:1 — 5/5 conditions exist"}
               </div>
 
               {/* Vol regime */}
