@@ -736,7 +736,9 @@ function SignalCard({ signal, onDismiss, exitMode, rrPref, setRrPref, t }) {
       <div style={{ marginBottom:12 }}>
         <TriggerBolts trigger={signal.trigger || (signal.strength==="STRONG"?"AAA":signal.strength==="MODERATE"?"AA":"A")} />
         {signal.triggerDetail && (
-          <div style={{ fontSize:10, color:C.textMid, fontFamily:"monospace", marginTop:4 }}>{signal.triggerDetail}</div>
+          <div style={{ fontSize:10, color:C.textMid, fontFamily:"monospace", marginTop:4 }}>
+            {(signal.triggerDetail || "").replace(/\b(1-Day|3-Day|6-Day)(\s*\+\s*(1-Day|3-Day|6-Day))*\s*(rotated\s*·?\s*)?/gi, "").trim().replace(/^·\s*/, "")}
+          </div>
         )}
 
         {/* Tier timestamps */}
@@ -755,7 +757,7 @@ function SignalCard({ signal, onDismiss, exitMode, rrPref, setRrPref, t }) {
         <div style={{ display:"flex", gap:12, marginTop:6, flexWrap:"wrap" }}>
           {signal.emaContext && (
             <span style={{ fontSize:10, fontFamily:"monospace", color: signal.emaContext==="trend aligned" ? C.long : C.warn }}>
-              17 EMA: {signal.emaContext}
+              Intraday trend: {signal.emaContext}
             </span>
           )}
           {signal.session && (
