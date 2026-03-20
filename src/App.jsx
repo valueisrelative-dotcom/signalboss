@@ -75,8 +75,8 @@ const T = {
     methodologyAccent: "We just listen.",
     methodologyQuote: "Not just when to enter. Where to stop. When to take profit. All from the same source — what the market is actually implying about its own expected range.",
     methodology: [
-      { icon:"◈", color:"long",  label:"Implied Volatility", title:"The Market's Own Forecast", body:"IV isn't noise — it's the market's consensus estimate of expected movement. When short-term IV reaches an inflection point on a close, the market is telling you something has changed. That's your signal." },
-      { icon:"◎", color:"accent", label:"VWAP",             title:"Where Institutions Operate", body:"Every institutional desk benchmarks execution against VWAP. Price above VWAP means buyers are in control at institutional prices. Below means sellers. Simple. Powerful. Proven." },
+      { icon:"◈", color:"long",  label:"Implied Volatility", title:"The Market's Own Forecast", body:"IV isn't noise — it's the market's consensus of expected movement. When intraday volatility reaches an inflection point, the market is telling you that conditions have changed. That's your signal." },
+      { icon:"◎", color:"accent", label:"VWAP",             title:"Where Institutions Operate vs. Where You Find Trade Opportunities.", body:"Institutional desks benchmark execution against VWAP. However, retail traders often misuse VWAP as a signal for entry — Signal Boss uses VWAP as a context filter, alongside our volatility triggers. This is when a 'cross above or below' becomes a tradable event." },
       { icon:"◉", color:"prop",   label:"Mean Reversion",   title:"IV Always Comes Back", body:"Implied volatility mean reverts. Always. When IV reaches extremes, the question isn't if price will revert — it's when. That timing is where the edge lives, and where Smart Stop and Target levels are derived." },
     ],
     startTrial: "Get Started", viewDemo: "Try the Demo →",
