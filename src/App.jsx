@@ -395,6 +395,7 @@ const T = {
 
 const C = {
   bg: "#080909", surface: "#0c0e0f", surfaceUp: "#0e1210", surfaceDn: "#120e0e",
+  silver: "#0f1318", silverUp: "#141a20", silverBorder: "#1e2832",
   border: "#161a1a", borderHi: "#1f2626",
   long: "#00e5a0", longDim: "#00e5a012", longGlow: "#00e5a030",
   short: "#ff4560", shortDim: "#ff456012", shortGlow: "#ff456030",
@@ -3553,7 +3554,8 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
         const pts  = ov.equity || [];
         const isES = lpBtInst === "ES";
         return (
-        <div style={{ maxWidth:960, margin:"0 auto", padding:"0 24px 80px" }}>
+        <div style={{ background:`linear-gradient(180deg, ${C.bg} 0%, ${C.silver} 8%, ${C.silver} 92%, ${C.bg} 100%)`, width:"100%", borderTop:`1px solid ${C.silverBorder}`, borderBottom:`1px solid ${C.silverBorder}` }}>
+        <div style={{ maxWidth:960, margin:"0 auto", padding:"60px 24px 80px" }}>
           <div style={{ textAlign:"center", marginBottom:36 }}>
             <div style={{ fontSize:10, letterSpacing:"0.25em", color:C.accent, fontFamily:"monospace", marginBottom:14 }}>{t.backtestLabel}</div>
             <h2 style={{ fontSize:28, fontWeight:700, letterSpacing:"-0.03em", marginBottom:12 }}>
@@ -3571,11 +3573,11 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
                 const active = lpBtInst === sym;
                 return (
                   <button key={sym} onClick={() => setLpBtInst(sym)} style={{
-                    padding:"18px 22px", borderRadius:14, cursor:"pointer", textAlign:"left",
-                    background: active ? color+"14" : C.surface,
-                    border: `1.5px solid ${active ? color : C.border}`,
-                    boxShadow: active ? `0 0 18px ${color}28, 0 2px 8px ${color}14` : "none",
-                    transition:"all 0.18s", minWidth:200, flex:"1 1 200px", maxWidth:280,
+                    padding:"20px 24px", borderRadius:14, cursor:"pointer", textAlign:"left",
+                    background: active ? `linear-gradient(135deg, ${color}12, ${color}08)` : C.silverUp,
+                    border: `1.5px solid ${active ? color : C.silverBorder}`,
+                    boxShadow: active ? `0 0 28px ${color}30, 0 4px 16px ${color}18, inset 0 1px 0 ${color}20` : `inset 0 1px 0 ${C.silverBorder}`,
+                    transition:"all 0.18s", minWidth:200, flex:"1 1 200px", maxWidth:300,
                   }}>
                     <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
                       <span style={{ fontSize:18, fontWeight:800, fontFamily:"monospace", color: active ? color : C.text }}>{sym}</span>
@@ -3613,7 +3615,7 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
               { label:"MAX DRAWDOWN",  value:`$${ov.max_drawdown.toLocaleString()}`, sub:"peak-to-trough",                   color:C.warn },
               { label:"AVG HOLD TIME", value:`${ov.avg_hold_min} min`,             sub:"per trade",                         color:C.textMid },
             ].map(s => (
-              <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:"18px 20px", textAlign:"center" }}>
+              <div key={s.label} style={{ background:C.silverUp, border:`1px solid ${C.silverBorder}`, borderRadius:12, padding:"18px 20px", textAlign:"center", boxShadow:`inset 0 1px 0 ${C.silverBorder}` }}>
                 <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.12em", marginBottom:8 }}>{s.label}</div>
                 <div style={{ fontSize:26, fontWeight:700, color:s.color, fontFamily:"monospace", letterSpacing:"-0.02em" }}>{s.value}</div>
                 <div style={{ fontSize:11, color:C.textDim, marginTop:5 }}>{s.sub}</div>
@@ -3681,6 +3683,7 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
             <strong>Hypothetical performance disclosure:</strong> Results are based on walk-forward backtesting on historical 5-min bar data. Past performance is not indicative of future results. All trading involves risk of loss.&nbsp;
             Results do not account for slippage or commissions. For educational purposes only. Not financial advice.
           </div>
+        </div>
         </div>
         );
       })()}
@@ -3796,7 +3799,8 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
       </div>
 
       {/* Founder Section */}
-      <div style={{ maxWidth:720, margin:"0 auto", padding:"0 24px 100px" }}>
+      <div style={{ background:`linear-gradient(180deg, ${C.bg} 0%, ${C.silver} 10%, ${C.silver} 90%, ${C.bg} 100%)`, width:"100%", borderTop:`1px solid ${C.silverBorder}`, borderBottom:`1px solid ${C.silverBorder}` }}>
+      <div style={{ maxWidth:720, margin:"0 auto", padding:"60px 24px 100px" }}>
         <div style={{ borderLeft:`3px solid ${C.accent}`, paddingLeft:32 }}>
           <div style={{ fontSize:22, fontWeight:800, color:C.accent, fontFamily:"monospace", letterSpacing:"0.12em", marginBottom:28, textTransform:"uppercase" }}>{t.whyBuilt}</div>
 
@@ -3905,6 +3909,7 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       {/* Account Risk Calculator Section */}
@@ -5666,7 +5671,9 @@ function AppInner() {
                   style={{ padding:"8px 20px", background:C.accent, border:"none", borderRadius:6, color:"#080909", cursor:"pointer", fontWeight:700, fontSize:13 }}>
                   {isSubscribed ? "Dashboard →" : "Activate →"}
                 </button>
-                <UserButton afterSignOutUrl="/" />
+                <div style={{ border:`1px solid ${C.silverBorder}`, borderRadius:"50%", padding:2, boxShadow:`0 0 0 1px ${C.accent}33` }}>
+                  <UserButton afterSignOutUrl="/" />
+                </div>
               </>
             ) : (
               <>
