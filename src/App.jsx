@@ -3809,13 +3809,12 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
 
           {/* Closing */}
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
-            Signal Boss does not predict candles. It does not replace your judgment.
+            Signal Boss does not predict candles. It allows you to focus on what actually makes money:{" "}
+            <span style={{ color:C.long, fontWeight:700 }}>managing your risk</span> and{" "}
+            <span style={{ color:C.long, fontWeight:700 }}>managing your profits</span>.
           </p>
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
-            It identifies <span style={{ color:C.text, fontWeight:600 }}>volatility expansion conditions</span> — the environment where large, sustained price movement statistically occurs — and delivers a complete, actionable trade the moment conditions align.
-          </p>
-          <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
-            Use your charts to confirm. Trade with the context your charts were never designed to give you.
+            We identify <span style={{ color:C.text, fontWeight:600 }}>volatility expansion conditions</span> — the environment where large, sustained price movement statistically occurs. Trade with the context your charts were never designed to give you.
           </p>
           <p style={{ fontSize:17, color:C.textMid, lineHeight:1.9, marginBottom:36, fontStyle:"italic" }}>
             The gym is still full. You don't have to stay on the same plan.
