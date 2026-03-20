@@ -10,6 +10,15 @@ const PRICE_IDS = {
   full:    "price_1TCsTYL2fuY9NeKviIGqlOi4",  // Forex Full      $249
 };
 
+async function parseBody(req) {
+  return new Promise((resolve, reject) => {
+    let data = "";
+    req.on("data", chunk => data += chunk);
+    req.on("end", () => { try { resolve(JSON.parse(data)); } catch(e) { reject(e); } });
+    req.on("error", reject);
+  });
+}
+
 export default async function handler(req, res) {
   // CORS headers
   res.setHeader("Access-Control-Allow-Origin", "https://signalboss.net");
@@ -18,7 +27,7 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).end("Method Not Allowed");
 
-  const { userId, email, plan } = req.body;
+  const { userId, email, plan } = await parseBody(req);
 
   const priceId = PRICE_IDS[plan];
   if (!priceId) {
