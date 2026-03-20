@@ -75,9 +75,9 @@ const T = {
     methodologyAccent: "We just listen.",
     methodologyQuote: "Not just when to enter. Where to stop. When to take profit. All from the same source — what the market is actually implying about its own expected range.",
     methodology: [
-      { icon:"◈", color:"long",  label:"Implied Volatility", title:"The Market's Own Forecast", body:"IV isn't noise — it's the market's consensus of expected movement. When intraday volatility reaches an inflection point, the market is telling you that conditions have changed. That's your signal." },
-      { icon:"◎", color:"accent", label:"VWAP",             title:"Where Institutions Operate vs. Where You Find Trade Opportunities.", body:"Institutional desks benchmark execution against VWAP. However, retail traders often misuse VWAP as a signal for entry — Signal Boss uses VWAP as a context filter, alongside our volatility triggers. This is when a 'cross above or below' becomes a tradable event." },
-      { icon:"◉", color:"prop",   label:"Mean Reversion",   title:"IV Always Comes Back", body:"Implied volatility mean reverts. Always. When IV reaches extremes, the question isn't if price will revert — it's when. That timing is where the edge lives, and where Smart Stop and Target levels are derived." },
+      { icon:"◈", color:"long",  label:"Implied Volatility", title:"The Market Tells You When Something Is About to Move", body:"Every big price move starts with a volatility shift. Signal Boss reads that shift in real time — so you're positioned before the crowd reacts. No guessing. No lagging indicators. Just the market telling you what's next." },
+      { icon:"◎", color:"accent", label:"VWAP", title:"Know Whose Side the Market Is On", body:"VWAP tells you where the big money is positioned right now. Signal Boss uses it as a filter — so every signal comes with built-in context. Are you trading with the institutions or against them? Now you'll always know." },
+      { icon:"◉", color:"prop",   label:"Mean Reversion", title:"The Market Always Snaps Back", body:"When volatility spikes, price follows. Every time. Signal Boss catches that moment — right before the move — and hands you a clean entry, a defined stop, and a target. You just take the trade." },
     ],
     startTrial: "Get Started", viewDemo: "Try the Demo →",
     backtestLabel: "BACKTEST RESULTS",
