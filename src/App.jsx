@@ -3,8 +3,24 @@ import {
   ClerkProvider, SignIn, SignUp,
   useUser, useAuth, UserButton,
   SignedIn, SignedOut,
-  dark,
 } from "@clerk/clerk-react";
+
+const clerkDark = {
+  variables: {
+    colorBackground: "#111820",
+    colorText: "#e8f0f0",
+    colorTextSecondary: "#b8cccc",
+    colorPrimary: "#c9a84c",
+    colorNeutral: "#263444",
+  },
+  elements: {
+    userButtonPopoverCard: { background: "#111820", border: "1px solid #263444", boxShadow: "0 8px 32px #000a" },
+    userButtonPopoverActionButton: { color: "#e8f0f0" },
+    userButtonPopoverActionButtonText: { color: "#e8f0f0" },
+    userButtonPopoverActionButtonIcon: { color: "#b8cccc" },
+    userButtonPopoverFooter: { display: "none" },
+  },
+};
 
 const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 const API_URL   = import.meta.env.VITE_API_URL || "http://45.76.228.5:4242";
@@ -4664,7 +4680,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
           <div style={{ marginTop:10, textAlign:"center" }}><SignalCounter count={todayCount} /></div>
         </div>
         <div style={{ padding:"12px 18px", borderTop:`1px solid ${C.border}`, display:"flex", alignItems:"center", gap:10 }}>
-          <UserButton afterSignOutUrl="/" appearance={{ baseTheme: dark }} />
+          <UserButton afterSignOutUrl="/" appearance={clerkDark} />
           <div style={{ overflow:"hidden" }}>
             <div style={{ fontSize:11, color:C.text, fontWeight:600, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>
               {user?.firstName || user?.primaryEmailAddress?.emailAddress || "Trader"}
@@ -5673,7 +5689,7 @@ function AppInner() {
                   {isSubscribed ? "Dashboard →" : "Activate →"}
                 </button>
                 <div style={{ border:`1px solid ${C.silverBorder}`, borderRadius:"50%", padding:2, boxShadow:`0 0 0 1px ${C.accent}33` }}>
-                  <UserButton afterSignOutUrl="/" appearance={{ baseTheme: dark }} />
+                  <UserButton afterSignOutUrl="/" appearance={clerkDark} />
                 </div>
               </>
             ) : (
