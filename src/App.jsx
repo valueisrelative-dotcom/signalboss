@@ -660,7 +660,7 @@ function SignalCard({ signal, onDismiss, exitMode, rrPref, setRrPref, t }) {
   const isCancelled = signal.status === "CANCELLED";
   const isActive    = signal.status === "ACTIVE";
   const dirColor    = isLong ? C.long : C.short;
-  const vwapAllGood = signal.vwapsConfirming === Object.keys(signal.vwaps).length;
+  const vwapAllGood = signal.vwapsConfirming === Object.keys(signal.vwaps || {}).length;
 
   // Always ensure risk is present — generate fallback if engine didn't supply it
   const risk = (() => {
@@ -770,14 +770,14 @@ function SignalCard({ signal, onDismiss, exitMode, rrPref, setRrPref, t }) {
 
       {/* Cycles */}
       <div style={{ marginBottom:10 }}>
-        {Object.values(signal.cycles).map(cyc => <CycleRow key={cyc.label} cycle={cyc} direction={signal.direction} t={t} />)}
+        {Object.values(signal.cycles || {}).map(cyc => <CycleRow key={cyc.label} cycle={cyc} direction={signal.direction} t={t} />)}
       </div>
 
       <div style={{ height:1, background:C.border, marginBottom:10 }} />
 
       {/* VWAPs */}
       <div style={{ marginBottom:12 }}>
-        {Object.values(signal.vwaps).map(v => <VwapRow key={v.label} label={v.label} value={v.value} above={v.above} direction={signal.direction} t={t} />)}
+        {Object.values(signal.vwaps || {}).map(v => <VwapRow key={v.label} label={v.label} value={v.value} above={v.above} direction={signal.direction} t={t} />)}
       </div>
 
       {/* Entry price */}
