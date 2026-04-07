@@ -3681,7 +3681,7 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
           {t.chooserSub}
         </div>
         <div style={{ display:"flex", gap:14, flexWrap:"wrap", justifyContent:"center" }}>
-          <button onClick={() => window.location.href="mailto:info@signalboss.net?subject=Signal%20Boss%20Inquiry"} style={{ padding:"15px 42px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:15, cursor:"pointer", letterSpacing:"0.06em" }}>LET'S TALK</button>
+          <button onClick={() => onNavigate("contact")} style={{ padding:"15px 42px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:15, cursor:"pointer", letterSpacing:"0.06em" }}>LET'S TALK</button>
           <button onClick={() => onNavigate(track==="forex" ? "forex-demo" : track==="futures" ? "futures-demo" : "demo-chooser")} style={{ padding:"15px 36px", background:"transparent", color:C.long, border:`1px solid ${C.long}`, borderRadius:8, fontWeight:500, fontSize:14, cursor:"pointer" }}>{t.viewDemo}</button>
         </div>
 
