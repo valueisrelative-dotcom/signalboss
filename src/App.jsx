@@ -3644,7 +3644,7 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
           {track==="forex" ? t.forexTagline : track==="futures" ? t.tagline : t.engineTagline}
         </div>
         <div style={{ marginBottom:24, transition:"opacity 0.8s ease", opacity: heroPhase===1 ? 1 : 0 }}><SignalCounter count={signalCount} /></div>
-        <div style={{ position:"relative", minHeight:"clamp(220px,24vw,360px)", display:"flex", alignItems:"center", justifyContent:"center", width:"100%", maxWidth:800, marginBottom:24 }}>
+        <div style={{ position:"relative", minHeight:"clamp(320px,32vw,460px)", display:"flex", alignItems:"center", justifyContent:"center", width:"100%", maxWidth:800, marginBottom:24 }}>
           {/* Phase 0 — Question */}
           <div style={{ position:"absolute", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===0 ? 1 : 0, pointerEvents:"none" }}>
             <p style={{ fontSize:"clamp(13px,1.4vw,17px)", color:C.accent, fontStyle:"italic", marginBottom:16, letterSpacing:"0.08em", fontFamily:"monospace", textTransform:"uppercase" }}>Ask yourself a simple question:</p>
@@ -3677,7 +3677,7 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
             </h1>
           </div>
         </div>
-        <div style={{ fontSize:"clamp(15px,1.6vw,19px)", color:"#d0e4e4", maxWidth:660, lineHeight:1.85, marginBottom:48, fontWeight:400, textAlign:"center", whiteSpace:"pre-line" }}>
+        <div style={{ position:"relative", zIndex:10, fontSize:"clamp(15px,1.6vw,19px)", color:"#d0e4e4", maxWidth:660, lineHeight:1.85, marginBottom:48, fontWeight:400, textAlign:"center", whiteSpace:"pre-line" }}>
           {t.chooserSub}
         </div>
         <div style={{ display:"flex", gap:14, flexWrap:"wrap", justifyContent:"center" }}>
