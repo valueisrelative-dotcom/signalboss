@@ -3644,16 +3644,16 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
           {track==="forex" ? t.forexTagline : track==="futures" ? t.tagline : t.engineTagline}
         </div>
         <div style={{ marginBottom:24, transition:"opacity 0.8s ease", opacity: heroPhase===1 ? 1 : 0 }}><SignalCounter count={signalCount} /></div>
-        <div style={{ position:"relative", minHeight:"clamp(320px,32vw,460px)", display:"flex", alignItems:"center", justifyContent:"center", width:"100%", maxWidth:800, marginBottom:24 }}>
+        <div style={{ display:"grid", placeItems:"center", width:"100%", maxWidth:800, marginBottom:24 }}>
           {/* Phase 0 — Question */}
-          <div style={{ position:"absolute", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===0 ? 1 : 0, pointerEvents:"none" }}>
+          <div style={{ gridArea:"1/1", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===0 ? 1 : 0, pointerEvents: heroPhase===0 ? "auto" : "none" }}>
             <p style={{ fontSize:"clamp(13px,1.4vw,17px)", color:C.accent, fontStyle:"italic", marginBottom:16, letterSpacing:"0.08em", fontFamily:"monospace", textTransform:"uppercase" }}>Ask yourself a simple question:</p>
             <h1 style={{ fontSize:"clamp(28px,4vw,54px)", fontWeight:700, lineHeight:1.2, letterSpacing:"-0.03em", color:"#ffffff" }}>
               If charts alone were the answer…<br />why are you not already generating<br /><span style={{ color:C.long }}>consistent wealth</span> using them?
             </h1>
           </div>
           {/* Phase 1 — Headline A */}
-          <div style={{ position:"absolute", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===1 ? 1 : 0, pointerEvents: heroPhase===1 ? "auto" : "none" }}>
+          <div style={{ gridArea:"1/1", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===1 ? 1 : 0, pointerEvents: heroPhase===1 ? "auto" : "none" }}>
             <h1 style={{ fontSize: !track ? "clamp(28px,4vw,54px)" : "clamp(44px,6.5vw,86px)", fontWeight:700, lineHeight:1.15, letterSpacing:"-0.04em" }}>
               {track==="forex"
                 ? <>{t.forexHeroTitle1}<br /><span style={{ color:C.accent }}>{t.forexHeroTitle2}</span></>
@@ -3663,21 +3663,21 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
             </h1>
           </div>
           {/* Phase 2 — Headline B */}
-          <div style={{ position:"absolute", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===2 ? 1 : 0, pointerEvents: heroPhase===2 ? "auto" : "none" }}>
+          <div style={{ gridArea:"1/1", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===2 ? 1 : 0, pointerEvents: heroPhase===2 ? "auto" : "none" }}>
             <h1 style={{ fontSize:"clamp(28px,4vw,54px)", fontWeight:700, lineHeight:1.2, letterSpacing:"-0.04em" }}>
               If charts aren't making you consistently profitable...<br />
               <span style={{ color:C.long }}>don't worry — we have a solution.</span>
             </h1>
           </div>
           {/* Phase 3 — Headline C */}
-          <div style={{ position:"absolute", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===3 ? 1 : 0, pointerEvents: heroPhase===3 ? "auto" : "none" }}>
+          <div style={{ gridArea:"1/1", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===3 ? 1 : 0, pointerEvents: heroPhase===3 ? "auto" : "none" }}>
             <h1 style={{ fontSize:"clamp(28px,4vw,54px)", fontWeight:700, lineHeight:1.2, letterSpacing:"-0.04em" }}>
               Simplified for people with real lives,<br />
               <span style={{ color:C.long }}>real bills, and real reasons to get this right.</span>
             </h1>
           </div>
         </div>
-        <div style={{ position:"relative", zIndex:10, fontSize:"clamp(15px,1.6vw,19px)", color:"#d0e4e4", maxWidth:660, lineHeight:1.85, marginBottom:48, fontWeight:400, textAlign:"center", whiteSpace:"pre-line" }}>
+        <div style={{ fontSize:"clamp(15px,1.6vw,19px)", color:"#d0e4e4", maxWidth:660, lineHeight:1.85, marginBottom:48, fontWeight:400, textAlign:"center", whiteSpace:"pre-line" }}>
           {t.chooserSub}
         </div>
         <div style={{ display:"flex", gap:14, flexWrap:"wrap", justifyContent:"center" }}>
