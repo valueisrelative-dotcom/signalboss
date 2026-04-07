@@ -5890,15 +5890,22 @@ function ContactPage({ onNavigate }) {
   const inputStyle = { width:"100%", padding:"11px 14px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace", outline:"none" };
   const labelStyle = { fontSize:10, color:C.textMid, letterSpacing:"0.12em", display:"block", marginBottom:7, fontFamily:"monospace" };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!name || !email || !message) { setError("Please fill in all required fields."); return; }
     if (!email.includes("@")) { setError("Please enter a valid email address."); return; }
-    const subjectLine = encodeURIComponent(`📬 Signal Boss: ${subject || "General Inquiry"}`);
-    const body = encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\n\n${message}`
-    );
-    window.location.href = `mailto:info@signalboss.net?subject=${subjectLine}&body=${body}`;
-    setSubmitted(true);
+    setSubmitting(true); setError("");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, subject, message }),
+      });
+      if (res.ok) { setSubmitted(true); }
+      else { setError("Something went wrong. Please email info@signalboss.net directly."); }
+    } catch(e) {
+      setError("Something went wrong. Please email info@signalboss.net directly.");
+    }
+    setSubmitting(false);
   };
 
   return (
@@ -5918,9 +5925,9 @@ function ContactPage({ onNavigate }) {
         {submitted ? (
           <div style={{ background:C.surface, border:`1px solid ${C.long}44`, borderRadius:14, padding:36, textAlign:"center" }}>
             <div style={{ fontSize:36, marginBottom:16 }}>✓</div>
-            <div style={{ fontSize:20, fontWeight:700, color:C.long, marginBottom:8 }}>Your email client is opening.</div>
+            <div style={{ fontSize:20, fontWeight:700, color:C.long, marginBottom:8 }}>Message sent.</div>
             <p style={{ color:C.textMid, fontSize:14, lineHeight:1.7, marginBottom:24 }}>
-              Your message is pre-filled and ready to send to info@signalboss.net. We'll get back to you within one business day.
+              We'll get back to you at {email} within one business day.
             </p>
             <button onClick={() => onNavigate("landing")} style={{ padding:"11px 28px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:600, fontSize:13, cursor:"pointer" }}>
               Back to Signal Boss
@@ -5951,9 +5958,9 @@ function ContactPage({ onNavigate }) {
                   style={{ ...inputStyle, resize:"vertical", lineHeight:1.7 }} />
               </div>
               {error && <div style={{ fontSize:12, color:C.short, fontFamily:"monospace" }}>{error}</div>}
-              <button onClick={handleSubmit}
-                style={{ width:"100%", padding:"13px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:14, cursor:"pointer" }}>
-                Send Message →
+              <button onClick={handleSubmit} disabled={submitting}
+                style={{ width:"100%", padding:"13px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:14, cursor:"pointer", opacity:submitting?0.7:1 }}>
+                {submitting ? "Sending..." : "Send Message →"}
               </button>
               <div style={{ fontSize:11, color:C.textDim, textAlign:"center", fontFamily:"monospace" }}>
                 We respond within one business day · info@signalboss.net
