@@ -3644,7 +3644,7 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
           {track==="forex" ? t.forexTagline : track==="futures" ? t.tagline : t.engineTagline}
         </div>
         <div style={{ marginBottom:24, transition:"opacity 0.8s ease", opacity: heroPhase===1 ? 1 : 0 }}><SignalCounter count={signalCount} /></div>
-        <div style={{ position:"relative", minHeight: !track ? "clamp(220px,24vw,340px)" : "clamp(160px,18vw,260px)", display:"flex", alignItems:"center", justifyContent:"center", width:"100%", maxWidth:800, marginBottom:24 }}>
+        <div style={{ position:"relative", minHeight:"clamp(220px,24vw,360px)", display:"flex", alignItems:"center", justifyContent:"center", width:"100%", maxWidth:800, marginBottom:24 }}>
           {/* Phase 0 — Question */}
           <div style={{ position:"absolute", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===0 ? 1 : 0, pointerEvents:"none" }}>
             <p style={{ fontSize:"clamp(13px,1.4vw,17px)", color:C.accent, fontStyle:"italic", marginBottom:16, letterSpacing:"0.08em", fontFamily:"monospace", textTransform:"uppercase" }}>Ask yourself a simple question:</p>
