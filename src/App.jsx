@@ -4,26 +4,38 @@ import {
   useUser, useAuth, UserButton,
   SignedIn, SignedOut,
 } from "@clerk/clerk-react";
+import emailjs from "@emailjs/browser";
 
 const clerkDark = {
   variables: {
-    colorBackground: "#111820",
+    colorBackground: "#0e1929",
     colorText: "#e8f0f0",
     colorTextSecondary: "#b8cccc",
     colorPrimary: "#c9a84c",
-    colorNeutral: "#263444",
+    colorNeutral: "#1a2e48",
+    colorInputBackground: "#090e18",
+    colorInputText: "#e8f0f0",
   },
   elements: {
-    userButtonPopoverCard: { background: "#111820", border: "1px solid #263444", boxShadow: "0 8px 32px #000a" },
-    userButtonPopoverActionButton: { color: "#e8f0f0" },
-    userButtonPopoverActionButtonText: { color: "#e8f0f0" },
-    userButtonPopoverActionButtonIcon: { color: "#b8cccc" },
-    userButtonPopoverFooter: { display: "none" },
+    card:                             { background: "#0e1929", border: "1px solid #1a2e48", boxShadow: "0 16px 48px #000c" },
+    headerTitle:                      { color: "#e8f0f0" },
+    formFieldInput:                   { background: "#090e18", border: "1px solid #243c5e", color: "#e8f0f0", borderRadius: "7px" },
+    formFieldInput__focus:            { border: "1px solid #c9a84c88" },
+    otpCodeField:                     { gap: "10px" },
+    otpCodeFieldInput:                { background: "#090e18", border: "2px solid #243c5e", color: "#e8f0f0", borderRadius: "8px", fontSize: "20px", width: "44px", height: "52px" },
+    userButtonPopoverCard:            { background: "#0e1929", border: "1px solid #1a2e48", boxShadow: "0 8px 32px #000a" },
+    userButtonPopoverActionButton:    { color: "#e8f0f0" },
+    userButtonPopoverActionButtonText:{ color: "#e8f0f0" },
+    userButtonPopoverActionButtonIcon:{ color: "#b8cccc" },
+    userButtonPopoverFooter:          { display: "none" },
+    footer:                           { display: "none" },
+    badge:                            { display: "none" },
+    identityPreview:                  { background: "#090e18", border: "1px solid #1a2e48" },
   },
 };
 
 const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-const API_URL   = import.meta.env.VITE_API_URL || "http://45.76.228.5:4242";
+const API_URL   = import.meta.env.VITE_API_URL || (window.location.hostname === "localhost" ? "http://localhost:4242" : "/vps");
 
 const LANGS = {
   en: { label: "EN", name: "English",   flag: "🇺🇸" },
@@ -34,19 +46,42 @@ const LANGS = {
 
 const T = {
   en: {
-    tagline: "Multi-Cycle Signal Engine · Live",
-    heroTitle1: "No charts. No noise.", heroTitle2: "The Inflection Point.",
-    heroSub: "Just what matters — IV inflection signals built on multi-cycle momentum confluence and VWAP confirmation. No noise. Just the signal.",
+    tagline: "Institutional-Grade Trade Signals · Live",
+    heroTitle1: "Your kitchen table is a fine place", heroTitle2: "to change your financial picture.",
+    heroSub: "Millions of people are done waiting for a real opportunity — one that isn't a scheme, a course, or another indicator that goes nowhere. Signal Boss delivers institutional-grade trade signals with a clear entry, a defined stop, and a profit target. Built on the same frameworks professional trading desks use, but for those of us who don't have a Wall Street address.\n\nYou don't need another idea. You just need something that actually works.\n\nFollow the signal. Take the trade.",
     engineTagline: "Institutional-Grade Signal Engine · Live",
-    chooserTitle1: "No charts. No noise.", chooserTitle2: "Just what matters...", chooserTitle3: "The Inflection Point.",
-    chooserSub: "Volatility leads. Price follows. Signal Boss reads the state the market is actually in — so your decisions are based on what really moves it.",
-    whyBuilt: "MOST SIGNALS TELL YOU WHEN. NOT WHERE.",
-    whyP1: "98% of traders lose money. Nearly 100% of them use charts to make decisions.",
-    whyP2: "Think about that for a second. That's like joining a gym where 99% of members follow a workout plan that makes people weaker and fatter. Does that seem logical?",
-    whyP3a: "Charts tell you what already happened. Signal Boss tells you when ", whyP3b: "conditions are right", whyP3c: " — and there's a difference that matters enormously.",
-    whyP4: "Entry is only 20% of the equation. An essential 20%, yes — but still just 20%. The other 80% is risk management, position sizing, and smart profit-taking. Most signal services hand you an entry and walk away. That's not a system. That's half a sentence.",
-    whyP5a: "Every Signal Boss alert includes three things: ", whyP5b: "Entry Price. Smart Stop. Smart Take Profit.", whyP5c: " Where to get in. Where to cut losses. Where to start taking profits. That's the whole trade — not just the beginning of one.",
-    whyP6: "We built this because the right conditions, sized correctly, with defined risk, is what trading actually is. Everything else is noise.",
+    chooserTitle1: "Your kitchen table is a fine place", chooserTitle2: "", chooserTitle3: "to change your financial picture.",
+    chooserSub: "Millions of people are done waiting for a real opportunity — one that isn't a scheme, a course, or another indicator that goes nowhere. Signal Boss delivers institutional-grade trade signals with a clear entry, a defined stop, and a profit target. Built on the same frameworks professional trading desks use, but for those of us who don't have a Wall Street address.",
+    whyBuilt: "WHY WE BUILT SIGNAL BOSS",
+    whyP1: "Imagine joining a gym where 98% of members get weaker and fatter following the same workout plan. You'd find a different gym.",
+    whyP2: "Chart-based trading is that workout plan. And the numbers prove it — financial regulators in Europe tracked retail traders across thousands of accounts and found that between 74% and 89% lose money consistently. In some markets, that number approaches 98%.",
+    whyP3a: "The common thread? ", whyP3b: "Charts.", whyP3c: "",
+    whyP4: "Charts show you what already happened. They don't show you why it happened, or when conditions are right for it to happen again. Trading off a chart is like driving by staring at the rearview mirror — you can see exactly where you've been, and nothing about where you're going.",
+    whyP5a: "Signal Boss is built on the institutional frameworks that professional trading desks actually use — ", whyP5b: "volatility conditions, momentum cycles, and institutional money flow.", whyP5c: " When those align in a specific way, the signal fires. You get the entry, the stop, and the target.",
+    whyP6: "You don't need to understand how the engine works. You just need to know when to drive.",
+    whyHeadline: "If Charts Worked, 98% of Traders Wouldn't Be Losing.",
+    whyGym: "Imagine joining a gym where 98% of members get weaker and fatter following the same workout plan. You'd find a different gym. Chart-based trading is that workout plan. And the numbers prove it — financial regulators in Europe tracked retail traders across thousands of accounts and found that between 74% and 89% lose money consistently. In some markets, that number approaches 98%. The common thread? Charts.",
+    whyChartsShowa: "Charts show you what already happened.",
+    whyChartsShowb: "They Don't Show Conditions.",
+    whyProblemTitle: "The Problem Isn't Charts. It's Using Them Without The Right Context.",
+    whyProblemBody: "The problem is that charts alone don't tell you if the market is in a condition where a large, sustained move is statistically likely.",
+    whyIntuitive: "Intuitively, you already know this.",
+    whyVolatility: "That information doesn't live on a chart. It lives in volatility — specifically, in implied volatility derived from exchange-traded futures, where institutional positioning is expressed first and retail traders rarely look.",
+    whyRhythm: ["Price action tells you what the market already did.", "Market structure tells you where it's been.", "Volatility tells you what it's preparing to do right now."],
+    whyForwardLooking: "Only one of those is forward-looking.",
+    whyReplace: "Signal Boss doesn't replace your chart process. It gives you the layer that's been missing from it.",
+    whyWhenFires: "When a Signal Boss alert fires, it means volatility has reached an inflection point — the condition under which large price movement statistically occurs. If you still want to look at your chart before you pull the trigger, look. Most of the time, you'll see the chart confirming what the volatility already told you.",
+    whyThreeComponents: "Every Signal Boss alert delivers three components:",
+    whyThreeItems: ["Entry Price", "Smart Stop", "Smart Take Profit"],
+    whyNotJust: "Not just an entry and a wish. A complete trade — built from the same volatility data that institutions use to price risk.",
+    whyQuote: "\"Correct volatility regime + defined risk + proper sizing = professional trading. Get the Signal, confirm with your chart.\"",
+    whyAskSimple: "Ask yourself a simple question:",
+    whyAskQuestion: "If charts alone were the answer… why are you not already generating consistent wealth using them?",
+    whyDoesNotPredict: "Signal Boss does not predict candles. It allows you to focus on what actually makes money:",
+    whyRisk: "managing your risk",
+    whyProfits: "managing your profits",
+    whyIdentify: "We identify volatility expansion conditions — the environment where large, sustained price movement statistically occurs. Trade with the context your charts were never designed to give you.",
+    whyGymClosing: "The gym is still full. You don't have to stay on the same plan.",
     teamName: "The Signal Boss Team", teamSub: "Built by traders, for traders",
     calcLabel: "FREE TOOL FOR PROP FIRM & RETAIL TRADERS",
     calcTitle: "The Calculator That Prop Firm Traders Say Is Worth the Subscription Alone.",
@@ -60,16 +95,16 @@ const T = {
       ["Daily Loss Limits", "Never accidentally breach a daily loss rule"],
     ],
     exploreFuturesLabel: "EXPLORE FUTURES", exploreForexLabel: "EXPLORE FOREX",
-    futuresDesc: "ES, NQ, CL, GC, RTY, ZB and currency futures /6E, /6B, /6A. Multi-cycle momentum signals with VWAP confirmation on the contracts where institutional positioning is most transparent.",
-    futuresFeatures: ["ES · NQ · CL · GC · RTY · ZB", "/6E · /6B · /6A", "Account Risk Calculator included", "Smart Stop & Take Profit on every signal"],
+    futuresDesc: "ES, NQ, CL, GC, RTY, ZN and currency futures /6E. Multi-cycle momentum signals with VWAP confirmation on the contracts where institutional positioning is most transparent.",
+    futuresFeatures: ["ES · NQ · CL · GC · RTY", "ZN · /6E", "Account Risk Calculator included", "Smart Stop & Take Profit on every signal"],
     forexLabel: "FOREX TRADERS", forexHeadline: "Trade the intelligence.",
-    forexDesc: "EUR/USD, GBP/USD and AUD/USD. Multi-cycle momentum signals derived from currency futures — where institutional price discovery actually begins.",
-    forexFeatures: ["EUR/USD · GBP/USD · AUD/USD", "Derived from /6E · /6B · /6A futures", "Account Risk Calculator included", "Smart Stop & Take Profit on every signal"],
+    forexDesc: "EUR/USD. Multi-cycle momentum signals derived from /6E currency futures — where institutional price discovery actually begins.",
+    forexFeatures: ["EUR/USD · via /6E futures", "Derived from exchange-traded /6E futures", "Account Risk Calculator included", "Smart Stop & Take Profit on every signal"],
     trialNote: "30-day money-back guarantee · Cancel anytime",
     exploreFutures: "Explore Futures →", exploreForex: "Explore Forex →",
     forexTagline: "Forex Signal Intelligence · Live",
     forexHeroTitle1: "No charts. No noise.", forexHeroTitle2: "The Inflection Point.",
-    forexHeroSub: "Currency futures are where institutions show their hand. Signal Boss reads cycle momentum on /6E, /6B, and /6A — giving forex traders institutional-grade intelligence on EUR/USD, GBP/USD, and AUD/USD.",
+    forexHeroSub: "Currency futures are where institutions show their hand. Signal Boss reads cycle momentum on /6E — giving forex traders institutional-grade intelligence on EUR/USD.",
     methodologyLabel: "THE METHODOLOGY",
     methodologyTitle: "The market tells you where price is going.",
     methodologyAccent: "We just listen.",
@@ -82,6 +117,17 @@ const T = {
     startTrial: "Get Started", viewDemo: "Try the Demo →",
     backtestLabel: "BACKTEST RESULTS",
     backtestHeadline: "How the ES signal performed", backtestSub: "over 30 days.",
+    realNumbers: "Real numbers.", realData: "Real historical data.",
+    backtestSubtitle: "Walk-forward backtest · 5-min bars",
+    chooseTrackLabel: "CHOOSE YOUR TRACK", chooseTrackTitle: "Futures or Forex — same intelligence, same edge.",
+    methodologyTitle: "How Signal Boss Works",
+    earlyUsersLabel: "EARLY USERS", earlyUsersTitle: "What traders are saying", earlyUsersSub: "From our beta group — real traders, real feedback.",
+    knowYourFitLabel: "KNOW YOUR FIT", knowYourFitTitle: "Signal Boss is built for some traders.", knowYourFitSub: "Not all of them.",
+    fitForLabel: "THIS IS FOR YOU IF...", fitNotLabel: "THIS IS NOT FOR YOU IF...",
+    fitFor: ["You trade futures actively and want confluence-based signals, not noise","You're working through a prop firm challenge or protecting your own trading account","You understand that signals are tools, not guarantees — and trade accordingly","You want to know why a signal fired, not just that it did","You're comfortable making your own trading decisions with better information","You value clean, minimal interfaces over cluttered dashboards"],
+    fitNot: ["You're looking for a fully automated system that trades for you","You expect signals to be profitable without your own risk management","You're a complete beginner with no understanding of futures markets","You want passive investing or long-only equity strategies","You're not prepared to lose capital — trading involves real financial risk","You need someone else to be responsible for your trading decisions"],
+    fitForForex: ["You trade major forex pairs or crosses and want institutional signal intelligence","You're working through an FTMO, FundedNext, or other forex prop challenge","You understand that currency futures are a leading indicator for spot forex","You want to know why a signal fired — derived from which futures, at what confluence","You're comfortable making your own trading decisions with better information","You value clean, transparent methodology over black-box arrows on a chart"],
+    fitNotForex: ["You're looking for a fully automated system that trades for you","You expect signals to be profitable without your own risk management","You're a complete beginner with no understanding of forex or currency markets","You want a copy-trading or managed account service","You're not prepared to lose capital — trading involves real financial risk","You need someone else to be responsible for your trading decisions"],
     backtestDesc: "Full trade-by-trade log available inside the dashboard",
     backtestDescSub: "Every entry, stop, target, exit price, hold time, and result — with live forward tracking as new signals fire.",
     exampleSignal: "EXAMPLE SIGNAL", howItWorks: "The Edge",
@@ -114,9 +160,9 @@ const T = {
     propTitle: "Account Risk Calculator",
     propSub: "Position sizing and risk management for every serious trader — prop challenge or personal account",
     features: {
-      "01": { title: "The Signal Fires", desc: "When volatility shifts and price confirms, you get an alert. Entry price, stop, and target — all included. Nothing to calculate." },
-      "02": { title: "Context Is Built In", desc: "Every signal tells you whether you're trading with or against the big money. No second-guessing the setup." },
-      "03": { title: "Strength Is Graded", desc: "Trigger A is early. Trigger AA is stronger. Trigger AAA is when everything lines up. You decide how aggressive you want to be." },
+      "01": { title: "The Signal Fires", desc: "When the market sets up, you get an alert. No waiting. No watching. No staring at charts. Just a clean notification the moment conditions align — with everything you need already included." },
+      "02": { title: "Everything You Need Is In the Alert", desc: "Every Signal Boss alert delivers three things:\n\n◆ Entry Price — exactly where to get in. No guesswork.\n◆ Smart Stop — where to exit if the trade goes wrong, so you always know your max loss before you're in.\n◆ Smart Take Profit — where to take your money off the table. Typically 3 to 4 times what you risked.\n\nNothing to calculate. Nothing to interpret. Just act.\n\nIf you're just getting started (or still wondering why you're not making serious money with charts), this matters.\nThe single biggest trap new traders fall into is trading off charts — reacting to price after it's already moved. It looks logical. It feels professional. And it has cost countless traders everything. Signal Boss is built on what actually moves markets, not what already happened. We'll show you the difference — and keep you on the right side of it." },
+      "03": { title: "You Always Know What You're Walking Into", desc: "Every signal tells you whether you're trading with or against institutional money flow. That context is built in — you never have to wonder if the setup is real." },
       "04": { title: "Just Take the Trade", desc: "No charts. No noise. A clean card with everything you need — the moment conditions align." },
     },
     futuresPlans: [
@@ -143,6 +189,29 @@ const T = {
     whyP4: "La entrada es solo el 20% de la ecuación. Un 20% esencial, sí — pero solo el 20%. El otro 80% es gestión de riesgo, tamaño de posición y toma de ganancias inteligente. La mayoría de servicios te dan una entrada y se van. Eso no es un sistema. Eso es media frase.",
     whyP5a: "Cada alerta de Signal Boss incluye tres cosas: ", whyP5b: "Precio de Entrada. Stop Inteligente. Toma de Ganancias Inteligente.", whyP5c: " Dónde entrar. Dónde cortar pérdidas. Dónde comenzar a tomar ganancias. Ese es el trade completo.",
     whyP6: "Lo construimos porque las condiciones correctas, bien dimensionadas, con riesgo definido, es lo que el trading realmente es. Todo lo demás es ruido.",
+    whyHeadline: "Si los gráficos funcionaran, el 98% no estaría perdiendo.",
+    whyGym: "Imagina unirte a un gimnasio y seguir un plan de entrenamiento que deja al 98% de sus miembros más débiles y con más grasa. El trading basado en gráficos es ese 'plan de entrenamiento' para muchos traders, y simplemente los está empobreciendo financieramente. Signal Boss permite a los traders obtener señales institucionales válidas, activadas por las condiciones que realmente mueven los mercados.",
+    whyChartsShowa: "Los gráficos te muestran lo que ya ocurrió.",
+    whyChartsShowb: "No muestran las condiciones.",
+    whyProblemTitle: "El problema no son los gráficos. Es usarlos sin el contexto adecuado.",
+    whyProblemBody: "El problema es que los gráficos solos no te dicen si el mercado está en una condición donde un movimiento grande y sostenido es estadísticamente probable.",
+    whyIntuitive: "Intuitivamente, ya lo sabes.",
+    whyVolatility: "Esa información no vive en un gráfico. Vive en la volatilidad — específicamente, en la volatilidad implícita derivada de los futuros cotizados en bolsa, donde el posicionamiento institucional se expresa primero y los traders minoristas raramente miran.",
+    whyRhythm: ["La acción del precio te dice lo que el mercado ya hizo.", "La estructura del mercado te dice dónde ha estado.", "La volatilidad te dice lo que está preparando para hacer ahora mismo."],
+    whyForwardLooking: "Solo uno de ellos es prospectivo.",
+    whyReplace: "Signal Boss no reemplaza tu proceso de gráficos. Te da la capa que le ha faltado.",
+    whyWhenFires: "Cuando una alerta de Signal Boss se activa, significa que la volatilidad ha alcanzado un punto de inflexión — la condición bajo la cual el gran movimiento de precios ocurre estadísticamente. Si aún quieres mirar tu gráfico antes de ejecutar, míralo. La mayoría de las veces, verás el gráfico confirmando lo que la volatilidad ya te dijo.",
+    whyThreeComponents: "Cada alerta de Signal Boss entrega tres componentes:",
+    whyThreeItems: ["Precio de Entrada", "Stop Inteligente", "Toma de Ganancias Inteligente"],
+    whyNotJust: "No solo una entrada y un deseo. Un trade completo — construido con los mismos datos de volatilidad que las instituciones usan para calcular el riesgo.",
+    whyQuote: "\"Régimen de volatilidad correcto + riesgo definido + tamaño adecuado = trading profesional. Obtén la Señal, confirma con tu gráfico.\"",
+    whyAskSimple: "Hazte una pregunta simple:",
+    whyAskQuestion: "Si los gráficos solos fueran la respuesta… ¿por qué no estás generando riqueza consistente con ellos?",
+    whyDoesNotPredict: "Signal Boss no predice velas. Te permite enfocarte en lo que realmente hace ganar dinero:",
+    whyRisk: "gestionar tu riesgo",
+    whyProfits: "gestionar tus ganancias",
+    whyIdentify: "Identificamos condiciones de expansión de volatilidad — el entorno donde el gran movimiento de precios sostenido ocurre estadísticamente. Opera con el contexto que tus gráficos nunca fueron diseñados para darte.",
+    whyGymClosing: "El gimnasio sigue lleno. No tienes que quedarte en el mismo plan.",
     teamName: "El Equipo de Signal Boss", teamSub: "Construido por traders, para traders",
     calcLabel: "PARA CADA TRADER SERIO",
     calcTitle: "Conoce tus Números Antes de Operar",
@@ -156,11 +225,11 @@ const T = {
       ["Límites de Pérdida Diaria", "Nunca incumplas accidentalmente una regla diaria"],
     ],
     exploreFuturesLabel: "EXPLORAR FUTUROS", exploreForexLabel: "EXPLORAR FOREX",
-    futuresDesc: "ES, NQ, CL, GC, RTY, ZB y futuros de divisas /6E, /6B, /6A. Señales de momentum multi-ciclo con confirmación VWAP en los contratos donde el posicionamiento institucional es más transparente.",
-    futuresFeatures: ["ES · NQ · CL · GC · RTY · ZB", "/6E · /6B · /6A", "Calculadora de Riesgo incluida", "Stop Inteligente y Toma de Ganancias en cada señal"],
+    futuresDesc: "ES, NQ, CL, GC, RTY, ZN y futuros de divisas /6E. Señales de momentum multi-ciclo con confirmación VWAP en los contratos donde el posicionamiento institucional es más transparente.",
+    futuresFeatures: ["ES · NQ · CL · GC · RTY", "ZN · /6E", "Calculadora de Riesgo incluida", "Stop Inteligente y Toma de Ganancias en cada señal"],
     forexLabel: "TRADERS DE FOREX", forexHeadline: "Opera con la inteligencia.",
-    forexDesc: "EUR/USD, GBP/USD y AUD/USD. Señales de momentum multi-ciclo derivadas de futuros de divisas — donde comienza realmente el descubrimiento de precios institucional.",
-    forexFeatures: ["EUR/USD · GBP/USD · AUD/USD", "Derivado de futuros /6E · /6B · /6A", "Calculadora de Riesgo incluida", "Stop Inteligente y Toma de Ganancias en cada señal"],
+    forexDesc: "EUR/USD. Señales de momentum multi-ciclo derivadas de futuros /6E — donde comienza realmente el descubrimiento de precios institucional.",
+    forexFeatures: ["EUR/USD · via futuros /6E", "Derivado de futuros /6E", "Calculadora de Riesgo incluida", "Stop Inteligente y Toma de Ganancias en cada señal"],
     trialNote: "Garantía de devolución 30 días · Cancela cuando quieras",
     exploreFutures: "Explorar Futuros →", exploreForex: "Explorar Forex →",
     forexHeroTitle1: "Sin gráficos. Sin ruido.", forexHeroTitle2: "El Punto de Inflexión.",
@@ -177,6 +246,17 @@ const T = {
     startTrial: "Comenzar", viewDemo: "Ver Demo →",
     backtestLabel: "RESULTADOS DEL BACKTEST",
     backtestHeadline: "Cómo se desempeñó la señal ES", backtestSub: "en 30 días.",
+    realNumbers: "Números reales.", realData: "Datos históricos reales.",
+    backtestSubtitle: "Backtest walk-forward · barras de 5 min",
+    chooseTrackLabel: "ELIGE TU TRACK", chooseTrackTitle: "Futuros o Forex — la misma inteligencia, la misma ventaja.",
+    methodologyTitle: "Cómo Funciona Signal Boss",
+    earlyUsersLabel: "PRIMEROS USUARIOS", earlyUsersTitle: "Lo que dicen los traders", earlyUsersSub: "De nuestro grupo beta — traders reales, comentarios reales.",
+    knowYourFitLabel: "CONÓCETE", knowYourFitTitle: "Signal Boss está hecho para algunos traders.", knowYourFitSub: "No para todos.",
+    fitForLabel: "ES PARA TI SI...", fitNotLabel: "NO ES PARA TI SI...",
+    fitFor: ["Operas futuros activamente y quieres señales basadas en confluencia, no ruido","Estás pasando un desafío de prop firm o protegiendo tu cuenta propia","Entiendes que las señales son herramientas, no garantías — y operas en consecuencia","Quieres saber por qué se activó una señal, no solo que se activó","Te sientes cómodo tomando tus propias decisiones con mejor información","Valoras interfaces limpias y mínimas sobre paneles recargados"],
+    fitNot: ["Buscas un sistema totalmente automatizado que opere por ti","Esperas que las señales sean rentables sin tu propia gestión de riesgo","Eres un principiante sin conocimiento de mercados de futuros","Quieres inversión pasiva o estrategias solo de acciones","No estás preparado para perder capital — operar implica riesgo real","Necesitas que alguien más sea responsable de tus decisiones"],
+    fitForForex: ["Operas pares de forex mayores y quieres inteligencia de señales institucional","Estás pasando un desafío FTMO, FundedNext u otro de forex","Entiendes que los futuros de divisas son un indicador adelantado del spot forex","Quieres saber por qué se activó una señal — de qué futuros, con qué confluencia","Te sientes cómodo tomando tus propias decisiones con mejor información","Valoras metodología clara y transparente sobre flechas en un gráfico"],
+    fitNotForex: ["Buscas un sistema totalmente automatizado","Esperas señales rentables sin tu propia gestión de riesgo","Eres principiante sin conocimiento de forex o divisas","Quieres un servicio de copy-trading o cuenta gestionada","No estás preparado para perder capital","Necesitas que alguien más sea responsable de tus decisiones"],
     backtestDesc: "Registro completo operación por operación dentro del panel",
     backtestDescSub: "Cada entrada, stop, objetivo, precio de salida, tiempo de holding y resultado — con seguimiento en tiempo real de nuevas señales.",
     exampleSignal: "SEÑAL DE EJEMPLO", howItWorks: "La Ventaja",
@@ -236,6 +316,29 @@ const T = {
     whyP4: "A entrada é apenas 20% da equação. Um 20% essencial, sim — mas ainda 20%. Os outros 80% são gestão de risco, dimensionamento de posição e realização de lucros inteligente. A maioria dos serviços te dá uma entrada e vai embora. Isso não é um sistema. É meia frase.",
     whyP5a: "Cada alerta do Signal Boss inclui três coisas: ", whyP5b: "Preço de Entrada. Stop Inteligente. Take Profit Inteligente.", whyP5c: " Onde entrar. Onde cortar perdas. Onde começar a realizar lucros. Esse é o trade completo.",
     whyP6: "Construímos isso porque as condições certas, bem dimensionadas, com risco definido, é o que o trading realmente é. Todo o resto é ruído.",
+    whyHeadline: "Se os gráficos funcionassem, 98% não estariam perdendo.",
+    whyGym: "Imagine entrar numa academia e seguir um plano de treino que deixa 98% dos seus membros mais fracos e mais gordos. O trading baseado em gráficos é esse 'plano de treino' para muitos traders, e simplesmente está os empobrecendo financeiramente. O Signal Boss permite que traders obtenham sinais institucionais válidos, acionados pelas condições que realmente movem os mercados.",
+    whyChartsShowa: "Os gráficos mostram o que já aconteceu.",
+    whyChartsShowb: "Eles não mostram as condições.",
+    whyProblemTitle: "O problema não são os gráficos. É usá-los sem o contexto certo.",
+    whyProblemBody: "O problema é que os gráficos sozinhos não dizem se o mercado está numa condição onde um movimento grande e sustentado é estatisticamente provável.",
+    whyIntuitive: "Intuitivamente, você já sabe disso.",
+    whyVolatility: "Essa informação não está num gráfico. Ela vive na volatilidade — especificamente, na volatilidade implícita derivada de futuros negociados em bolsa, onde o posicionamento institucional se expressa primeiro e os traders de varejo raramente olham.",
+    whyRhythm: ["A ação do preço te diz o que o mercado já fez.", "A estrutura do mercado te diz onde ele esteve.", "A volatilidade te diz o que ele está se preparando para fazer agora."],
+    whyForwardLooking: "Apenas um desses é prospectivo.",
+    whyReplace: "O Signal Boss não substitui seu processo de gráficos. Ele te dá a camada que tem faltado.",
+    whyWhenFires: "Quando um alerta do Signal Boss é disparado, significa que a volatilidade atingiu um ponto de inflexão — a condição sob a qual o grande movimento de preço ocorre estatisticamente. Se ainda quiser olhar seu gráfico antes de executar, olhe. Na maioria das vezes, você verá o gráfico confirmando o que a volatilidade já te disse.",
+    whyThreeComponents: "Cada alerta do Signal Boss entrega três componentes:",
+    whyThreeItems: ["Preço de Entrada", "Stop Inteligente", "Take Profit Inteligente"],
+    whyNotJust: "Não apenas uma entrada e um desejo. Um trade completo — construído com os mesmos dados de volatilidade que as instituições usam para calcular o risco.",
+    whyQuote: "\"Regime de volatilidade correto + risco definido + tamanho adequado = trading profissional. Obtenha o Sinal, confirme com seu gráfico.\"",
+    whyAskSimple: "Faça a si mesmo uma pergunta simples:",
+    whyAskQuestion: "Se os gráficos sozinhos fossem a resposta… por que você ainda não está gerando riqueza consistente com eles?",
+    whyDoesNotPredict: "O Signal Boss não prevê velas. Ele permite que você se concentre no que realmente gera dinheiro:",
+    whyRisk: "gerenciar seu risco",
+    whyProfits: "gerenciar seus lucros",
+    whyIdentify: "Identificamos condições de expansão de volatilidade — o ambiente onde o grande movimento de preço sustentado ocorre estatisticamente. Opere com o contexto que seus gráficos nunca foram projetados para te dar.",
+    whyGymClosing: "A academia ainda está cheia. Você não precisa continuar no mesmo plano.",
     teamName: "A Equipe Signal Boss", teamSub: "Construído por traders, para traders",
     calcLabel: "PARA TODO TRADER SÉRIO",
     calcTitle: "Conheça Seus Números Antes de Operar",
@@ -249,11 +352,11 @@ const T = {
       ["Limites de Perda Diária",    "Nunca viole acidentalmente uma regra de perda diária"],
     ],
     exploreFuturesLabel: "EXPLORAR FUTUROS", exploreForexLabel: "EXPLORAR FOREX",
-    futuresDesc: "ES, NQ, CL, GC, RTY, ZB e futuros de moedas /6E, /6B, /6A. Sinais de momentum multi-ciclo com confirmação VWAP nos contratos onde o posicionamento institucional é mais transparente.",
-    futuresFeatures: ["ES · NQ · CL · GC · RTY · ZB", "/6E · /6B · /6A", "Calculadora de Risco incluída", "Stop Inteligente e Take Profit em cada sinal"],
+    futuresDesc: "ES, NQ, CL, GC, RTY, ZN e futuros de moedas /6E. Sinais de momentum multi-ciclo com confirmação VWAP nos contratos onde o posicionamento institucional é mais transparente.",
+    futuresFeatures: ["ES · NQ · CL · GC · RTY", "ZN · /6E", "Calculadora de Risco incluída", "Stop Inteligente e Take Profit em cada sinal"],
     forexLabel: "TRADERS DE FOREX", forexHeadline: "Opere com a inteligência.",
-    forexDesc: "EUR/USD, GBP/USD e AUD/USD. Sinais de momentum multi-ciclo derivados de futuros de moedas — onde começa realmente a descoberta de preços institucional.",
-    forexFeatures: ["EUR/USD · GBP/USD · AUD/USD", "Derivado de futuros /6E · /6B · /6A", "Calculadora de Risco incluída", "Stop Inteligente e Take Profit em cada sinal"],
+    forexDesc: "EUR/USD. Sinais de momentum multi-ciclo derivados de futuros /6E — onde começa realmente a descoberta de preços institucional.",
+    forexFeatures: ["EUR/USD · via futuros /6E", "Derivado de futuros /6E", "Calculadora de Risco incluída", "Stop Inteligente e Take Profit em cada sinal"],
     trialNote: "Garantia de devolução 30 dias · Cancele quando quiser",
     exploreFutures: "Explorar Futuros →", exploreForex: "Explorar Forex →",
     forexHeroTitle1: "Sem gráficos. Sem ruído.", forexHeroTitle2: "O Ponto de Inflexão.",
@@ -270,6 +373,17 @@ const T = {
     startTrial: "Começar", viewDemo: "Ver Demo →",
     backtestLabel: "RESULTADOS DO BACKTEST",
     backtestHeadline: "Como o sinal ES se saiu", backtestSub: "em 30 dias.",
+    realNumbers: "Números reais.", realData: "Dados históricos reais.",
+    backtestSubtitle: "Backtest walk-forward · barras de 5 min",
+    chooseTrackLabel: "ESCOLHA SEU TRACK", chooseTrackTitle: "Futuros ou Forex — a mesma inteligência, a mesma vantagem.",
+    methodologyTitle: "Como o Signal Boss Funciona",
+    earlyUsersLabel: "PRIMEIROS USUÁRIOS", earlyUsersTitle: "O que os traders estão dizendo", earlyUsersSub: "Do nosso grupo beta — traders reais, feedback real.",
+    knowYourFitLabel: "CONHEÇA SEU PERFIL", knowYourFitTitle: "Signal Boss é feito para alguns traders.", knowYourFitSub: "Não para todos.",
+    fitForLabel: "É PARA VOCÊ SE...", fitNotLabel: "NÃO É PARA VOCÊ SE...",
+    fitFor: ["Você opera futuros ativamente e quer sinais baseados em confluência, não ruído","Você está passando por um desafio de prop firm ou protegendo sua conta","Você entende que sinais são ferramentas, não garantias","Você quer saber por que um sinal foi ativado, não apenas que foi","Você se sente confortável tomando suas próprias decisões com melhor informação","Você valoriza interfaces limpas e simples"],
+    fitNot: ["Você busca um sistema totalmente automatizado","Você espera sinais rentáveis sem sua própria gestão de risco","Você é iniciante sem conhecimento de mercados futuros","Você quer investimento passivo ou estratégias de renda variável","Você não está preparado para perder capital","Você precisa que outra pessoa seja responsável pelas suas decisões"],
+    fitForForex: ["Você opera pares de forex principais e quer inteligência de sinais institucional","Você está passando por um desafio FTMO, FundedNext ou similar","Você entende que futuros de moedas são um indicador antecedente do forex spot","Você quer saber por que um sinal foi ativado — de quais futuros, com qual confluência","Você se sente confortável tomando suas próprias decisões","Você valoriza metodologia clara e transparente"],
+    fitNotForex: ["Você busca um sistema totalmente automatizado","Você espera sinais rentáveis sem gestão de risco própria","Você é iniciante sem conhecimento de forex","Você quer copy-trading ou conta gerenciada","Você não está preparado para perder capital","Você precisa que outra pessoa seja responsável pelas suas decisões"],
     backtestDesc: "Registro completo operação por operação dentro do painel",
     backtestDescSub: "Cada entrada, stop, alvo, preço de saída, tempo de holding e resultado — com rastreamento em tempo real de novos sinais.",
     exampleSignal: "SINAL DE EXEMPLO", howItWorks: "A Vantagem",
@@ -329,6 +443,29 @@ const T = {
     whyP4: "L'entrée ne représente que 20% de l'équation. Un 20% essentiel, certes — mais seulement 20%. Les 80% restants sont la gestion du risque, le dimensionnement des positions et la prise de profits intelligente. La plupart des services vous donnent une entrée et s'en vont. Ce n'est pas un système. C'est une demi-phrase.",
     whyP5a: "Chaque alerte Signal Boss inclut trois choses : ", whyP5b: "Prix d'Entrée. Stop Intelligent. Prise de Profit Intelligente.", whyP5c: " Où entrer. Où couper les pertes. Où commencer à prendre des profits. C'est le trade complet.",
     whyP6: "Nous l'avons construit parce que les bonnes conditions, bien dimensionnées, avec un risque défini, c'est ce qu'est réellement le trading. Tout le reste est du bruit.",
+    whyHeadline: "Si les graphiques fonctionnaient, 98% ne seraient pas en train de perdre.",
+    whyGym: "Imaginez rejoindre une salle de sport et suivre un programme qui rend 98% de ses membres plus faibles et plus gros. Le trading basé sur les graphiques est ce 'programme' pour beaucoup de traders, et simplement dit, il les appauvrit financièrement. Signal Boss permet aux traders d'obtenir des signaux institutionnels valides, déclenchés par les conditions qui font vraiment bouger les marchés.",
+    whyChartsShowa: "Les graphiques vous montrent ce qui s'est déjà passé.",
+    whyChartsShowb: "Ils ne montrent pas les conditions.",
+    whyProblemTitle: "Le problème n'est pas les graphiques. C'est les utiliser sans le bon contexte.",
+    whyProblemBody: "Le problème est que les graphiques seuls ne vous disent pas si le marché est dans une condition où un mouvement important et soutenu est statistiquement probable.",
+    whyIntuitive: "Intuitivement, vous le savez déjà.",
+    whyVolatility: "Cette information ne vit pas dans un graphique. Elle vit dans la volatilité — spécifiquement dans la volatilité implicite dérivée des contrats à terme négociés en bourse, où le positionnement institutionnel s'exprime en premier et où les traders particuliers regardent rarement.",
+    whyRhythm: ["L'action des prix vous dit ce que le marché a déjà fait.", "La structure du marché vous dit où il a été.", "La volatilité vous dit ce qu'il se prépare à faire maintenant."],
+    whyForwardLooking: "Un seul d'entre eux est prospectif.",
+    whyReplace: "Signal Boss ne remplace pas votre processus de graphiques. Il vous donne la couche qui lui manquait.",
+    whyWhenFires: "Quand une alerte Signal Boss se déclenche, cela signifie que la volatilité a atteint un point d'inflexion — la condition sous laquelle un grand mouvement de prix se produit statistiquement. Si vous souhaitez encore consulter votre graphique avant d'exécuter, regardez. La plupart du temps, vous verrez le graphique confirmer ce que la volatilité vous avait déjà dit.",
+    whyThreeComponents: "Chaque alerte Signal Boss fournit trois composantes :",
+    whyThreeItems: ["Prix d'Entrée", "Stop Intelligent", "Prise de Profit Intelligente"],
+    whyNotJust: "Pas seulement une entrée et un vœu. Un trade complet — construit à partir des mêmes données de volatilité que les institutions utilisent pour calculer le risque.",
+    whyQuote: "\"Régime de volatilité correct + risque défini + dimensionnement approprié = trading professionnel. Obtenez le Signal, confirmez avec votre graphique.\"",
+    whyAskSimple: "Posez-vous une question simple :",
+    whyAskQuestion: "Si les graphiques seuls étaient la réponse… pourquoi ne générez-vous pas déjà une richesse régulière avec eux ?",
+    whyDoesNotPredict: "Signal Boss ne prédit pas les chandeliers. Il vous permet de vous concentrer sur ce qui fait vraiment gagner de l'argent :",
+    whyRisk: "gérer votre risque",
+    whyProfits: "gérer vos profits",
+    whyIdentify: "Nous identifions les conditions d'expansion de la volatilité — l'environnement où le grand mouvement de prix soutenu se produit statistiquement. Tradez avec le contexte que vos graphiques n'ont jamais été conçus pour vous donner.",
+    whyGymClosing: "La salle de sport est toujours pleine. Vous n'êtes pas obligé de rester sur le même programme.",
     teamName: "L'Équipe Signal Boss", teamSub: "Construit par des traders, pour des traders",
     calcLabel: "POUR CHAQUE TRADER SÉRIEUX",
     calcTitle: "Connaissez Vos Chiffres Avant de Trader",
@@ -342,11 +479,11 @@ const T = {
       ["Limites de Perte Journalière", "Ne dépassez jamais accidentellement une règle journalière"],
     ],
     exploreFuturesLabel: "EXPLORER FUTURES", exploreForexLabel: "EXPLORER FOREX",
-    futuresDesc: "ES, NQ, CL, GC, RTY, ZB et futures de devises /6E, /6B, /6A. Signaux de momentum multi-cycle avec confirmation VWAP sur les contrats où le positionnement institutionnel est le plus transparent.",
-    futuresFeatures: ["ES · NQ · CL · GC · RTY · ZB", "/6E · /6B · /6A", "Calculateur de Risque inclus", "Stop Intelligent et Prise de Profit sur chaque signal"],
+    futuresDesc: "ES, NQ, CL, GC, RTY, ZN et futures de devises /6E. Signaux de momentum multi-cycle avec confirmation VWAP sur les contrats où le positionnement institutionnel est le plus transparent.",
+    futuresFeatures: ["ES · NQ · CL · GC · RTY", "ZN · /6E", "Calculateur de Risque inclus", "Stop Intelligent et Prise de Profit sur chaque signal"],
     forexLabel: "TRADERS FOREX", forexHeadline: "Tradez avec l'intelligence.",
-    forexDesc: "EUR/USD, GBP/USD et AUD/USD. Signaux de momentum multi-cycle dérivés des futures de devises — là où la découverte des prix institutionnels commence vraiment.",
-    forexFeatures: ["EUR/USD · GBP/USD · AUD/USD", "Dérivé des futures /6E · /6B · /6A", "Calculateur de Risque inclus", "Stop Intelligent et Prise de Profit sur chaque signal"],
+    forexDesc: "EUR/USD. Signaux de momentum multi-cycle dérivés des futures /6E — là où la découverte des prix institutionnels commence vraiment.",
+    forexFeatures: ["EUR/USD · via futures /6E", "Dérivé des futures /6E", "Calculateur de Risque inclus", "Stop Intelligent et Prise de Profit sur chaque signal"],
     trialNote: "Garantie de remboursement 30 jours · Annulez à tout moment",
     exploreFutures: "Explorer Futures →", exploreForex: "Explorer Forex →",
     forexHeroTitle1: "Pas de graphiques. Pas de bruit.", forexHeroTitle2: "Le Point d'Inflexion.",
@@ -363,6 +500,17 @@ const T = {
     startTrial: "Commencer", viewDemo: "Voir la Démo →",
     backtestLabel: "RÉSULTATS DU BACKTEST",
     backtestHeadline: "Performance du signal ES", backtestSub: "sur 30 jours.",
+    realNumbers: "Chiffres réels.", realData: "Données historiques réelles.",
+    backtestSubtitle: "Backtest walk-forward · barres de 5 min",
+    chooseTrackLabel: "CHOISISSEZ VOTRE TRACK", chooseTrackTitle: "Futures ou Forex — la même intelligence, le même avantage.",
+    methodologyTitle: "Comment Fonctionne Signal Boss",
+    earlyUsersLabel: "PREMIERS UTILISATEURS", earlyUsersTitle: "Ce que disent les traders", earlyUsersSub: "De notre groupe bêta — de vrais traders, de vrais retours.",
+    knowYourFitLabel: "VOTRE PROFIL", knowYourFitTitle: "Signal Boss est conçu pour certains traders.", knowYourFitSub: "Pas pour tous.",
+    fitForLabel: "C'EST POUR VOUS SI...", fitNotLabel: "CE N'EST PAS POUR VOUS SI...",
+    fitFor: ["Vous tradez les futures activement et voulez des signaux basés sur la confluence","Vous passez un défi prop firm ou protégez votre compte","Vous comprenez que les signaux sont des outils, pas des garanties","Vous voulez savoir pourquoi un signal s'est déclenché, pas seulement qu'il l'a fait","Vous êtes à l'aise pour prendre vos propres décisions avec de meilleures informations","Vous préférez les interfaces épurées aux tableaux de bord surchargés"],
+    fitNot: ["Vous cherchez un système entièrement automatisé","Vous attendez des signaux rentables sans votre propre gestion du risque","Vous êtes un débutant sans connaissance des marchés à terme","Vous voulez un investissement passif ou des stratégies actions uniquement","Vous n'êtes pas prêt à perdre du capital","Vous avez besoin que quelqu'un d'autre soit responsable de vos décisions"],
+    fitForForex: ["Vous tradez les paires forex majeures et voulez une intelligence de signaux institutionnelle","Vous passez un défi FTMO, FundedNext ou similaire","Vous comprenez que les futures de devises sont un indicateur avancé du forex spot","Vous voulez savoir pourquoi un signal s'est déclenché","Vous êtes à l'aise pour prendre vos propres décisions","Vous préférez une méthodologie claire à des flèches sur un graphique"],
+    fitNotForex: ["Vous cherchez un système entièrement automatisé","Vous attendez des signaux rentables sans gestion du risque","Vous êtes débutant sans connaissance du forex","Vous voulez du copy-trading ou un compte géré","Vous n'êtes pas prêt à perdre du capital","Vous avez besoin que quelqu'un d'autre soit responsable de vos décisions"],
     backtestDesc: "Journal complet trade par trade dans le tableau de bord",
     backtestDescSub: "Chaque entrée, stop, objectif, prix de sortie, durée et résultat — avec suivi en temps réel des nouveaux signaux.",
     exampleSignal: "SIGNAL EXEMPLE", howItWorks: "L'Avantage",
@@ -411,9 +559,9 @@ const T = {
 };
 
 const C = {
-  bg: "#080909", surface: "#0c0e0f", surfaceUp: "#0e1210", surfaceDn: "#120e0e",
-  silver: "#111820", silverUp: "#18222c", silverBorder: "#263444",
-  border: "#161a1a", borderHi: "#1f2626",
+  bg: "#090e18", surface: "#0e1929", surfaceUp: "#0f2019", surfaceDn: "#200f14",
+  silver: "#131e2e", silverUp: "#192840", silverBorder: "#274060",
+  border: "#1a2e48", borderHi: "#243c5e",
   long: "#00e5a0", longDim: "#00e5a012", longGlow: "#00e5a030",
   short: "#ff4560", shortDim: "#ff456012", shortGlow: "#ff456030",
   neutral: "#4a5568", accent: "#c8a96e", accentDim: "#c8a96e18",
@@ -425,7 +573,7 @@ const C = {
 
 const css = `
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: ${C.bg}; color: ${C.text}; font-family: 'DM Sans', 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; }
+  body { background: ${C.bg}; color: ${C.text}; font-family: 'DM Sans', 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; font-size: 15px; }
   .mono { font-family: 'IBM Plex Mono', 'Courier New', monospace; }
   ::-webkit-scrollbar { width: 3px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 2px; }
   @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
@@ -438,22 +586,44 @@ const css = `
   .signal-new { animation: fadeUp 0.5s ease forwards; }
   input[type=range] { -webkit-appearance:none; width:100%; height:2px; background:${C.border}; border-radius:1px; outline:none; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:12px; height:12px; border-radius:50%; background:${C.accent}; cursor:pointer; }
-  input[type=number], input[type=text], input[type=email], input[type=password] { background:${C.bg}; color:${C.text}; border:1px solid ${C.border}; border-radius:6px; padding:9px 12px; font-family:'IBM Plex Mono','Courier New',monospace; font-size:13px; outline:none; width:100%; }
+  input[type=number], input[type=text], input[type=email], input[type=password] { background:${C.bg}; color:${C.text}; border:1px solid ${C.border}; border-radius:6px; padding:9px 12px; font-family:'IBM Plex Mono','Courier New',monospace; font-size:14px; outline:none; width:100%; }
   input[type=number]:focus, input[type=text]:focus, input[type=email]:focus, input[type=password]:focus { border-color:${C.accent}44; }
-  select { background:${C.surface}; color:${C.text}; border:1px solid ${C.border}; border-radius:6px; padding:8px 12px; font-family:'IBM Plex Mono','Courier New',monospace; font-size:12px; cursor:pointer; outline:none; width:100%; }
+  select { background:${C.surface}; color:${C.text}; border:1px solid ${C.border}; border-radius:6px; padding:8px 12px; font-family:'IBM Plex Mono','Courier New',monospace; font-size:14px; cursor:pointer; outline:none; width:100%; }
   .tab-btn { background:transparent; border:none; cursor:pointer; font-family:'DM Sans','Segoe UI',sans-serif; transition:all 0.15s; }
   .tab-btn:hover { opacity:0.8; }
-  .nav-item { padding:10px 14px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:500; transition:all 0.15s; display:flex; align-items:center; gap:10px; border-left:2px solid transparent; }
+  .nav-item { padding:10px 14px; border-radius:6px; cursor:pointer; font-size:15px; font-weight:500; transition:all 0.15s; display:flex; align-items:center; gap:10px; border-left:2px solid transparent; }
   .nav-item:hover { background:${C.border}; }
   .nav-item.active { background:${C.accentDim}; border-left-color:${C.accent}; color:${C.accent}; }
 `;
 
+// ── SB Monogram Logo ──────────────────────────────────────────────────────────
+// sb-icon.png is 453×376 — just the hexagon on dark bg. We display it square
+// and use mix-blend-mode:screen on black so only the bright gold/green shows.
+function SBMonogram({ size = 32 }) {
+  return (
+    <div style={{ width:size, height:size, overflow:"hidden", flexShrink:0, background:"#000", borderRadius:4 }}>
+      <img
+        src="/sb-icon.png"
+        alt="SB"
+        style={{
+          width: `${size}px`,
+          height: `${Math.round(size * 376 / 453)}px`,
+          marginTop: `${Math.round(size * 0.04)}px`,
+          display: "block",
+          mixBlendMode: "lighten",
+        }}
+      />
+    </div>
+  );
+}
+
 // ── Live signal feed ──────────────────────────────────────────────────────────
 // After creating your GitHub Gist, paste the raw URL here:
 // https://gist.githubusercontent.com/YOUR_USERNAME/YOUR_GIST_ID/raw/signals.json
-const SIGNALS_URL  = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/signals.json';
-const HISTORY_URL  = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/history.json';
-const BACKTEST_URL = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/backtest.json';
+const SIGNALS_URL     = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/signals.json';
+const BACKTEST_URL    = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/backtest.json';
+const CYCLE_STATE_URL = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/cycle_state.json';
+const CHART_DATA_URL  = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/chart_data.json';
 
 const TICKER_ITEMS = [
   { sym: "ES",  price: "5,247.25",  chg: "+8.50",   up: true  },
@@ -466,19 +636,19 @@ const TICKER_ITEMS = [
   { sym: "ZN",  price: "108.24",    chg: "-0.06",   up: false },
 ];
 
-const INSTRUMENTS = ["ES", "NQ", "CL", "GC", "RTY", "ZB"];
-const BASE_PRICES  = { ES: 5247, NQ: 18420, CL: 78.4, GC: 2318, RTY: 2048, ZB: 115.5 };
+const GIST_URL = "https://gist.githubusercontent.com/raw/336ce62861f67be83d1fdbd34576f4c5/signals.json";
+const MICROS   = { ES:"MES", NQ:"MNQ", YM:"MYM", RTY:"M2K", CL:"MCL", GC:"MGC" };
 
 const INST_TICK = {
-  ES:  { size: 0.25,    value: 12.50  },
-  NQ:  { size: 0.25,    value:  5.00  },
-  CL:  { size: 0.01,    value: 10.00  },
-  GC:  { size: 0.10,    value: 10.00  },
-  RTY: { size: 0.10,    value:  5.00  },
-  ZB:  { size: 0.03125, value: 31.25  },
-  "6E": { size: 0.00005, value: 6.25  },   // EUR/USD futures
-  "6B": { size: 0.0001,  value: 6.25  },   // GBP/USD futures
-  "6A": { size: 0.0001,  value: 10.00 },   // AUD/USD futures
+  ES:  { size: 0.25,       value: 12.50   },
+  NQ:  { size: 0.25,       value:  5.00   },
+  CL:  { size: 0.01,       value: 10.00   },
+  GC:  { size: 0.10,       value: 10.00   },
+  RTY: { size: 0.10,       value:  5.00   },
+  ZB:  { size: 0.03125,    value: 31.25   },
+  ZN:  { size: 0.015625,   value: 15.625  },  // 10-Year T-Note
+  ZF:  { size: 0.0078125,  value:  7.8125 },  // 5-Year T-Note
+  "6E": { size: 0.00005,   value:  6.25   },  // EUR/USD futures
 };
 
 const SESSIONS = ["Asian","London","Bond Open","NY Open","NY Midday","Overnight"];
@@ -493,96 +663,71 @@ function getSessionLabel() {
   return "Asian";
 }
 
-function generateSignal(id) {
-  const inst   = INSTRUMENTS[Math.floor(Math.random() * INSTRUMENTS.length)];
-  const base   = BASE_PRICES[inst];
-  const price  = +(base * (1 + (Math.random() - 0.5) * 0.003)).toFixed(2);
-  const dir    = Math.random() > 0.5 ? "LONG" : "SHORT";
-  const isLong = dir === "LONG";
+function LiveSignalCard({ signal }) {
+  const isLong   = signal.direction === "LONG";
+  const dirColor = isLong ? C.long : C.short;
+  const sym      = signal.instrument;
+  const micro    = MICROS[sym];
+  const symLine  = micro ? `${sym} / ${micro}` : sym;
+  const microStop = micro ? Math.round(signal.risk.stopUsd / 10) : null;
+  const microTp   = micro ? Math.round(signal.risk.firstTpUsd / 10) : null;
 
-  // Randomly pick how many and which cycles rotated
-  const numRotated = Math.floor(Math.random() * 3) + 1;
-  const allCycles  = ["1-Day","3-Day","6-Day"];
-  const shuffled   = [...allCycles].sort(() => Math.random() - 0.5);
-  const rotated    = shuffled.slice(0, numRotated);
-  const cyclesConfirming = numRotated;
-
-  const cycles = {
-    daily:   { zero: rotated.includes("1-Day") ? (isLong?"above":"below") : (isLong?"below":"above"), label:"1-Day",  reset:"9:30 AM" },
-    twoDay:  { zero: rotated.includes("3-Day") ? (isLong?"above":"below") : (isLong?"below":"above"), label:"3-Day",  reset:"8:20 AM" },
-    fourDay: { zero: rotated.includes("6-Day") ? (isLong?"above":"below") : (isLong?"below":"above"), label:"6-Day",  reset:"8:20 AM" },
+  const fmt = v => {
+    const n = Number(v);
+    if (n >= 1000) return n.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:2 });
+    return n.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:4 });
   };
 
-  const vwapDaily  = +(price * (1 + (Math.random()-0.5)*0.004)).toFixed(2);
-  const vwapWeekly = +(price * (1 + (Math.random()-0.5)*0.008)).toFixed(2);
-  const vwaps = {
-    daily:  { value: vwapDaily,  above: price > vwapDaily,  label:"Daily VWAP"  },
-    weekly: { value: vwapWeekly, above: price > vwapWeekly, label:"Weekly VWAP" },
-  };
-  const vwapsConfirming = Object.values(vwaps).filter(v => isLong ? v.above : !v.above).length;
+  const dateStr = signal.date
+    ? new Date(signal.date + "T12:00:00").toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" })
+    : "";
 
-  // Trigger tier
-  const proximityBars = Math.floor(Math.random() * 8);
-  const isFresh = Math.random() > 0.45;
-  const rotNote = isFresh ? "Fresh rotation" : "Extended — size accordingly";
-  let trigger, triggerDetail;
-  if (numRotated === 3 && proximityBars <= 3) {
-    trigger       = "AAA+";
-    triggerDetail = `All 3 cycles within ${proximityBars} bars · ${rotNote}`;
-  } else if (numRotated === 3) {
-    trigger       = "AAA";
-    triggerDetail = `All 3 cycles within ${proximityBars} bars · ${rotNote}`;
-  } else if (numRotated === 2) {
-    trigger       = "AA";
-    triggerDetail = `${rotated.join(" + ")} rotated · ${rotNote}`;
-  } else {
-    trigger       = "A";
-    triggerDetail = `${rotated[0]} rotated · ${rotNote}`;
-  }
-  const emaContext = Math.random() > 0.3 ? "trend aligned" : "counter-trend";
-  const strength   = trigger === "A" ? "WEAK" : trigger === "AA" ? "MODERATE" : "STRONG";
-
-  // Smart Stop & Take Profit
-  const tk        = INST_TICK[inst] || INST_TICK.ES;
-  const stopTicks = 8 + Math.floor(Math.random() * 10);
-  const stopPx    = +(stopTicks * tk.size).toFixed(4);
-  const stopPrice = +(isLong ? price - stopPx : price + stopPx).toFixed(4);
-  const stopUsd   = +(stopTicks * tk.value).toFixed(2);
-  const volR      = Math.random();
-  const volRegime = volR > 0.7 ? "HIGH" : volR < 0.3 ? "LOW" : "NORMAL";
-  const suggestedRR = volRegime === "HIGH" ? 2.0 : volRegime === "LOW" ? 3.0 : 2.5;
-  const risk = {
-    stopPrice, stopPx, stopTicks, stopUsd,
-    tp2_0Price: +(isLong ? price + stopPx*2.0 : price - stopPx*2.0).toFixed(4),
-    tp2_5Price: +(isLong ? price + stopPx*2.5 : price - stopPx*2.5).toFixed(4),
-    tp3_0Price: +(isLong ? price + stopPx*3.0 : price - stopPx*3.0).toFixed(4),
-    tp2_0Usd:   +(stopTicks * 2.0 * tk.value).toFixed(2),
-    tp2_5Usd:   +(stopTicks * 2.5 * tk.value).toFixed(2),
-    tp3_0Usd:   +(stopTicks * 3.0 * tk.value).toFixed(2),
-    volRegime, suggestedRR, zAtr: (0.5 + Math.random()).toFixed(2),
-    conditionsMet: numRotated + vwapsConfirming,
-  };
-
-  return {
-    id, instrument: inst, direction: dir,
-    trigger, triggerDetail, emaContext,
-    strength, cyclesConfirming, vwapsConfirming,
-    cycles, vwaps, price, risk,
-    session: getSessionLabel(),
-    status: "ACTIVE",
-    time: new Date().toLocaleTimeString([], { hour:"2-digit", minute:"2-digit", second:"2-digit" }),
-    timestamp: Date.now(), isNew: true,
-  };
+  return (
+    <div style={{ background:isLong?C.surfaceUp:C.surfaceDn, border:`1px solid ${dirColor}33`, borderRadius:12, padding:20, position:"relative", overflow:"hidden", fontFamily:"'IBM Plex Mono','Courier New',monospace" }}>
+      <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:dirColor }} />
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
+        <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+          <LiveDot color={dirColor} size={7} />
+          <span style={{ fontSize:17, fontWeight:700, color:dirColor }}>{signal.direction}</span>
+          <span style={{ fontSize:14, fontWeight:700, color:C.text }}>· {symLine}</span>
+        </div>
+        <span style={{ fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20, background:dirColor+"22", color:dirColor, letterSpacing:"0.08em" }}>ACTIVE</span>
+      </div>
+      <div style={{ height:1, background:C.border, marginBottom:12 }} />
+      <div style={{ marginBottom:12 }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"5px 0" }}>
+          <span style={{ fontSize:12, color:"#60a5fa" }}>🔵 ENTRY</span>
+          <span style={{ fontSize:13, fontWeight:700, color:C.text }}>{fmt(signal.price)}</span>
+        </div>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"5px 0" }}>
+          <span style={{ fontSize:12, color:"#f87171" }}>🔴 STOP</span>
+          <span style={{ fontSize:13, fontWeight:700, color:C.text }}>{fmt(signal.risk.stopPrice)}</span>
+        </div>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", padding:"5px 0" }}>
+          <span style={{ fontSize:12, color:"#4ade80" }}>🟢 1ST TARGET</span>
+          <span style={{ fontSize:13, fontWeight:700, color:C.text }}>{fmt(signal.risk.firstTpPrice)} <span style={{ fontSize:10, color:C.textDim, fontWeight:400 }}>(optional exit)</span></span>
+        </div>
+        <div style={{ fontSize:10, color:C.textDim, marginTop:2, paddingLeft:4 }}>Exit: End of hour at market</div>
+      </div>
+      <div style={{ height:1, background:C.border, marginBottom:12 }} />
+      <div style={{ marginBottom:10 }}>
+        <div style={{ fontSize:10, color:C.textDim, marginBottom:4 }}>Risk per contract</div>
+        <div style={{ fontSize:12 }}>
+          &nbsp;&nbsp;<span style={{ color:C.text }}>{sym}:</span> <span style={{ color:C.short, fontWeight:600 }}>${Math.round(signal.risk.stopUsd).toLocaleString()}</span>
+          {micro && <span>  |  <span style={{ color:C.text }}>{micro}:</span> <span style={{ color:C.short, fontWeight:600 }}>${microStop}</span></span>}
+        </div>
+        <div style={{ fontSize:10, color:C.textDim, marginTop:8, marginBottom:4 }}>1st Target</div>
+        <div style={{ fontSize:12 }}>
+          &nbsp;&nbsp;<span style={{ color:C.text }}>{sym}:</span> <span style={{ color:C.long, fontWeight:600 }}>${Math.round(signal.risk.firstTpUsd).toLocaleString()}</span>
+          {micro && <span>  |  <span style={{ color:C.text }}>{micro}:</span> <span style={{ color:C.long, fontWeight:600 }}>${microTp}</span></span>}
+        </div>
+      </div>
+      <div style={{ height:1, background:C.border, marginBottom:10 }} />
+      <div style={{ fontSize:11, color:C.textMid }}>⏱ {dateStr}&nbsp;&nbsp;{signal.time} ET</div>
+    </div>
+  );
 }
 
-function genEquityCurve() {
-  let val = 10000;
-  return Array.from({ length: 60 }, (_, i) => {
-    val += (Math.random() - 0.38) * 320;
-    return { i, val: Math.max(val, 8000) };
-  });
-}
-const EQUITY_CURVE = genEquityCurve();
 
 function LiveDot({ color, size = 7 }) {
   return (
@@ -593,266 +738,216 @@ function LiveDot({ color, size = 7 }) {
   );
 }
 
-function TriggerBolts({ trigger }) {
-  const t = trigger || "A";
-  const isPlus  = t === "AAA+";
-  const boltCount = isPlus ? 4 : t === "AAA" ? 3 : t === "AA" ? 2 : 1;
-  const color = t === "A" ? C.weak : t === "AA" ? C.mod : C.strong;
-  return (
-    <div style={{ display:"flex", gap:3, alignItems:"center" }}>
-      {[1,2,3,4].map(i => (
-        <span key={i} style={{
-          fontSize:14,
-          opacity: i <= boltCount ? 1 : 0.12,
-          filter:  i <= boltCount ? `drop-shadow(0 0 4px ${color})` : "none",
-        }}>⚡</span>
-      ))}
-      <span style={{ fontSize:11, fontWeight:700, color, marginLeft:4, fontFamily:"'IBM Plex Mono','Courier New',monospace", letterSpacing:"0.05em" }}>
-        Trigger {t}
-      </span>
+
+// ---------------------------------------------------------------------------
+// Admin-only: Oscillator Chart (Cycle A / B / C)
+// ---------------------------------------------------------------------------
+
+function OscillatorPanel({ bars, pnlKey, resetKey, label, height=160 }) {
+  if (!bars || bars.length === 0) return (
+    <div style={{ height, background:"#050a0f", borderRadius:8, marginBottom:10, display:"flex", alignItems:"center", justifyContent:"center" }}>
+      <span style={{ color:"#2a4a5a", fontFamily:"monospace", fontSize:11 }}>Waiting for data…</span>
     </div>
   );
-}
-// backward-compat alias
-function StrengthBolts({ count, strength, trigger }) {
-  const t = trigger || (strength==="STRONG"?"AAA": strength==="MODERATE"?"AA":"A");
-  return <TriggerBolts trigger={t} />;
-}
+  const vals   = bars.map(b => b[pnlKey] || 0);
+  const maxAbs = Math.max(...vals.map(Math.abs), 1);
+  const n      = vals.length;
+  const bw     = 100 / n;
+  const mid    = height / 2;
+  const curr   = vals[n - 1];
+  const isPos  = curr >= 0;
 
-function VwapRow({ label, value, above, direction, t }) {
-  const isLong = direction === "LONG";
-  const confirms = isLong ? above : !above;
-  const color = confirms ? (isLong ? C.long : C.short) : C.warn;
-  const arrow = above ? "↑" : "↓";
   return (
-    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"6px 0", borderBottom:`1px solid ${C.border}` }}>
-      <span style={{ fontSize:10, color:C.textMid, fontFamily:"monospace", minWidth:80 }}>{label}</span>
-      <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-        <span style={{ fontSize:11, color:C.textDim, fontFamily:"monospace" }}>{value.toLocaleString()}</span>
-        <span style={{ fontSize:11, fontWeight:600, color, fontFamily:"monospace" }}>
-          {arrow} {above ? t.vwapAbove : t.vwapBelow}
+    <div style={{ marginBottom:10 }}>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:4 }}>
+        <span style={{ fontSize:10, color:"#4a6a7a", fontFamily:"monospace", letterSpacing:"0.1em" }}>{label}</span>
+        <span style={{ fontSize:12, fontFamily:"monospace", fontWeight:700, color: isPos?"#22c55e":"#ef4444" }}>
+          {isPos?"+":""}${curr.toLocaleString()}
         </span>
       </div>
+      <svg width="100%" height={height} style={{ display:"block", background:"#050a0f", borderRadius:8 }}>
+        {/* Zero line */}
+        <line x1="0" y1={mid} x2="100%" y2={mid} stroke="#1a3a4a" strokeWidth="1" strokeDasharray="3 3" />
+        {/* Cycle reset verticals */}
+        {bars.map((b, i) => b[resetKey] ? (
+          <line key={`r${i}`} x1={`${i*bw}%`} y1="0" x2={`${i*bw}%`} y2={height}
+            stroke="#263444" strokeWidth="1" strokeDasharray="4 3" />
+        ) : null)}
+        {/* P&L bars */}
+        {vals.map((v, i) => {
+          const pos  = v >= 0;
+          const barH = Math.max(1, Math.abs(v) / maxAbs * (mid - 2));
+          const y    = pos ? mid - barH : mid;
+          return (
+            <rect key={i} x={`${i*bw}%`} y={y} width={`${bw*0.88}%`} height={barH}
+              fill={pos ? "#22c55e" : "#ef4444"} opacity={0.78} />
+          );
+        })}
+      </svg>
     </div>
   );
 }
 
-function CycleRow({ cycle, direction, t }) {
-  const isLong = direction === "LONG";
-  const confirms = cycle.zero === (isLong ? "above" : "below");
-  const color = confirms ? (isLong ? C.long : C.short) : C.textDim;
-  const arrow = cycle.zero === "above" ? "↑" : "↓";
-  return (
-    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"7px 0", borderBottom:`1px solid ${C.border}` }}>
-      <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-        <span style={{ fontSize:10, color:C.textMid, fontFamily:"monospace", minWidth:52 }}>{cycle.label}</span>
-      </div>
-      <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-        <span style={{ fontSize:12, color, fontFamily:"monospace", fontWeight:600 }}>{arrow} {cycle.zero==="above" ? t.aboveZero : t.belowZero}</span>
-        {confirms && <span style={{ fontSize:10, color, background:color+"18", padding:"1px 6px", borderRadius:3 }}>✓</span>}
-      </div>
-    </div>
-  );
-}
-
-function SignalCard({ signal, onDismiss, exitMode, rrPref, setRrPref, t }) {
-  const isLong      = signal.direction === "LONG";
-  const isCancelled = signal.status === "CANCELLED";
-  const isActive    = signal.status === "ACTIVE";
-  const dirColor    = isLong ? C.long : C.short;
-  const vwapAllGood = signal.vwapsConfirming === Object.keys(signal.vwaps || {}).length;
-
-  // Always ensure risk is present — generate fallback if engine didn't supply it
-  const risk = (() => {
-    const r  = signal.risk;
-    const tk = INST_TICK[signal.instrument] || INST_TICK.ES;
-    const p  = signal.price || 5247;
-    // If risk exists and has all required fields, use it as-is
-    if (r && r.stopPrice != null && r.tp2_5Price != null) return r;
-    // Otherwise build a complete risk object (partial or missing)
-    const stopTicks = (r && r.stopTicks) || 10;
-    const stopPx    = +((stopTicks * tk.size)).toFixed(4);
-    return {
-      stopPrice:    +(isLong ? p - stopPx : p + stopPx).toFixed(4),
-      stopPx, stopTicks,
-      stopUsd:      +(stopTicks * tk.value).toFixed(2),
-      tp2_0Price:   +(isLong ? p + stopPx*2.0 : p - stopPx*2.0).toFixed(4),
-      tp2_5Price:   +(isLong ? p + stopPx*2.5 : p - stopPx*2.5).toFixed(4),
-      tp3_0Price:   +(isLong ? p + stopPx*3.0 : p - stopPx*3.0).toFixed(4),
-      tp2_0Usd:     +(stopTicks * 2.0 * tk.value).toFixed(2),
-      tp2_5Usd:     +(stopTicks * 2.5 * tk.value).toFixed(2),
-      tp3_0Usd:     +(stopTicks * 3.0 * tk.value).toFixed(2),
-      volRegime:    (r && r.volRegime)    || "NORMAL",
-      suggestedRR:  (r && r.suggestedRR)  || 2.5,
-      zAtr:         (r && r.zAtr)         || "0.84",
-      conditionsMet:(r && r.conditionsMet)|| 4,
+function useChartData() {
+  const [chartData, setChart] = useState(null);
+  const [updated, setUpdated] = useState(null);
+  useEffect(() => {
+    const load = () => {
+      fetch(`${CHART_DATA_URL}?t=${Date.now()}`)
+        .then(r => r.json())
+        .then(d => { setChart(d.instruments || {}); setUpdated(d.updated || null); })
+        .catch(() => {});
     };
-  })();
+    load();
+    const id = setInterval(load, 60000);
+    return () => clearInterval(id);
+  }, []);
+  return { chartData, updated };
+}
 
-  // Pick the right pre-calculated TP price based on subscriber's R:R pref
-  const tpPriceKey  = rrPref === 2.0 ? "tp2_0Price" : rrPref === 3.0 ? "tp3_0Price" : "tp2_5Price";
-  const tpUsdKey    = rrPref === 2.0 ? "tp2_0Usd"   : rrPref === 3.0 ? "tp3_0Usd"   : "tp2_5Usd";
-  const tpPrice     = risk ? risk[tpPriceKey] : null;
-  const tpUsd       = risk ? risk[tpUsdKey]   : null;
+const INST_LIST = ['ES','NQ','CL','GC','RTY','ZN','6E'];
 
-  // Recommendation label
-  const recLabel = risk ? (
-    risk.suggestedRR === rrPref
-      ? `★ Signal Boss recommends ${risk.suggestedRR}:1 — ${risk.conditionsMet}/5 conditions exist`
-      : `Signal Boss recommends ${risk.suggestedRR}:1 — ${risk.conditionsMet}/5 conditions exist`
-  ) : null;
+// ── Full-page multi-chart view ────────────────────────────────────────────────
+function ChartFullPage({ onClose }) {
+  const { chartData, updated } = useChartData();
+  const [selected, setSelected] = useState(['ES','NQ','GC','RTY']);
+  const [cols, setCols] = useState(2);
 
-  const rrOptions = [2.0, 2.5, 3.0];
+  const toggle = (inst) => {
+    setSelected(prev => {
+      if (prev.includes(inst)) return prev.length > 1 ? prev.filter(i => i !== inst) : prev;
+      return [...prev, inst];
+    });
+  };
 
   return (
-    <div className={`signal-new ${isActive?(isLong?"card-long":"card-short"):""}`} style={{
-      background: isActive?(isLong?C.surfaceUp:C.surfaceDn):C.surface,
-      border:`1px solid ${isActive?dirColor+"33":C.border}`,
-      borderRadius:12, padding:20, position:"relative", overflow:"hidden",
-      opacity:isCancelled?0.45:1, transition:"opacity 0.3s",
+    <div style={{
+      position:"fixed", inset:0, background:C.bg, zIndex:9999,
+      overflowY:"auto", padding:24,
     }}>
-      <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:isActive?dirColor:C.border, borderRadius:"12px 12px 0 0" }} />
-
       {/* Header */}
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:14 }}>
-        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-          <LiveDot color={isActive?dirColor:C.neutral} size={8} />
-          <div>
-            <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-              <span style={{ fontSize:20, fontWeight:700, color:dirColor, fontFamily:"monospace" }}>{signal.direction}</span>
-              <span style={{ fontSize:20, fontWeight:700, color:C.text, fontFamily:"monospace" }}>{signal.instrument}</span>
-              <span style={{ fontSize:10, color:C.textMid, background:C.border, padding:"2px 7px", borderRadius:4, fontFamily:"monospace" }}>5m</span>
-            </div>
-            <div style={{ fontSize:11, color:C.textMid, marginTop:3, fontFamily:"monospace" }}>{signal.time}</div>
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
+        <div>
+          <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em" }}>
+            CYCLE OSCILLATOR — FULL VIEW
+            {updated && <span style={{ color:C.textDim }}> · updated {updated}</span>}
+          </div>
+          <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", marginTop:4 }}>
+            Select up to 4 instruments · PULSE · WAVE · FORCE
           </div>
         </div>
-        <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:6 }}>
-          <span style={{ fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20, background:isActive?dirColor+"22":C.border, color:isActive?dirColor:C.textMid, fontFamily:"monospace", letterSpacing:"0.08em" }}>{signal.status}</span>
-          {!isCancelled && <button onClick={() => onDismiss(signal.id)} style={{ fontSize:10, color:C.textDim, background:"transparent", border:"none", cursor:"pointer" }}>{t.dismiss}</button>}
+        <div style={{ display:"flex", gap:10, alignItems:"center" }}>
+          {/* Layout toggle */}
+          {[1,2,3,4].map(n => (
+            <button key={n} onClick={() => setCols(n)} style={{
+              padding:"5px 12px", borderRadius:6, cursor:"pointer",
+              fontFamily:"monospace", fontSize:11, fontWeight:cols===n?700:400,
+              background: cols===n ? C.accent : C.surface,
+              color:      cols===n ? "#000"    : C.textMid,
+              border:    `1px solid ${cols===n ? C.accent : C.border}`,
+            }}>{n} col{n>1?"s":""}</button>
+          ))}
+          <button onClick={onClose} style={{
+            padding:"6px 16px", borderRadius:6, cursor:"pointer",
+            background:C.surface, color:C.textMid, border:`1px solid ${C.border}`,
+            fontFamily:"monospace", fontSize:12,
+          }}>✕ Close</button>
         </div>
       </div>
 
-      {/* Trigger tier */}
-      <div style={{ marginBottom:12 }}>
-        <TriggerBolts trigger={signal.trigger || (signal.strength==="STRONG"?"AAA":signal.strength==="MODERATE"?"AA":"A")} />
-        {signal.triggerDetail && (
-          <div style={{ fontSize:10, color:C.textMid, fontFamily:"monospace", marginTop:4 }}>
-            {(signal.triggerDetail || "").replace(/\b(1-Day|3-Day|6-Day)(\s*\+\s*(1-Day|3-Day|6-Day))*\s*(rotated\s*·?\s*)?/gi, "").trim().replace(/^·\s*/, "")}
-          </div>
-        )}
+      {/* Instrument selector */}
+      <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:20 }}>
+        {INST_LIST.map(inst => {
+          const on = selected.includes(inst);
+          return (
+            <button key={inst} onClick={() => toggle(inst)} style={{
+              padding:"5px 14px", borderRadius:6, cursor:"pointer",
+              fontFamily:"monospace", fontSize:11, fontWeight:on?700:400,
+              background: on ? C.accent : C.surface,
+              color:      on ? "#000"    : C.textMid,
+              border:    `1px solid ${on ? C.accent : C.border}`,
+              opacity: 1,
+            }}>{inst}</button>
+          );
+        })}
+        <span style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", alignSelf:"center", marginLeft:8 }}>
+          {selected.length} selected
+        </span>
+      </div>
 
-        {/* Tier timestamps */}
-        {signal.tierTimestamps && Object.keys(signal.tierTimestamps || {}).length > 0 && (
-          <div style={{ marginTop:8, padding:"6px 8px", background:C.bg, borderRadius:6, border:`1px solid ${C.border}` }}>
-            <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:4 }}>TIER TRIGGERED</div>
-            {['A','AA','AAA','AAA+'].filter(tier => signal.tierTimestamps[tier]).map(tier => (
-              <div key={tier} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:2 }}>
-                <span style={{ fontSize:10, fontFamily:"monospace", color:C.textDim, minWidth:36 }}>{tier}</span>
-                <span style={{ fontSize:10, fontFamily:"monospace", color:C.textMid }}>{signal.tierTimestamps[tier]}</span>
+      {/* Chart grid */}
+      <div style={{
+        display:"grid",
+        gridTemplateColumns:`repeat(${cols}, 1fr)`,
+        gap:20,
+      }}>
+        {selected.map(inst => {
+          const bars = chartData?.[inst] || [];
+          return (
+            <div key={inst} style={{
+              background:C.surface, border:`1px solid #3a4a5a`,
+              borderRadius:12, padding:16,
+            }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
+                <span style={{ fontFamily:"monospace", fontWeight:700, fontSize:14, color:C.accent }}>{inst}</span>
+                <span style={{ fontFamily:"monospace", fontSize:10, color:C.textDim }}>
+                  {bars.length > 0 ? `${bars[0].t} → ${bars[bars.length-1].t}` : "waiting…"}
+                </span>
               </div>
-            ))}
-          </div>
-        )}
-
-        <div style={{ display:"flex", gap:12, marginTop:6, flexWrap:"wrap" }}>
-          {signal.emaContext && (
-            <span style={{ fontSize:10, fontFamily:"monospace", color: signal.emaContext==="trend aligned" ? C.long : C.warn }}>
-              Intraday trend: {signal.emaContext}
-            </span>
-          )}
-          {signal.session && (
-            <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>
-              {signal.session}
-            </span>
-          )}
-        </div>
-      </div>
-
-      <div style={{ height:1, background:C.border, marginBottom:10 }} />
-
-      {/* Cycles */}
-      <div style={{ marginBottom:10 }}>
-        {Object.values(signal.cycles || {}).map(cyc => <CycleRow key={cyc.label} cycle={cyc} direction={signal.direction} t={t} />)}
-      </div>
-
-      <div style={{ height:1, background:C.border, marginBottom:10 }} />
-
-      {/* VWAPs */}
-      <div style={{ marginBottom:12 }}>
-        {Object.values(signal.vwaps || {}).map(v => <VwapRow key={v.label} label={v.label} value={v.value} above={v.above} direction={signal.direction} t={t} />)}
-      </div>
-
-      {/* Entry price */}
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
-        <span style={{ fontSize:11, color:C.textMid, fontFamily:"monospace" }}>{t.entryPrice}</span>
-        <span style={{ fontSize:14, fontWeight:600, color:C.text, fontFamily:"monospace" }}>{(signal.price ?? 0).toLocaleString()}</span>
-      </div>
-
-      {/* ── Smart Stop & Take Profit ── */}
-      {risk && (
-        <>
-          <div style={{ height:1, background:C.border, marginBottom:12 }} />
-
-          {/* Stop row */}
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
-            <div>
-              <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:3 }}>SMART STOP · REFERENCE</div>
-              <div style={{ fontSize:13, fontWeight:700, color:C.short, fontFamily:"monospace" }}>{risk.stopPrice.toLocaleString()}</div>
-              <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>{risk.stopTicks} ticks · ${risk.stopUsd.toLocaleString()}/contract</div>
+              <OscillatorPanel bars={bars} pnlKey="a" resetKey="r1" label="PULSE — 1-Day"  height={120} />
+              <OscillatorPanel bars={bars} pnlKey="b" resetKey="r3" label="WAVE — 3-Day"   height={120} />
+              <OscillatorPanel bars={bars} pnlKey="c" resetKey="r6" label="FORCE — 6-Day"  height={120} />
             </div>
-            <div style={{ textAlign:"right" }}>
-              <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:3 }}>SMART TP</div>
-              <div style={{ fontSize:13, fontWeight:700, color:C.long, fontFamily:"monospace" }}>{tpPrice?.toLocaleString()}</div>
-              <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>${tpUsd?.toLocaleString()}/contract</div>
-            </div>
-          </div>
-
-          {/* R:R selector */}
-          <div style={{ marginBottom:8 }}>
-            <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:6 }}>TARGET R:R</div>
-            <div style={{ display:"flex", gap:6 }}>
-              {rrOptions.map(rr => {
-                const isSelected = rrPref === rr;
-                const isRecommended = risk.suggestedRR === rr;
-                return (
-                  <button key={rr} onClick={() => setRrPref(rr)}
-                    style={{
-                      flex:1, padding:"6px 0", borderRadius:6, fontFamily:"monospace", fontSize:11, fontWeight:700,
-                      cursor:"pointer", transition:"all 0.15s",
-                      background: isSelected ? dirColor+"33" : C.bg,
-                      color:      isSelected ? dirColor       : C.textDim,
-                      border:    `1px solid ${isSelected ? dirColor+"66" : C.border}`,
-                    }}>
-                    {rr}:1{isRecommended ? " ★" : ""}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Recommendation note */}
-          <div style={{ fontSize:10, color: risk.suggestedRR === rrPref ? C.accent : C.textDim, fontFamily:"monospace", background: risk.suggestedRR === rrPref ? C.accentDim : "transparent", border:`1px solid ${risk.suggestedRR === rrPref ? C.accent+"33" : "transparent"}`, borderRadius:5, padding: risk.suggestedRR === rrPref ? "5px 8px" : "0", marginBottom: risk.suggestedRR === rrPref ? 8 : 0, lineHeight:1.5 }}>
-            {recLabel}
-          </div>
-
-          {/* Vol regime badge */}
-          <div style={{ display:"flex", gap:8, alignItems:"center" }}>
-            <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>Vol:</span>
-            <span style={{ fontSize:10, fontFamily:"monospace", fontWeight:600,
-              color: risk.volRegime==="HIGH" ? C.short : risk.volRegime==="LOW" ? C.long : C.warn,
-              background: risk.volRegime==="HIGH" ? C.shortDim : risk.volRegime==="LOW" ? C.longDim : C.border,
-              padding:"1px 7px", borderRadius:3 }}>
-              {risk.volRegime}
-            </span>
-            <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>z={risk.zAtr}</span>
-          </div>
-        </>
-      )}
-
-      <div style={{ display:"flex", justifyContent:"flex-end", marginTop:10 }}>
-        <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>ENTRY NY: {signal.time || new Date().toLocaleTimeString([], { hour:"2-digit", minute:"2-digit", second:"2-digit" })}</span>
+          );
+        })}
       </div>
     </div>
+  );
+}
+
+function AdminCharts() {
+  const { chartData, updated } = useChartData();
+  const [sel, setSel]     = useState('ES');
+  const [fullPage, setFullPage] = useState(false);
+
+  const bars = chartData?.[sel] || [];
+
+  return (
+    <>
+      {fullPage && <ChartFullPage onClose={() => setFullPage(false)} />}
+      <div style={{ marginBottom:32 }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
+          <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em" }}>
+            CYCLE OSCILLATOR {updated && <span style={{ color:C.textDim }}>· updated {updated}</span>}
+          </div>
+          <button onClick={() => setFullPage(true)} style={{
+            padding:"5px 14px", borderRadius:6, cursor:"pointer",
+            background:C.accent, color:"#000", border:"none",
+            fontFamily:"monospace", fontSize:11, fontWeight:700,
+          }}>⛶ Full View</button>
+        </div>
+
+        {/* Instrument selector */}
+        <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:16 }}>
+          {INST_LIST.map(inst => (
+            <button key={inst} onClick={() => setSel(inst)} style={{
+              padding:"5px 13px", borderRadius:6, cursor:"pointer", fontFamily:"monospace", fontSize:11, fontWeight:sel===inst?700:400,
+              background: sel===inst ? C.accent : C.surface,
+              color:      sel===inst ? "#000"    : C.textMid,
+              border:    `1px solid ${sel===inst ? C.accent : C.border}`,
+            }}>{inst}</button>
+          ))}
+        </div>
+
+        <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginBottom:10 }}>
+          {bars.length} bars · {bars.length > 0 ? `${bars[0].t} → ${bars[bars.length-1].t}` : "—"}
+        </div>
+
+        <OscillatorPanel bars={bars} pnlKey="a" resetKey="r1" label="PULSE — 1-Day"  height={160} />
+        <OscillatorPanel bars={bars} pnlKey="b" resetKey="r3" label="WAVE — 3-Day"   height={160} />
+        <OscillatorPanel bars={bars} pnlKey="c" resetKey="r6" label="FORCE — 6-Day"  height={160} />
+      </div>
+    </>
   );
 }
 
@@ -867,54 +962,62 @@ function StatTile({ label, value, color, sub }) {
 }
 
 function PriceTicker() {
-  const items = [...TICKER_ITEMS, ...TICKER_ITEMS];
+  const [prices, setPrices] = useState({});
+  const [prev,   setPrev]   = useState({});
+
+  useEffect(() => {
+    const load = () => {
+      fetch(CYCLE_STATE_URL + '?t=' + Date.now())
+        .then(r => r.json())
+        .then(d => {
+          const insts = d.instruments || {};
+          setPrev(p => ({ ...p, ...prices }));
+          const next = {};
+          Object.entries(insts).forEach(([sym, v]) => {
+            if (v.price != null) next[sym] = v.price;
+          });
+          if (Object.keys(next).length > 0) setPrices(next);
+        })
+        .catch(() => {});
+    };
+    load();
+    const iv = setInterval(load, 30000);
+    return () => clearInterval(iv);
+  }, []);
+
+  const SYMS = ['ES','NQ','CL','GC','RTY','ZN','6E'];
+  const fmt = (sym, price) => {
+    if (price == null) return TICKER_ITEMS.find(t => t.sym === sym)?.price ?? '—';
+    if (['6E'].includes(sym)) return price.toFixed(4);
+    if (['ZN'].includes(sym))           return price.toFixed(5);
+    if (['CL'].includes(sym))           return price.toFixed(2);
+    if (['GC'].includes(sym))           return price.toFixed(1);
+    return price.toLocaleString(undefined, { minimumFractionDigits:2, maximumFractionDigits:2 });
+  };
+
+  const items = [...SYMS, ...SYMS].map((sym, i) => {
+    const cur = prices[sym];
+    const prv = prev[sym];
+    const up  = cur != null && prv != null ? cur >= prv : true;
+    const chg = cur != null && prv != null ? (cur - prv) : null;
+    const chgStr = chg != null ? (chg >= 0 ? '+' : '') + chg.toFixed(['6E'].includes(sym) ? 4 : 2) : '';
+    return { sym, price: fmt(sym, cur), up, chgStr, i };
+  });
+
   return (
-    <div style={{ overflow:"hidden", background:C.surface, borderBottom:`1px solid ${C.border}`, height:32, display:"flex", alignItems:"center" }}>
+    <div style={{ overflow:"hidden", background:C.surface, borderBottom:`1px solid ${C.border}`, height:32, display:"flex", alignItems:"center", position:"relative" }}>
       <div style={{ display:"flex", gap:0, animation:"ticker 30s linear infinite", whiteSpace:"nowrap" }}>
         {items.map((item, i) => (
           <div key={i} style={{ display:"inline-flex", alignItems:"center", gap:8, padding:"0 28px", borderRight:`1px solid ${C.border}` }}>
             <span style={{ fontSize:11, fontWeight:700, color:C.text, fontFamily:"monospace" }}>{item.sym}</span>
             <span style={{ fontSize:11, color:C.textMid, fontFamily:"monospace" }}>{item.price}</span>
-            <span style={{ fontSize:11, color:item.up?C.long:C.short, fontFamily:"monospace" }}>{item.chg}</span>
+            {item.chgStr && <span style={{ fontSize:11, color:item.up?C.long:C.short, fontFamily:"monospace" }}>{item.chgStr}</span>}
           </div>
         ))}
       </div>
-    </div>
-  );
-}
-
-function EquityCurve() {
-  const w = 340, h = 80;
-  const vals = EQUITY_CURVE.map(d => d.val);
-  const min  = Math.min(...vals) - 200;
-  const max  = Math.max(...vals) + 200;
-  const pts  = EQUITY_CURVE.map(d => {
-    const x = (d.i / (EQUITY_CURVE.length - 1)) * w;
-    const y = h - ((d.val - min) / (max - min)) * h;
-    return `${x},${y}`;
-  });
-  const pathD = `M ${pts.join(" L ")}`;
-  const fillD = `M 0,${h} L ${pts.join(" L ")} L ${w},${h} Z`;
-  const lastVal = vals[vals.length - 1];
-  const pct = (((lastVal - vals[0]) / vals[0]) * 100).toFixed(1);
-  const isUp = lastVal >= vals[0];
-  return (
-    <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginTop:40, maxWidth:380, width:"100%" }}>
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
-        <span style={{ fontSize:11, color:C.textMid, fontFamily:"monospace", letterSpacing:"0.1em" }}>SIMULATED PERFORMANCE</span>
-        <span style={{ fontSize:13, fontWeight:700, color:isUp?C.long:C.short, fontFamily:"monospace" }}>{isUp?"+":""}{pct}%</span>
+      <div style={{ position:"absolute", right:0, top:0, bottom:0, display:"flex", alignItems:"center", paddingRight:10, paddingLeft:20, background:`linear-gradient(to right, transparent, ${C.surface} 30%)`, pointerEvents:"none" }}>
+        <span style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.05em", whiteSpace:"nowrap" }}>Delayed Quotes · Check signal card for current price</span>
       </div>
-      <svg width={w} height={h} style={{ display:"block" }}>
-        <defs>
-          <linearGradient id="eq" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={isUp?C.long:C.short} stopOpacity="0.3" />
-            <stop offset="100%" stopColor={isUp?C.long:C.short} stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <path d={fillD} fill="url(#eq)" />
-        <path d={pathD} fill="none" stroke={isUp?C.long:C.short} strokeWidth="1.5" />
-      </svg>
-      <div style={{ fontSize:10, color:C.textDim, marginTop:8, fontFamily:"monospace" }}>Past 60 sessions · Simulated signals</div>
     </div>
   );
 }
@@ -928,47 +1031,83 @@ function SignalCounter({ count }) {
   );
 }
 
-function PropCalc({ t }) {
-  const [qty, setQty]         = useState(1);
-  const [tickVal, setTickVal] = useState(12.50);
-  const [stopTicks, setStop]  = useState(8);
-  const [tgtTicks, setTgt]    = useState(20);
-  const [winRate, setWinRate] = useState(55);
-  const [profitGoal, setProfitGoal] = useState(3000);
-  const [currentBal, setCurrentBal] = useState(0);
-  const [maxDD, setMaxDD]     = useState(2500);
-  const [dailyLimit, setDailyLimit] = useState(1000);
-
-  const lossPerTrade   = qty * stopTicks * tickVal;
-  const profitPerTrade = qty * tgtTicks  * tickVal;
-  const rr             = tgtTicks / stopTicks;
-  const wr             = winRate / 100;
-  const expectedVal    = (wr * profitPerTrade) - ((1 - wr) * lossPerTrade);
-  const neededToPass   = profitGoal - currentBal;
-  const tradesNeeded   = expectedVal > 0 ? Math.ceil(neededToPass / expectedVal) : "∞";
-  const maxTradesToDD  = Math.floor(maxDD / lossPerTrade);
-  const maxTradesToDaily = Math.floor(dailyLimit / lossPerTrade);
-  const daysToPass     = expectedVal > 0 ? (neededToPass / expectedVal / 3).toFixed(1) : "∞";
-
-  const InputRow = ({ label, value, onChange, min, max, step, prefix, suffix }) => (
-    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
+// Defined outside PropCalc so component identity is stable across re-renders
+const CalcRow = ({ label, value, onChange, prefix, suffix, hint, mode = "decimal" }) => (
+  <div style={{ padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
+    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
       <span style={{ fontSize:12, color:C.textMid }}>{label}</span>
       <div style={{ display:"flex", alignItems:"center", gap:6 }}>
         {prefix && <span style={{ fontSize:12, color:C.textDim, fontFamily:"monospace" }}>{prefix}</span>}
-        <input type="number" value={value} min={min} max={max} step={step||1}
-          onChange={e => onChange(+e.target.value)}
-          style={{ width:80, textAlign:"right", padding:"5px 8px" }} />
+        <input
+          type="text"
+          inputMode={mode}
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          style={{ width:90, textAlign:"right", padding:"5px 8px",
+            background:C.bg, border:`1px solid ${C.border}`, borderRadius:6,
+            color:C.text, fontFamily:"monospace", fontSize:13,
+            outline:"none", WebkitAppearance:"none", MozAppearance:"textfield" }}
+        />
         {suffix && <span style={{ fontSize:12, color:C.textDim, fontFamily:"monospace" }}>{suffix}</span>}
       </div>
     </div>
-  );
+    {hint && <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginTop:4 }}>{hint}</div>}
+  </div>
+);
 
-  const ResultRow = ({ label, value, color, big }) => (
-    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
-      <span style={{ fontSize:12, color:C.textMid }}>{label}</span>
-      <span style={{ fontSize:big?18:14, fontWeight:big?700:600, color:color||C.text, fontFamily:"monospace" }}>{value}</span>
-    </div>
-  );
+const CalcResultRow = ({ label, value, color, big }) => (
+  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
+    <span style={{ fontSize:12, color:C.textMid }}>{label}</span>
+    <span style={{ fontSize:big?18:14, fontWeight:big?700:600, color:color||C.text, fontFamily:"monospace" }}>{value}</span>
+  </div>
+);
+
+function PropCalc({ t }) {
+  // All state stored as strings — prevents controlled-input reset bug
+  const [qty, setQty]               = useState("1");
+  const [tickVal, setTickVal]       = useState("12.50");
+  const [stopTicks, setStop]        = useState("8");
+  const [tgtTicks, setTgt]          = useState("20");
+  const [wins, setWins]             = useState("5");
+  const [losses, setLosses]         = useState("7");
+  const [commissions, setComm]      = useState("0");
+  const [profitGoal, setProfitGoal] = useState("2500");
+  const [currentBal, setCurrentBal] = useState("300");
+  const [maxDD, setMaxDD]           = useState("2000");
+  const [dailyLimit, setDailyLimit] = useState("1000");
+  const [dailyTrades, setDailyTrades] = useState("3");
+
+  // Parse all values once
+  const q  = parseFloat(qty)        || 0;
+  const tv = parseFloat(tickVal)    || 0;
+  const st = parseFloat(stopTicks)  || 0;
+  const tt = parseFloat(tgtTicks)   || 0;
+  const w  = parseFloat(wins)       || 0;
+  const l  = parseFloat(losses)     || 0;
+  const pg = parseFloat(profitGoal) || 0;
+  const cb = parseFloat(currentBal) || 0;
+  const md = parseFloat(maxDD)      || 0;
+  const dl = parseFloat(dailyLimit) || 0;
+  const comm = parseFloat(commissions) || 0;
+  const dt = parseFloat(dailyTrades)   || 1;
+
+  const totalTrades    = w + l;
+  const wr             = totalTrades > 0 ? w / totalTrades : 0;
+  const winRatePct     = totalTrades > 0 ? ((w / totalTrades) * 100).toFixed(1) : "0.0";
+  const lossPerTrade   = q * st * tv;
+  const profitPerTrade = q * tt * tv;
+  const rr             = st > 0 ? tt / st : 0;
+  const grossWins      = w * profitPerTrade;
+  const grossLosses    = l * lossPerTrade;
+  const totalComm      = totalTrades * comm;
+  const netPnL         = grossWins - grossLosses - totalComm;
+  const expectedVal    = (wr * profitPerTrade) - ((1 - wr) * lossPerTrade) - comm;
+  const neededToPass   = pg - cb;
+  const dailyAvg       = expectedVal * dt;
+  const tradesNeeded   = expectedVal > 0 ? Math.ceil(neededToPass / expectedVal) : "∞";
+  const daysToPass     = dailyAvg > 0 ? (neededToPass / dailyAvg).toFixed(1) : "∞";
+  const maxTradesToDD  = lossPerTrade > 0 ? Math.floor(md / lossPerTrade) : "∞";
+  const maxTradesToDaily = lossPerTrade > 0 ? Math.floor(dl / lossPerTrade) : "∞";
 
   const dangerColor = (val, threshold) => val <= threshold * 1.5 ? C.short : val <= threshold * 2.5 ? C.warn : C.long;
 
@@ -985,59 +1124,90 @@ function PropCalc({ t }) {
           </div>
         </div>
       </div>
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(340px,1fr))", gap:20 }}>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20 }}>
+
+        {/* Row 1 Left — Trade Parameters */}
         <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
           <div style={{ fontWeight:600, fontSize:14, marginBottom:16 }}>Trade Parameters</div>
-          <InputRow label="Contracts / Qty"        value={qty}       onChange={setQty}       min={1}   max={20} />
-          <InputRow label="Tick / Pip Value"        value={tickVal}   onChange={setTickVal}   min={0.1} step={0.25} prefix="$" />
-          <InputRow label="Stop Loss"               value={stopTicks} onChange={setStop}      min={1}   suffix="ticks" />
-          <InputRow label="Profit Target"           value={tgtTicks}  onChange={setTgt}       min={1}   suffix="ticks" />
-          <InputRow label="Win Rate"                value={winRate}   onChange={setWinRate}   min={1}   max={99} suffix="%" />
-          <div style={{ fontWeight:600, fontSize:14, marginBottom:12, marginTop:20 }}>Account Settings</div>
-          <InputRow label="Profit Goal"             value={profitGoal}   onChange={setProfitGoal} min={0} prefix="$" />
-          <InputRow label="Current P&L"             value={currentBal}   onChange={setCurrentBal} prefix="$" />
-          <div>
-            <InputRow label="Max Drawdown / Loss to Ruin" value={maxDD} onChange={setMaxDD} min={0} prefix="$" />
-            <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginTop:4, marginBottom:8 }}>Prop challenge breach limit or total account loss</div>
-          </div>
-          <InputRow label="Daily Loss Limit"        value={dailyLimit}   onChange={setDailyLimit} min={0} prefix="$" />
+          <CalcRow label="Contracts / Qty"     value={qty}         onChange={setQty}         mode="numeric" />
+          <CalcRow label="Tick / Pip Value"    value={tickVal}     onChange={setTickVal}     prefix="$"
+            hint="ES=12.50 · NQ=5.00 · CL=10.00 · GC=10.00 · /6E=6.25" />
+          <CalcRow label="Stop Loss"           value={stopTicks}   onChange={setStop}        suffix="ticks" mode="numeric" />
+          <CalcRow label="Profit Target"       value={tgtTicks}    onChange={setTgt}         suffix="ticks" mode="numeric" />
+          <CalcRow label="Commissions / trade" value={commissions} onChange={setComm}        prefix="$"
+            hint="Round-trip commissions per contract" />
         </div>
-        <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
-          <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
-            <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>Per Trade</div>
-            <ResultRow label="Loss per trade"   value={`$${lossPerTrade.toFixed(2)}`}   color={C.short} />
-            <ResultRow label="Profit per trade" value={`$${profitPerTrade.toFixed(2)}`} color={C.long} />
-            <ResultRow label="Risk : Reward"    value={`${rr.toFixed(2)} : 1`}          color={C.accent} />
-            <ResultRow label="Expected Value"   value={`$${expectedVal.toFixed(2)}`}    color={expectedVal>=0?C.long:C.short} big />
+
+        {/* Row 1 Right — Funded Trader Goal Tracker */}
+        <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
+          <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>Funded Trader Goal Tracker</div>
+          <CalcRow label="Profit Goal"    value={profitGoal}  onChange={setProfitGoal} prefix="$" />
+          <CalcRow label="Current P&L"   value={currentBal}  onChange={setCurrentBal} prefix="$" />
+          <CalcResultRow label="Needed to Pass"               value={`$${neededToPass.toFixed(2)}`}  color={neededToPass>0?C.warn:C.long} big />
+          <CalcRow label="Avg Trades Per Day" value={dailyTrades} onChange={setDailyTrades} mode="numeric" />
+          <CalcResultRow label="Daily Avg (EV × trades/day)" value={`$${dailyAvg.toFixed(2)}`}       color={C.accent} />
+          <CalcResultRow label="Trades to Goal"              value={tradesNeeded}                     color={C.accent} />
+          <CalcResultRow label="Est. Days to Goal"           value={daysToPass}                       color={C.long} />
+        </div>
+
+        {/* Row 2 Left — Win / Loss Record */}
+        <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
+          <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>Win / Loss Record</div>
+          <CalcRow label="Winning Trades" value={wins}   onChange={setWins}   mode="numeric" />
+          <CalcRow label="Losing Trades"  value={losses} onChange={setLosses} mode="numeric" />
+          <div style={{ display:"flex", justifyContent:"space-between", padding:"8px 0", borderBottom:`1px solid ${C.border}` }}>
+            <span style={{ fontSize:12, color:C.textMid }}># of Trades</span>
+            <span style={{ fontSize:13, fontWeight:600, color:C.text, fontFamily:"monospace" }}>{totalTrades}</span>
           </div>
-          <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
-            <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>Account Progress</div>
-            <ResultRow label="Profit goal"       value={`$${profitGoal.toLocaleString()}`} />
-            <ResultRow label="Current P&L"       value={`$${currentBal.toLocaleString()}`}   color={C.accent} />
-            <ResultRow label="Still needed"      value={`$${neededToPass.toLocaleString()}`} color={neededToPass>0?C.warn:C.long} big />
-            <ResultRow label="Trades to goal"    value={tradesNeeded}  color={C.accent} />
-            <ResultRow label="Est. days to goal" value={daysToPass}    color={C.long} />
+          <div style={{ display:"flex", justifyContent:"space-between", padding:"8px 0", borderBottom:`1px solid ${C.border}` }}>
+            <span style={{ fontSize:12, color:C.textMid }}>Win Rate</span>
+            <span style={{ fontSize:13, fontWeight:700, color:C.accent, fontFamily:"monospace" }}>{winRatePct}%</span>
           </div>
-          <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
-            <div style={{ fontWeight:600, fontSize:14, marginBottom:6 }}>⚠ Risk Limits</div>
-            <div style={{ fontSize:12, color:C.textMid, marginBottom:14 }}>Consecutive losing trades before limits hit</div>
-            <ResultRow label="Trades until ruin"        value={maxTradesToDD}    color={dangerColor(maxTradesToDD, 3)} big />
-            <ResultRow label="Trades until daily limit" value={maxTradesToDaily} color={dangerColor(maxTradesToDaily, 2)} />
-            <div style={{ marginTop:14 }}>
-              <div style={{ fontSize:10, color:C.textMid, marginBottom:6, fontFamily:"monospace" }}>DRAWDOWN BUFFER</div>
-              <div style={{ height:8, background:C.border, borderRadius:4, overflow:"hidden" }}>
-                <div style={{
-                  height:"100%", borderRadius:4, transition:"width 0.5s",
-                  width:`${Math.min((currentBal/maxDD)*100,100)}%`,
-                  background:currentBal/maxDD > 0.5 ? C.long : currentBal/maxDD > 0.25 ? C.warn : C.short,
-                }} />
-              </div>
-              <div style={{ display:"flex", justifyContent:"space-between", fontSize:10, color:C.textDim, marginTop:4, fontFamily:"monospace" }}>
-                <span>$0</span><span>${maxDD} limit</span>
-              </div>
+        </div>
+
+        {/* Row 2 Right — Account Settings */}
+        <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
+          <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>Account Settings</div>
+          <CalcRow label="Max Drawdown / Loss to Ruin" value={maxDD}      onChange={setMaxDD}      prefix="$"
+            hint="Prop challenge breach limit or total account loss" />
+          <CalcRow label="Daily Loss Limit"            value={dailyLimit} onChange={setDailyLimit} prefix="$" />
+        </div>
+
+        {/* Row 3 Left — Risk Limits */}
+        <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
+          <div style={{ fontWeight:600, fontSize:14, marginBottom:6 }}>⚠ Risk Limits</div>
+          <div style={{ fontSize:12, color:C.textMid, marginBottom:14 }}>Max consecutive losses before hitting limit</div>
+          <CalcResultRow label="Trades until ruin"        value={maxTradesToDD}    color={dangerColor(maxTradesToDD, 3)} big />
+          <CalcResultRow label="Trades until daily limit" value={maxTradesToDaily} color={dangerColor(maxTradesToDaily, 2)} />
+          <div style={{ marginTop:14 }}>
+            <div style={{ fontSize:10, color:C.textMid, marginBottom:6, fontFamily:"monospace" }}>DRAWDOWN BUFFER</div>
+            <div style={{ height:8, background:C.border, borderRadius:4, overflow:"hidden" }}>
+              <div style={{
+                height:"100%", borderRadius:4, transition:"width 0.5s",
+                width:`${Math.min((cb/md)*100,100)}%`,
+                background: cb/md > 0.5 ? C.long : cb/md > 0.25 ? C.warn : C.short,
+              }} />
+            </div>
+            <div style={{ display:"flex", justifyContent:"space-between", fontSize:10, color:C.textDim, marginTop:4, fontFamily:"monospace" }}>
+              <span>$0</span><span>${md.toLocaleString()} limit</span>
             </div>
           </div>
         </div>
+
+        {/* Row 3 Right — Summary */}
+        <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
+          <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>Summary</div>
+          <CalcResultRow label="Loss per trade"     value={`$${lossPerTrade.toFixed(2)}`}   color={C.short} />
+          <CalcResultRow label="Profit per trade"   value={`$${profitPerTrade.toFixed(2)}`} color={C.long} />
+          <CalcResultRow label="Risk : Reward"      value={`${rr.toFixed(2)} : 1`}          color={C.accent} />
+          <CalcResultRow label="Win Rate"           value={`${winRatePct}%`}                color={C.accent} />
+          <CalcResultRow label="Gross Wins"         value={`$${grossWins.toFixed(2)}`}      color={C.long} />
+          <CalcResultRow label="Gross Losses"       value={`-$${grossLosses.toFixed(2)}`}   color={C.short} />
+          {totalComm > 0 && <CalcResultRow label="Commissions" value={`-$${totalComm.toFixed(2)}`} color={C.textMid} />}
+          <CalcResultRow label="Net P&L"            value={`$${netPnL.toFixed(2)}`}         color={netPnL>=0?C.long:C.short} big />
+          <CalcResultRow label="Exp. Value / trade" value={`$${expectedVal.toFixed(2)}`}    color={expectedVal>=0?C.long:C.short} />
+        </div>
+
       </div>
     </div>
   );
@@ -1066,14 +1236,12 @@ function LangSwitcher({ lang, setLang }) {
 function FAQSection() {
   const [open, setOpen] = useState(null);
   const faqs = [
-    ["What markets does Signal Boss cover?", "Signal Boss covers ES (S&P 500), NQ (Nasdaq), CL (Crude Oil), GC (Gold), RTY (Russell 2000), ZB (30-Year T-Bond), and currency futures /6E (EUR/USD), /6B (GBP/USD), and /6A (AUD/USD)."],
     ["How are signals delivered?", "Signals appear in real-time on your Signal Boss dashboard. Alert delivery via email, SMS, and webhook (for automation) is available on Pro and Elite plans. You can also configure which instruments and timeframes trigger alerts."],
     ["Do I need to be at my desk all day?", "No. Signal Boss is designed around close-confirmed signals — meaning a signal fires when a candle closes with all conditions met, not on intraday noise. You can check in at key times rather than watching a screen all day."],
-    ["What's the difference between 1, 2, and 3-cycle confluence?", "Each cycle (Daily, 2-Day, 4-Day) represents a different momentum timeframe. When all three align in the same direction, you get a 3/3 Strong signal — the highest conviction setup. 1 or 2 cycles aligning is still a valid signal, just with less confluence behind it."],
-    ["Is this suitable for beginners?", "Signal Boss is best suited for traders who already understand futures basics — margin, leverage, tick values, and position sizing. If you're brand new to futures, we'd recommend building that foundation first. The Account Risk Calculator and methodology documentation can help bridge that gap."],
-    ["What timeframes are supported?", "The platform supports 5m, 15m, 1H, 4H, and Daily chart timeframes. The underlying cycle engine is timeframe-agnostic — you can configure it to match your trading style."],
+    ["What markets does Signal Boss cover?", "Signal Boss covers ES (S&P 500), NQ (Nasdaq-100), CL (Crude Oil), GC (Gold), RTY (Russell 2000), ZN (10-Year T-Note), and currency futures /6E (EUR/USD)."],
+    ["Is this suitable for beginners?", "Signal Boss is suited for traders who already understand futures basics — margin, leverage, tick values, and position sizing. If you're brand new to futures, we'd recommend building a foundation first. Our Account Risk Calculator and methodology documentation can help bridge that gap, but newer traders can benefit from the direct signal approach and have the opportunity to bypass the long, arduous, often painful exercise of 'finding entries' and charting methods that prove to be unprofitable, year after year."],
     ["Can I cancel anytime?", "Yes. All plans are month-to-month with no long-term contracts. You can cancel anytime from your account settings and you'll retain access through the end of your billing period."],
-    ["How is this different from other signal services?", "Most signal services give you arrows on a chart and call it a day. Signal Boss shows you the underlying confluence — which cycles are aligned, VWAP positioning, signal strength — so you can make an informed decision rather than blindly following an alert. Transparency is the whole point."],
+    ["How is this different from other signal services?", "Most signal services give you arrows on a chart and call it a day. They're based on chart patterns and oscillators that are 'yesterday's news'. Signal Boss gives you clear, concise signals with actual entry points, suggested stop losses and take profit levels. Institutional traders know what really moves markets — volatility-driven momentum and volume. We give you those professional grade signals, you do the rest: get in the trade, after you've defined your risk and set your take-profit!"],
   ];
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
@@ -1096,7 +1264,7 @@ function FAQSection() {
 function FAQSectionForex() {
   const [open, setOpen] = useState(null);
   const faqs = [
-    ["What forex pairs does Signal Boss cover?", "Signal Boss covers EUR/USD (/6E), GBP/USD (/6B), and AUD/USD (/6A) — derived directly from exchange-traded currency futures where institutional price discovery begins."],
+    ["What forex pairs does Signal Boss cover?", "Signal Boss currently covers EUR/USD (/6E) — derived directly from exchange-traded currency futures where institutional price discovery begins."],
     ["Why use currency futures signals for spot forex trading?", "Currency futures are exchange-traded, fully transparent, and reflect institutional positioning in real time. The implied volatility data derived from futures options is a leading indicator for spot forex price movement. The directional correlation between a futures IV signal and the equivalent spot pair is approximately 99% — meaning the signal intelligence is identical whether you execute in futures or spot forex."],
     ["Does this work for FTMO, FundedNext, and other forex prop firms?", "Yes. Signal Boss includes the Account Risk Calculator covering FTMO, FundedNext, MyFundedFX, and all major forex evaluation firms. The calculator handles pip-based risk, lot sizing, leverage ratios, and daily drawdown rules — the same logic applies whether you're protecting a prop challenge or your own capital."],
     ["How are pip-based stop and target levels calculated?", "Smart Stop and Smart Take Profit levels on forex signals are derived from the same IV mean-reversion methodology used for futures tick-based levels. The calculation accounts for the pip value of each specific pair, producing actionable levels you can enter directly into your broker platform."],
@@ -1123,11 +1291,6 @@ function FAQSectionForex() {
 }
 
 function ForexDemo({ onNavigate, t }) {
-  const pairs = [
-    { pair:"EUR/USD", future:"/6E", dir:"LONG",  trigger:"AAA+", detail:"All 3 cycles within 1 bar · Fresh rotation", ema:"trend aligned", session:"NY Open",    cycles:[["1-Day","↑ above zero"],["3-Day","↑ above zero"],["6-Day","↑ above zero"]], vwaps:[["Daily VWAP","↑ above"],["Weekly VWAP","↑ above"]], entry:"1.0842", color:C.long },
-    { pair:"GBP/USD", future:"/6B", dir:"LONG",  trigger:"AA",   detail:"1-Day + 3-Day rotated · Fresh rotation",        ema:"trend aligned", session:"London",    cycles:[["1-Day","↑ above zero"],["3-Day","↑ above zero"],["6-Day","↓ below zero"]], vwaps:[["Daily VWAP","↑ above"],["Weekly VWAP","↑ above"]], entry:"1.2634", color:C.long },
-    { pair:"AUD/USD", future:"/6A", dir:"SHORT", trigger:"AA",   detail:"1-Day + 6-Day rotated · Extended — size accordingly", ema:"counter-trend", session:"Asian", cycles:[["1-Day","↓ below zero"],["3-Day","↑ above zero"],["6-Day","↓ below zero"]], vwaps:[["Daily VWAP","↓ below"],["Weekly VWAP","↑ above"]], entry:"0.6481", color:C.short },
-  ];
   const [activeTab, setActiveTab] = useState("signals");
 
   const tabs = [
@@ -1143,8 +1306,18 @@ function ForexDemo({ onNavigate, t }) {
       {/* Sidebar */}
       <div style={{ width:215, background:C.surface, borderRight:`1px solid ${C.border}`, display:"flex", flexDirection:"column", flexShrink:0 }}>
         <div style={{ padding:"20px 18px 16px", borderBottom:`1px solid ${C.border}` }}>
-          <div onClick={() => onNavigate("landing")} style={{ fontWeight:700, fontSize:15, fontFamily:"monospace", cursor:"pointer" }}>SIGNAL<span style={{ color:C.accent }}>BOSS</span></div>
-          <div style={{ marginTop:8, display:"flex", alignItems:"center", gap:6 }}>
+          <div onClick={() => onNavigate("landing")} style={{ display:"flex", alignItems:"center", gap:9, cursor:"pointer" }}>
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink:0 }}>
+              <rect width="28" height="28" rx="6" fill={C.accent} fillOpacity="0.12"/>
+              <rect x="0.5" y="0.5" width="27" height="27" rx="5.5" stroke={C.accent} strokeOpacity="0.35"/>
+              <path d="M16 4L9 15.5h6L11 24l10-13h-6L16 4z" fill={C.accent}/>
+            </svg>
+            <div style={{ lineHeight:1 }}>
+              <div style={{ fontWeight:800, fontSize:14, fontFamily:"monospace", letterSpacing:"0.06em", color:C.text }}>SIGNAL<span style={{ color:C.accent }}>BOSS</span></div>
+              <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.12em", marginTop:2 }}>FOREX · LIVE</div>
+            </div>
+          </div>
+          <div style={{ marginTop:10, display:"flex", alignItems:"center", gap:6 }}>
             <LiveDot color={C.accent} size={5} />
             <span style={{ fontSize:10, color:C.textMid, fontFamily:"monospace" }}>FOREX ENGINE ACTIVE</span>
           </div>
@@ -1172,75 +1345,16 @@ function ForexDemo({ onNavigate, t }) {
 
         {activeTab==="signals" && (
           <div style={{ padding:22 }}>
-            {/* Demo notice */}
-            <div style={{ marginBottom:18, background:"#0e0a04", border:`1px solid #f59e0b44`, borderRadius:10, padding:"12px 18px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                <span style={{ fontSize:14 }}>⚠</span>
-                <span style={{ fontSize:12, color:"#f59e0b", fontFamily:"monospace", fontWeight:600, letterSpacing:"0.08em" }}>SIMULATED DEMO</span>
-                <span style={{ fontSize:12, color:"#9ca3af" }}>— These are not live signals. Real-time signal delivery requires a subscription.</span>
+            <div style={{ background:C.surface, border:`1px solid ${C.accent}33`, borderRadius:12, padding:"40px 28px", textAlign:"center", marginTop:20 }}>
+              <div style={{ fontSize:24, marginBottom:12 }}>◈</div>
+              <div style={{ fontSize:16, fontWeight:600, marginBottom:8 }}>Forex Signals</div>
+              <div style={{ fontSize:13, color:C.textMid, lineHeight:1.7, maxWidth:400, margin:"0 auto" }}>
+                Currency futures IV signals are in development.<br />
+                Futures signals are live on the FUTURES track.
               </div>
-              <button onClick={() => onNavigate("signup")} style={{ padding:"7px 18px", background:C.accent, color:"#080909", border:"none", borderRadius:6, fontWeight:700, fontSize:12, cursor:"pointer", whiteSpace:"nowrap" }}>Get Started →</button>
-            </div>
-            {/* Methodology note */}
-            <div style={{ background:C.surface, border:`1px solid ${C.accent}33`, borderRadius:10, padding:"14px 20px", marginBottom:20, display:"flex", alignItems:"center", gap:12 }}>
-              <span style={{ color:C.accent, fontSize:16 }}>◈</span>
-              <p style={{ fontSize:13, color:"#c9cdd6", lineHeight:1.7, margin:0 }}>
-                Currency futures are where banks show their hand. IV inflection signals built from exchange-traded currency futures — where institutional positioning is expressed first. Spot forex prices follow through arbitrage.
-              </p>
-            </div>
-            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(300px, 1fr))", gap:16 }}>
-              {pairs.map((p) => (
-                <div key={p.pair} style={{ background:p.dir==="LONG"?C.surfaceUp:C.surfaceDn, border:`1px solid ${p.color}33`, borderRadius:12, padding:20, position:"relative", overflow:"hidden" }}>
-                  <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:p.color }} />
-                  <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
-                    <LiveDot color={p.color} size={7} />
-                    <span style={{ fontSize:18, fontWeight:700, color:p.color, fontFamily:"monospace" }}>{p.dir}</span>
-                    <span style={{ fontSize:18, fontWeight:700, fontFamily:"monospace" }}>{p.pair}</span>
-                    <span style={{ marginLeft:"auto", fontSize:10, color:p.color, background:p.color+"18", padding:"2px 8px", borderRadius:12, fontFamily:"monospace" }}>ACTIVE</span>
-                  </div>
-                  <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.08em", marginBottom:10, background:C.accentDim, padding:"3px 8px", borderRadius:4, display:"inline-block" }}>
-                    DERIVED FROM {p.future}
-                  </div>
-                  <div style={{ marginBottom:12 }}>
-                    <TriggerBolts trigger={p.trigger} />
-                    <div style={{ fontSize:10, color:C.textMid, fontFamily:"monospace", marginTop:4 }}>{p.detail}</div>
-                    <div style={{ display:"flex", gap:10, marginTop:4 }}>
-                      <span style={{ fontSize:10, fontFamily:"monospace", color: p.ema==="trend aligned" ? C.long : C.warn }}>17 EMA: {p.ema}</span>
-                      <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>{p.session}</span>
-                    </div>
-                  </div>
-                  {p.cycles.map(([label, val]) => (
-                    <div key={label} style={{ display:"flex", justifyContent:"space-between", padding:"5px 0", borderBottom:`1px solid ${C.border}`, fontSize:11, fontFamily:"monospace" }}>
-                      <span style={{ color:C.textMid }}>{label}</span>
-                      <span style={{ color:val.includes("above") ? p.dir==="LONG"?C.long:C.textDim : p.dir==="SHORT"?C.short:C.textDim }}>{val} ✓</span>
-                    </div>
-                  ))}
-                  {p.vwaps.map(([label, val]) => (
-                    <div key={label} style={{ display:"flex", justifyContent:"space-between", padding:"5px 0", borderBottom:`1px solid ${C.border}`, fontSize:11, fontFamily:"monospace" }}>
-                      <span style={{ color:C.textMid }}>{label}</span>
-                      <span style={{ color:val.includes("above") ? p.dir==="LONG"?C.long:C.warn : p.dir==="SHORT"?C.short:C.warn }}>{val} ✓</span>
-                    </div>
-                  ))}
-                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginTop:10 }}>
-                    <span style={{ fontSize:11, color:C.textMid, fontFamily:"monospace" }}>Entry price</span>
-                    <span style={{ fontSize:15, fontWeight:700, color:C.text, fontFamily:"monospace" }}>{p.entry}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            {/* CTA Banner */}
-            <div style={{ marginTop:32, background:`linear-gradient(135deg, ${C.surface}, #0d0a1a)`, border:`1px solid ${C.accent}33`, borderRadius:14, padding:"24px 28px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:16 }}>
-              <div>
-                <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:6 }}>THIS IS THE DEMO</div>
-                <div style={{ fontSize:16, fontWeight:700, marginBottom:4 }}>Ready for live signals on your account?</div>
-                <div style={{ fontSize:13, color:C.textMid }}>Start your free trial and get real-time alerts the moment conditions align.</div>
-              </div>
-              <button onClick={() => onNavigate("signup")} style={{ padding:"12px 28px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:13, cursor:"pointer", whiteSpace:"nowrap" }}>
-                Get Started →
+              <button onClick={() => onNavigate("dashboard")} style={{ marginTop:24, padding:"11px 28px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:13, cursor:"pointer" }}>
+                Go to Futures Dashboard →
               </button>
-            </div>
-            <div style={{ textAlign:"center", marginTop:16 }}>
-              <p style={{ fontSize:12, color:C.textDim, fontStyle:"italic" }}>Simulated illustration only · Not actual trade data · Signals shown for demonstration purposes</p>
             </div>
           </div>
         )}
@@ -3415,17 +3529,108 @@ const BACKTEST_STATIC = {
   }
 };
 
+const ORB_BACKTESTS = [
+  {
+    id: "es-30m", label: "ES", sub: "180 Day", instrument: "ES",
+    name: "E-mini S&P 500", timeframe: "30-min bars",
+    period: "180 trading days", dates: "Jul 10, 2025 – Mar 26, 2026",
+    netPnl: 290450, trades: 707, wins: 388, losses: 319,
+    winRate: 54.9, profitFactor: 2.88, avgWin: 1147, avgLoss: 484,
+    maxDrawdown: 8600, expectancy: 411, riskNote: null,
+    curve: [-475,4125,11412,16200,26075,35638,42512,47362,51512,64462,69188,77688,80975,84512,89262,86912,92988,100838,105288,100038,108638,110938,114938,129388,133800,142750,142975,144862,144775,153575,158925,170175,181688,180225,186488,188362,199250,199262,210950,229800,243125,251638,262188,264975,269812,286300,290400,292388,294250,288500,292825,290450],
+  },
+  {
+    id: "nq-30m", label: "NQ", sub: "180 Day", instrument: "NQ",
+    name: "E-mini Nasdaq-100", timeframe: "30-min bars",
+    period: "180 trading days", dates: "Jul 10, 2025 – Mar 27, 2026",
+    netPnl: 261960, trades: 477, wins: 251, losses: 226,
+    winRate: 52.6, profitFactor: 2.40, avgWin: 1787, avgLoss: 826,
+    maxDrawdown: 12655, expectancy: 549, riskNote: null,
+    curve: [1225,2820,9785,16870,16270,30240,25810,30455,33140,44940,57840,63315,71585,78310,80600,84385,84290,82670,83995,97235,96885,103585,103540,101875,117215,123115,134270,150820,152780,154835,149790,149855,150710,157480,160050,156905,151080,150925,151645,162175,165365,178615,190930,204220,195795,210150,217375,233205,243190,249335,246290,246745,259845,261960],
+  },
+  {
+    id: "nq-1h", label: "NQ", sub: "360 Day", instrument: "NQ",
+    name: "E-mini Nasdaq-100", timeframe: "60-min bars",
+    period: "360 trading days", dates: "Jul 2024 – Mar 2026",
+    netPnl: 1513320, trades: 1034, wins: 677, losses: 357,
+    winRate: 65.5, profitFactor: 5.72, avgWin: 2708, avgLoss: 897,
+    maxDrawdown: 13635, expectancy: 1464,
+    riskNote: "Stop size is proportionally larger in dollar terms. Verify this fits within your maximum risk per trade before sizing your position.",
+    curve: [-785,11915,39220,56065,63280,108935,137730,160395,186440,233285,240605,261845,291160,299020,324665,344920,357555,375640,397845,428060,433395,457855,476080,488790,520430,573960,648170,655890,715040,728635,750065,786245,836680,870905,882865,901345,940395,959530,992560,1034935,1073220,1162115,1215745,1259215,1302115,1339280,1410370,1440425,1474410,1499940,1498390,1512610,1513320],
+  },
+  {
+    id: "rty-30m", label: "RTY", sub: "180 Day", instrument: "RTY",
+    name: "E-mini Russell 2000", timeframe: "30-min bars",
+    period: "180 trading days", dates: "Jul 10, 2025 – Mar 26, 2026",
+    netPnl: 223060, trades: 734, wins: 418, losses: 316,
+    winRate: 56.9, profitFactor: 3.50, avgWin: 748, avgLoss: 283,
+    maxDrawdown: 4260, expectancy: 304, riskNote: null,
+    curve: [-215,4735,8845,9095,16710,16385,22990,22270,25750,38310,41295,46830,50185,53305,56500,60580,61485,64195,69510,72450,77760,81690,83005,85950,92960,97400,99635,104885,106540,110835,113315,116900,125270,131550,135585,137805,142365,148730,149320,155480,160115,164990,166365,172835,187760,192540,198775,206375,212080,213790,218575,220290,220310,223060],
+  },
+  {
+    id: "cl-1h", label: "CL", sub: "360 Day", instrument: "CL",
+    name: "Crude Oil Futures", timeframe: "60-min bars",
+    period: "360 trading days", dates: "Oct 2024 – Mar 2026",
+    netPnl: 449750, trades: 1389, wins: 901, losses: 488,
+    winRate: 64.9, profitFactor: 4.07, avgWin: 662, avgLoss: 300,
+    maxDrawdown: 7960, expectancy: 324,
+    riskNote: "Stop size is proportionally larger in dollar terms. Verify this fits within your maximum risk per trade before sizing your position.",
+    curve: [-240,9960,22650,30110,47790,54760,60290,63950,72000,83040,85270,97920,105640,114180,121570,128810,137620,144330,151140,166920,176380,185920,197890,205880,210820,220670,228110,232640,250760,253560,266630,269200,271830,277570,281120,286340,294050,298950,303710,307140,315180,322210,323450,329240,331120,336440,350340,350350,346130,358590,359720,373220,437620,443450,449750],
+  },
+  {
+    id: "vol-filtered", label: "VOL", sub: "Filtered", instrument: null,
+    name: "Volatility Filtered", timeframe: null,
+    comingSoon: true,
+    description: [
+      { heading: "What is Volatility Filtering?", body: "Not every breakout is worth taking. Volatility filtering screens each opening range for expansion conditions — entries are only triggered when intraday volatility confirms a directional move is underway, not just noise." },
+      { heading: "Why it matters", body: "Fixed stops on a volatile day get wiped by normal price movement. Volatility-adjusted sizing respects what the market is actually doing — keeping risk consistent as a percentage of the move, not as an arbitrary number of ticks." },
+    ],
+    riskNote: null, curve: null,
+  },
+];
+
+const BACKTEST_130D = {
+  "ES": {
+    "name": "E-mini S&P 500",
+    "period": "130 trading days (Nov 2025 – Mar 2026)",
+    "stop_ticks": 14, "tp_ticks": 25, "rr": 1.79,
+    "overall": {
+      "trades": 310, "wins": 137, "losses": 173,
+      "win_rate": 44.2, "profit_factor": 1.41,
+      "total_pnl": 12537.5, "max_drawdown": 2262.5,
+      "equity": [0,-175,-350,-525,-700,-875,-562.5,-737.5,-425,-112.5,200,25,-150,-325,-500,-675,-362.5,-537.5,-712.5,-400,-575,-262.5,50,-125,-300,12.5,-162.5,-337.5,-25,-200,-375,-550,-237.5,-412.5,-587.5,-762.5,-937.5,-1112.5,-1287.5,-975,-1150,-1325,-1500,-1675,-1362.5,-1050,-737.5,-425,-112.5,-287.5,-462.5,-150,162.5,-12.5,300,125,-50,-225,-400,-575,-750,-925,-612.5,-787.5,-475,-162.5,-337.5,-512.5,-687.5,-375,-62.5,-237.5,75,-100,212.5,525,837.5,662.5,975,800,625,450,762.5,1075,1387.5,1212.5,1037.5,1350,1662.5,1487.5,1312.5,1137.5,962.5,787.5,612.5,437.5,750,575,400,225,537.5,362.5,187.5,500,325,637.5,462.5,287.5,112.5,425,250,562.5,875,700,1012.5,837.5,1150,1462.5,1775,1600,1425,1737.5,1562.5,1387.5,1700,2012.5,2325,2637.5,2950,3262.5,3087.5,3400,3712.5,3537.5,3362.5,3187.5,3012.5,2837.5,2662.5,2487.5,2312.5,2137.5,1962.5,1787.5,1612.5,1925,2237.5,2550,2375,2200,2512.5,2337.5,2162.5,2475,2300,2125,2437.5,2262.5,2087.5,1912.5,2225,2050,1875,1700,1525,1837.5,1662.5,1487.5,1800,1625,1450,1762.5,2075,2387.5,2700,2525,2837.5,2662.5,2487.5,2312.5,2137.5,1962.5,2275,2587.5,2900,2725,3037.5,2862.5,2687.5,3000,3312.5,3625,3450,3762.5,3587.5,3900,4212.5,4037.5,3862.5,3687.5,4000,3825,3650,3475,3300,3612.5,3925,3750,4062.5,3887.5,3712.5,4025,4337.5,4650,4962.5,4787.5,4612.5,4925,5237.5,5062.5,5375,5687.5,6000,6312.5,6137.5,5962.5,6275,6100,5925,5750,6062.5,6375,6687.5,6512.5,6825,6650,6962.5,6787.5,6612.5,6925,7237.5,7062.5,6887.5,7200,7025,7337.5,7162.5,6987.5,6812.5,6637.5,6950,6775,6600,6912.5,6737.5,6562.5,6387.5,6700,7012.5,7325,7150,7462.5,7287.5,7112.5,6937.5,6762.5,7075,7387.5,7212.5,7525,7350,7662.5,7487.5,7312.5,7625,7937.5,7762.5,7587.5,7900,8212.5,8037.5,8350,8662.5,8975,9287.5,9600,9912.5,10225,10537.5,10362.5,10675,10987.5,11300,11612.5,11437.5,11750,12062.5,12375,12200,12025,11850,11675,11500,11812.5,11637.5,11950,12262.5,12087.5,12400,12712.5,12537.5]
+    }
+  },
+  "NQ": {
+    "name": "E-mini Nasdaq-100",
+    "period": "130 trading days (Nov 2025 – Mar 2026)",
+    "stop_ticks": 16, "tp_ticks": 83, "rr": 5.19,
+    "overall": {
+      "trades": 320, "wins": 118, "losses": 202,
+      "win_rate": 36.9, "profit_factor": 3.03,
+      "total_pnl": 32810, "max_drawdown": 1810,
+      "equity": [0,415,335,255,175,590,1005,1420,1835,1755,1675,1595,1515,1930,1850,1770,2185,2600,3015,2935,3350,3765,3685,4100,4515,4435,4850,4770,4690,4610,5025,4945,4865,4785,4705,4625,4545,4465,4385,4305,4225,4145,4065,3985,3905,4320,4240,4160,4080,4495,4415,4335,4255,4175,4095,4015,3935,3855,3775,3695,3615,3535,3455,3375,3295,3215,3630,3550,3965,4380,4795,4715,5130,5050,5465,5385,5305,5225,5145,5560,5975,5895,6310,6230,6150,6565,6980,6900,6820,6740,6660,6580,6500,6420,6340,6260,6675,6595,6515,6435,6355,6275,6690,6610,6530,6450,6370,6290,6210,6130,6545,6960,7375,7295,7215,7630,7550,7470,7390,7310,7230,7150,7070,6990,6910,6830,6750,7165,7085,7005,7420,7835,7755,7675,7595,7515,7435,7850,7770,7690,8105,8025,7945,8360,8280,8200,8120,8040,7960,7880,8295,8215,8135,8055,7975,7895,8310,8230,8150,8565,8485,8405,8325,8245,8165,8580,8500,8915,9330,9250,9170,9585,10000,10415,10830,10750,11165,11085,11500,11915,12330,12745,12665,13080,13495,13910,13830,14245,14660,14580,14500,14915,14835,15250,15170,15090,15505,15920,16335,16750,17165,17085,17500,17915,17835,18250,18665,18585,18505,18425,18345,18265,18680,18600,19015,18935,18855,18775,19190,19110,19525,19445,19860,19780,20195,20610,20530,20945,20865,21280,21695,22110,22525,22940,22860,23275,23195,23610,23530,23450,23370,23290,23705,24120,24040,24455,24870,24790,24710,25125,25045,24965,24885,24805,24725,24645,24565,24485,24405,24820,24740,25155,25570,25985,25905,26320,26240,26655,26575,26990,27405,27325,27740,27660,27580,27500,27420,27340,27755,28170,28585,28505,28425,28345,28760,29175,29590,29510,29925,29845,29765,30180,30100,30515,30930,31345,31265,31680,31600,31520,31440,31360,31280,31695,31615,31535,31455,31375,31790,32205,32125,32045,31965,31885,32300,32220,32140,32060,32475,32890,32810]
+    }
+  }
+};
+
 function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
   const [signalCount] = useState(47 + Math.floor(Math.random() * 12));
   const [demoRR, setDemoRR]         = useState("2.5");
   const [lpBtInst, setLpBtInst]     = useState("ES");
+  const [lpBt130Inst, setLpBt130Inst] = useState("NQ");
   const [calcEmail, setCalcEmail]   = useState("");
   const [calcSent, setCalcSent]     = useState(false);
-  const [heroPhase, setHeroPhase]   = useState(0); // 0=question, 1=headline
+  const [heroPhase, setHeroPhase]   = useState(0); // 0=question, 1=headline A, 2=headline B, 3=headline C
 
   useEffect(() => {
     const t1 = setTimeout(() => setHeroPhase(1), 4500);
-    return () => clearTimeout(t1);
+    const t2 = setTimeout(() => setHeroPhase(2), 9500);
+    const t3 = setTimeout(() => setHeroPhase(3), 14500);
+    const iv = setInterval(() => {
+      setHeroPhase(p => p === 1 ? 2 : p === 2 ? 3 : 1);
+    }, 5000);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearInterval(iv); };
   }, []);
 
   return (
@@ -3434,12 +3639,12 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
 
       {/* Hero — always shown first */}
       <div style={{ minHeight:"92vh", display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", textAlign:"center", padding:"80px 24px" }}>
-        <div style={{ fontSize:10, letterSpacing:"0.3em", color:track==="forex"?C.accent:C.long, textTransform:"uppercase", marginBottom:20, display:"flex", alignItems:"center", gap:10, fontFamily:"monospace" }}>
-          <LiveDot color={track==="forex"?C.accent:C.long} size={6} />
+        <div style={{ fontSize:15, letterSpacing:"0.15em", color:track==="forex"?C.accent:C.long, textTransform:"uppercase", marginBottom:20, display:"flex", alignItems:"center", gap:10, fontFamily:"monospace", fontWeight:600 }}>
+          <LiveDot color={track==="forex"?C.accent:C.long} size={8} />
           {track==="forex" ? t.forexTagline : track==="futures" ? t.tagline : t.engineTagline}
         </div>
         <div style={{ marginBottom:24, transition:"opacity 0.8s ease", opacity: heroPhase===1 ? 1 : 0 }}><SignalCounter count={signalCount} /></div>
-        <div style={{ position:"relative", minHeight:"clamp(160px,18vw,260px)", display:"flex", alignItems:"center", justifyContent:"center", width:"100%", maxWidth:800, marginBottom:24 }}>
+        <div style={{ position:"relative", minHeight: !track ? "clamp(220px,24vw,340px)" : "clamp(160px,18vw,260px)", display:"flex", alignItems:"center", justifyContent:"center", width:"100%", maxWidth:800, marginBottom:24 }}>
           {/* Phase 0 — Question */}
           <div style={{ position:"absolute", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===0 ? 1 : 0, pointerEvents:"none" }}>
             <p style={{ fontSize:"clamp(13px,1.4vw,17px)", color:C.accent, fontStyle:"italic", marginBottom:16, letterSpacing:"0.08em", fontFamily:"monospace", textTransform:"uppercase" }}>Ask yourself a simple question:</p>
@@ -3447,50 +3652,63 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
               If charts alone were the answer…<br />why are you not already generating<br /><span style={{ color:C.long }}>consistent wealth</span> using them?
             </h1>
           </div>
-          {/* Phase 1 — Headline */}
+          {/* Phase 1 — Headline A */}
           <div style={{ position:"absolute", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===1 ? 1 : 0, pointerEvents: heroPhase===1 ? "auto" : "none" }}>
-            <h1 style={{ fontSize:"clamp(44px,6.5vw,86px)", fontWeight:700, lineHeight:1.08, letterSpacing:"-0.04em" }}>
+            <h1 style={{ fontSize: !track ? "clamp(28px,4vw,54px)" : "clamp(44px,6.5vw,86px)", fontWeight:700, lineHeight:1.15, letterSpacing:"-0.04em" }}>
               {track==="forex"
                 ? <>{t.forexHeroTitle1}<br /><span style={{ color:C.accent }}>{t.forexHeroTitle2}</span></>
                 : track==="futures"
                 ? <>{t.heroTitle1}<br /><span style={{ color:C.accent }}>{t.heroTitle2}</span></>
-                : <>{t.chooserTitle1}<br />{t.chooserTitle2}<br /><span style={{ color:C.accent }}>{t.chooserTitle3}</span></>}
+                : <>{t.chooserTitle1}<br /><span style={{ color:C.accent }}>{t.chooserTitle3}</span></>}
+            </h1>
+          </div>
+          {/* Phase 2 — Headline B */}
+          <div style={{ position:"absolute", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===2 ? 1 : 0, pointerEvents: heroPhase===2 ? "auto" : "none" }}>
+            <h1 style={{ fontSize:"clamp(28px,4vw,54px)", fontWeight:700, lineHeight:1.2, letterSpacing:"-0.04em" }}>
+              If charts aren't making you consistently profitable...<br />
+              <span style={{ color:C.long }}>don't worry — we have a solution.</span>
+            </h1>
+          </div>
+          {/* Phase 3 — Headline C */}
+          <div style={{ position:"absolute", width:"100%", textAlign:"center", transition:"opacity 0.8s ease", opacity: heroPhase===3 ? 1 : 0, pointerEvents: heroPhase===3 ? "auto" : "none" }}>
+            <h1 style={{ fontSize:"clamp(28px,4vw,54px)", fontWeight:700, lineHeight:1.2, letterSpacing:"-0.04em" }}>
+              Simplified for people with real lives,<br />
+              <span style={{ color:C.long }}>real bills, and real reasons to get this right.</span>
             </h1>
           </div>
         </div>
         <p style={{ fontSize:"clamp(17px,1.8vw,22px)", color:"#d0e4e4", maxWidth:620, lineHeight:1.75, marginBottom:52, fontWeight:500, transition:"opacity 0.8s ease", opacity: heroPhase===1 ? 1 : 0 }}>
-          Volatility leads. Price follows. Signal Boss reads the state the market is actually in — so your decisions are based on what really moves it.
+          {t.chooserSub}
         </p>
         <div style={{ display:"flex", gap:14, flexWrap:"wrap", justifyContent:"center" }}>
           <button onClick={() => onNavigate("signup")} style={{ padding:"15px 36px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:600, fontSize:14, cursor:"pointer" }}>{t.startTrial}</button>
-          <button onClick={() => onNavigate(track==="forex" ? "forex-demo" : track==="futures" ? "dashboard" : "demo-chooser")} style={{ padding:"15px 36px", background:"transparent", color:C.long, border:`1px solid ${C.long}`, borderRadius:8, fontWeight:500, fontSize:14, cursor:"pointer" }}>{t.viewDemo}</button>
+          <button onClick={() => onNavigate(track==="forex" ? "forex-demo" : track==="futures" ? "futures-demo" : "demo-chooser")} style={{ padding:"15px 36px", background:"transparent", color:C.long, border:`1px solid ${C.long}`, borderRadius:8, fontWeight:500, fontSize:14, cursor:"pointer" }}>{t.viewDemo}</button>
         </div>
 
       </div>
 
       {/* ── Backtest Results ──────────────────────────────────────────── */}
       {(() => {
-        const lpBt = BACKTEST_STATIC[lpBtInst];
-        const ov   = lpBt.overall;
-        const pts  = ov.equity || [];
-        const isES = lpBtInst === "ES";
+        const _orbMap = { ES: ORB_BACKTESTS.find(b=>b.id==="es-30m"), NQ: ORB_BACKTESTS.find(b=>b.id==="nq-30m") };
+        const lpBt = _orbMap[lpBtInst];
+        const pts  = lpBt.curve || [];
         return (
         <div style={{ background:`linear-gradient(180deg, ${C.bg} 0%, ${C.silver} 8%, ${C.silver} 92%, ${C.bg} 100%)`, width:"100%", borderTop:`1px solid ${C.silverBorder}`, borderBottom:`1px solid ${C.silverBorder}` }}>
         <div style={{ maxWidth:960, margin:"0 auto", padding:"60px 24px 80px" }}>
           <div style={{ textAlign:"center", marginBottom:36 }}>
             <div style={{ fontSize:10, letterSpacing:"0.25em", color:C.accent, fontFamily:"monospace", marginBottom:14 }}>{t.backtestLabel}</div>
             <h2 style={{ fontSize:28, fontWeight:700, letterSpacing:"-0.03em", marginBottom:12 }}>
-              Real numbers.<br/><span style={{ color:C.long }}>Real historical data.</span>
+              {t.realNumbers}<br/><span style={{ color:C.long }}>{t.realData}</span>
             </h2>
             <p style={{ color:C.textMid, fontSize:14, maxWidth:560, margin:"0 auto 24px", lineHeight:1.7 }}>
-              Walk-forward backtest · 5-min bars · {lpBt.period} · Tier-based stops
+              Signal performance · 180 trading days · Jul 2025 – Mar 2026
             </p>
             {/* Instrument cards */}
             <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap" }}>
               {[
-                { sym:"ES", label:"E-mini S&P 500", tag:"Scaled Exit · 2:1 + 5:1", pnl:"+$6,219", wr:"51.8%", pf:"1.66x", dd:"$850", color:C.accent, tagColor:C.accent },
-                { sym:"NQ", label:"E-mini Nasdaq-100", tag:"Single Target · 5:1",  pnl:"+$22,225", wr:"42.3%", pf:"1.97x", dd:"$4,510", color:C.long, tagColor:C.long },
-              ].map(({ sym, label, tag, pnl, wr, pf, dd, color, tagColor }) => {
+                { sym:"ES", label:"E-mini S&P 500",   pnl:"+$290,450", wr:"54.9%", pf:"2.88x", dd:"$8,600",  ev:"+$411", color:C.accent },
+                { sym:"NQ", label:"E-mini Nasdaq-100", pnl:"+$261,960", wr:"52.6%", pf:"2.40x", dd:"$12,655", ev:"+$549", color:C.long },
+              ].map(({ sym, label, pnl, wr, pf, dd, ev, color }) => {
                 const active = lpBtInst === sym;
                 return (
                   <button key={sym} onClick={() => setLpBtInst(sym)} style={{
@@ -3502,15 +3720,15 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
                   }}>
                     <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
                       <span style={{ fontSize:18, fontWeight:800, fontFamily:"monospace", color: active ? color : C.text }}>{sym}</span>
-                      <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color:tagColor, background:tagColor+"1a", padding:"2px 8px", borderRadius:4, border:`1px solid ${tagColor}33` }}>{tag}</span>
+                      <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color, background:color+"1a", padding:"2px 8px", borderRadius:4, border:`1px solid ${color}33` }}>180-Day Backtest</span>
                     </div>
                     <div style={{ fontSize:11, color:C.textDim, marginBottom:10 }}>{label}</div>
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"6px 14px" }}>
                       {[
-                        { l:"NET P&L", v:pnl, c:C.long },
-                        { l:"WIN RATE", v:wr,  c:active ? color : C.text },
+                        { l:"NET P&L",      v:pnl, c:C.long },
+                        { l:"WIN RATE",     v:wr,  c:active ? color : C.text },
                         { l:"PROF. FACTOR", v:pf,  c:active ? color : C.text },
-                        { l:"MAX DD", v:dd,  c:C.warn },
+                        { l:"EXPECTANCY",   v:ev,  c:C.long },
                       ].map(({ l, v, c }) => (
                         <div key={l}>
                           <div style={{ fontSize:8, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.08em" }}>{l}</div>
@@ -3530,11 +3748,11 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
           {/* Stat callouts */}
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:12, marginBottom:36 }}>
             {[
-              { label:"WIN RATE",      value:`${ov.win_rate}%`,                    sub: isES ? "any profit (TP1 or TP2)" : `B/E at ${(1/(1+lpBt.rr)*100).toFixed(1)}%`, color:C.long },
-              { label:"PROFIT FACTOR", value:`${ov.profit_factor}x`,               sub:"gross wins ÷ gross losses",         color:C.accent },
-              { label:"NET P&L",       value:`+$${ov.total_pnl.toLocaleString()}`, sub:`${ov.trades} trades · ${lpBt.period}`, color:C.long },
-              { label:"MAX DRAWDOWN",  value:`$${ov.max_drawdown.toLocaleString()}`, sub:"peak-to-trough",                   color:C.warn },
-              { label:"AVG HOLD TIME", value:`${ov.avg_hold_min} min`,             sub:"per trade",                         color:C.textMid },
+              { label:"EXPECTANCY / SIGNAL", value: lpBtInst==="ES" ? "+$411" : "+$549",   sub:"avg $ captured per signal taken",   color:C.long },
+              { label:"PROFIT FACTOR",       value:`${lpBt.profitFactor}x`,                sub:"gross wins ÷ gross losses",         color:C.accent },
+              { label:"NET P&L",             value:`+$${lpBt.netPnl.toLocaleString()}`,    sub:`${lpBt.trades} signals · 180 days`, color:C.long },
+              { label:"MAX DRAWDOWN",        value:`$${lpBt.maxDrawdown.toLocaleString()}`,sub:"peak-to-trough",                    color:C.warn },
+              { label:"WIN RATE",            value:`${lpBt.winRate}%`,                     sub:`${lpBt.wins}W / ${lpBt.losses}L`,   color:C.textMid },
             ].map(s => (
               <div key={s.label} style={{ background:C.silverUp, border:`1px solid ${C.silverBorder}`, borderRadius:12, padding:"18px 20px", textAlign:"center", boxShadow:`inset 0 1px 0 ${C.silverBorder}` }}>
                 <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.12em", marginBottom:8 }}>{s.label}</div>
@@ -3563,8 +3781,8 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
                     <div style={{ fontSize:12, color:C.textMid, marginTop:3 }}>Cumulative P&L · 1 contract · {lpBt.period}</div>
                   </div>
                   <div style={{ textAlign:"right" }}>
-                    <div style={{ fontSize:20, fontWeight:700, color:C.long, fontFamily:"monospace" }}>+${ov.total_pnl.toLocaleString()}</div>
-                    <div style={{ fontSize:11, color:C.textDim }}>{lpBt.exit_strategy.split("·")[0].trim()}</div>
+                    <div style={{ fontSize:20, fontWeight:700, color:C.long, fontFamily:"monospace" }}>+${lpBt.netPnl.toLocaleString()}</div>
+                    <div style={{ fontSize:11, color:C.textDim }}>{lpBt.dates}</div>
                   </div>
                 </div>
                 <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:H, display:"block" }}>
@@ -3580,9 +3798,9 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
                   <path d={pathD} fill="none" stroke={C.long} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"/>
                 </svg>
                 <div style={{ display:"flex", gap:16, marginTop:10, fontSize:11, color:C.textDim, fontFamily:"monospace" }}>
-                  <span style={{ color:C.long }}>● {ov.wins} wins</span>
-                  <span style={{ color:C.short }}>● {ov.losses} losses</span>
-                  <span style={{ marginLeft:"auto" }}>Zero line = breakeven · {ov.trades} total trades</span>
+                  <span style={{ color:C.long }}>● {lpBt.wins} wins</span>
+                  <span style={{ color:C.short }}>● {lpBt.losses} losses</span>
+                  <span style={{ marginLeft:"auto" }}>Zero line = breakeven · {lpBt.trades} total signals</span>
                 </div>
               </div>
             );
@@ -3601,8 +3819,134 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
 
           {/* Disclaimer */}
           <div style={{ fontSize:11, color:C.textDim, lineHeight:1.7, textAlign:"center", maxWidth:720, margin:"0 auto" }}>
-            <strong>Hypothetical performance disclosure:</strong> Results are based on walk-forward backtesting on historical 5-min bar data. Past performance is not indicative of future results. All trading involves risk of loss.&nbsp;
-            Results do not account for slippage or commissions. For educational purposes only. Not financial advice.
+            <strong>Hypothetical performance disclosure:</strong> These backtests do not factor in commissions or slippage. The Signal Boss methodology has shown comparable performance in live market conditions — we attribute this in large part to volatility-based stop and target placement. Most trading systems rely on ATR, fixed percentages, or dollar amounts: risk parameters anchored to backward-facing data. Signal Boss derives stop and target levels from current market conditions — what the market is actually doing right now. Past performance is not indicative of future results. All trading involves risk of loss. For educational purposes only. Not financial advice.
+          </div>
+        </div>
+        </div>
+        );
+      })()}
+
+      {/* ── Extended Backtest — 130 Days ──────────────────────────────────── */}
+      {(() => {
+        const _360Map = { NQ: ORB_BACKTESTS.find(b=>b.id==="nq-1h"), CL: ORB_BACKTESTS.find(b=>b.id==="cl-1h") };
+        const bt  = _360Map[lpBt130Inst] || _360Map["NQ"];
+        const pts = bt.curve || [];
+        return (
+        <div style={{ background:`linear-gradient(180deg, ${C.bg} 0%, #0d1a28 8%, #0d1a28 92%, ${C.bg} 100%)`, width:"100%", borderTop:`1px solid #1a3050`, borderBottom:`1px solid #1a3050` }}>
+        <div style={{ maxWidth:960, margin:"0 auto", padding:"60px 24px 80px" }}>
+          <div style={{ textAlign:"center", marginBottom:36 }}>
+            <div style={{ fontSize:10, letterSpacing:"0.25em", color:C.accent, fontFamily:"monospace", marginBottom:14 }}>EXTENDED BACKTEST — 360 DAYS</div>
+            <h2 style={{ fontSize:28, fontWeight:700, letterSpacing:"-0.03em", marginBottom:12 }}>
+              Deeper Data. Wider Picture.<br/><span style={{ color:C.long }}>NQ &amp; CL · Jul 2024 – Mar 2026</span>
+            </h2>
+            <p style={{ color:C.textMid, fontSize:14, maxWidth:600, margin:"0 auto 24px", lineHeight:1.7 }}>
+              Full-year signal performance across two uncorrelated futures markets — equity index and energy.<br/>
+              <span style={{ color:C.accent, fontWeight:600 }}>Results based on 1 contract.</span> Prop firm traders: consider micro contracts (MNQ/MCL) to manage evaluation risk.
+            </p>
+            {/* Instrument selector */}
+            <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap" }}>
+              {[
+                { sym:"NQ", label:"E-mini Nasdaq-100", pnl:"+$1,513,320", ev:"+$1,464", pf:"5.72x", dd:"$13,635", wr:"65.5%", color:C.long },
+                { sym:"CL", label:"Crude Oil Futures",  pnl:"+$449,750",   ev:"+$324",   pf:"4.07x", dd:"$7,960",  wr:"64.9%", color:C.accent },
+              ].map(({ sym, label, pnl, ev, pf, dd, wr, color }) => {
+                const active = lpBt130Inst === sym;
+                return (
+                  <button key={sym} onClick={() => setLpBt130Inst(sym)} style={{
+                    padding:"20px 24px", borderRadius:14, cursor:"pointer", textAlign:"left",
+                    background: active ? `linear-gradient(135deg, ${color}12, ${color}08)` : "#101e2e",
+                    border: `1.5px solid ${active ? color : "#1a3050"}`,
+                    boxShadow: active ? `0 0 28px ${color}30, 0 4px 16px ${color}18, inset 0 1px 0 ${color}20` : `inset 0 1px 0 #1a3050`,
+                    transition:"all 0.18s", minWidth:200, flex:"1 1 200px", maxWidth:320,
+                  }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
+                      <span style={{ fontSize:18, fontWeight:800, fontFamily:"monospace", color: active ? color : C.text }}>{sym}</span>
+                      <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color, background:color+"1a", padding:"2px 8px", borderRadius:4, border:`1px solid ${color}33` }}>360-Day Backtest</span>
+                    </div>
+                    <div style={{ fontSize:11, color:C.textDim, marginBottom:10 }}>{label}</div>
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"6px 14px" }}>
+                      {[
+                        { l:"NET P&L",     v:pnl, c:C.long },
+                        { l:"EXP. VALUE",  v:ev,  c:active ? color : C.text },
+                        { l:"PROF. FACTOR",v:pf,  c:active ? color : C.text },
+                        { l:"MAX DD",      v:dd,  c:C.warn },
+                      ].map(({ l, v, c }) => (
+                        <div key={l}>
+                          <div style={{ fontSize:8, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.08em" }}>{l}</div>
+                          <div style={{ fontSize:13, fontWeight:700, color:c, fontFamily:"monospace" }}>{v}</div>
+                        </div>
+                      ))}
+                    </div>
+                    {active && <div style={{ marginTop:10, fontSize:9, color, fontFamily:"monospace", fontWeight:600, letterSpacing:"0.06em" }}>● VIEWING RESULTS BELOW</div>}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Stat callouts */}
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:12, marginBottom:36 }}>
+            {[
+              { label:"EXPECTANCY / SIGNAL", value:`+$${bt.expectancy.toLocaleString()}`,  sub:"avg $ captured per signal taken",  color:C.long },
+              { label:"PROFIT FACTOR",       value:`${bt.profitFactor}x`,                  sub:"gross wins ÷ gross losses",        color:C.accent },
+              { label:"NET P&L",             value:`+$${bt.netPnl.toLocaleString()}`,      sub:`${bt.trades} signals · 360 days`,  color:C.long },
+              { label:"MAX DRAWDOWN",        value:`$${bt.maxDrawdown.toLocaleString()}`,  sub:"peak-to-trough",                   color:C.warn },
+              { label:"WIN RATE",            value:`${bt.winRate}%`,                       sub:`${bt.wins}W / ${bt.losses}L`,      color:C.textMid },
+            ].map(s => (
+              <div key={s.label} style={{ background:"#101e2e", border:`1px solid #1a3050`, borderRadius:12, padding:"18px 20px", textAlign:"center", boxShadow:`inset 0 1px 0 #1a3050` }}>
+                <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.12em", marginBottom:8 }}>{s.label}</div>
+                <div style={{ fontSize: s.value.length > 8 ? 19 : 26, fontWeight:700, color:s.color, fontFamily:"monospace", letterSpacing:"-0.02em" }}>{s.value}</div>
+                <div style={{ fontSize:11, color:C.textDim, marginTop:5 }}>{s.sub}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Equity curve */}
+          {pts.length > 1 && (() => {
+            const lo    = Math.min(0, ...pts);
+            const hi    = Math.max(...pts);
+            const span  = hi - lo || 1;
+            const W = 880, H = 200, pad = 10;
+            const xStep = (W - pad*2) / (pts.length - 1);
+            const toY   = v => H - pad - ((v - lo) / span) * (H - pad*2);
+            const zero  = toY(0);
+            const pathD = pts.map((v,i) => `${i===0?"M":"L"}${pad+i*xStep},${toY(v)}`).join(" ");
+            const fillD = `${pathD} L${pad+(pts.length-1)*xStep},${H-pad} L${pad},${H-pad} Z`;
+            return (
+              <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:14, padding:"24px 28px", marginBottom:20 }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:16 }}>
+                  <div>
+                    <div style={{ fontSize:13, fontWeight:600 }}>Equity Curve</div>
+                    <div style={{ fontSize:12, color:C.textMid, marginTop:3 }}>Cumulative P&L · 1 contract · {bt.period}</div>
+                  </div>
+                  <div style={{ textAlign:"right" }}>
+                    <div style={{ fontSize:20, fontWeight:700, color:C.long, fontFamily:"monospace" }}>+${bt.netPnl.toLocaleString()}</div>
+                    <div style={{ fontSize:11, color:C.textDim }}>{bt.dates}</div>
+                  </div>
+                </div>
+                <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:H, display:"block" }}>
+                  <defs>
+                    <linearGradient id="bt130-fill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%"   stopColor={C.long} stopOpacity="0.18"/>
+                      <stop offset="100%" stopColor={C.long} stopOpacity="0.02"/>
+                    </linearGradient>
+                  </defs>
+                  <line x1={pad} y1={zero} x2={W-pad} y2={zero} stroke={C.border} strokeWidth="1" strokeDasharray="4,4"/>
+                  <text x={pad+2} y={zero-5} fontSize="9" fill={C.textDim} fontFamily="monospace">$0</text>
+                  <path d={fillD} fill="url(#bt130-fill)"/>
+                  <path d={pathD} fill="none" stroke={C.long} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
+                </svg>
+                <div style={{ display:"flex", gap:16, marginTop:10, fontSize:11, color:C.textDim, fontFamily:"monospace" }}>
+                  <span style={{ color:C.long }}>● {bt.wins} wins</span>
+                  <span style={{ color:C.short }}>● {bt.losses} losses</span>
+                  <span style={{ marginLeft:"auto" }}>Zero line = breakeven · {bt.trades} total signals</span>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Disclaimer */}
+          <div style={{ fontSize:11, color:C.textDim, lineHeight:1.7, textAlign:"center", maxWidth:720, margin:"0 auto" }}>
+            These backtests do not factor in commissions or slippage. The Signal Boss methodology has shown comparable performance in live market conditions — we attribute this in large part to volatility-based stop and target placement. Most trading systems rely on ATR, fixed percentages, or dollar amounts: risk parameters anchored to backward-facing data. Signal Boss derives stop and target levels from what the market is doing right now — not what it did last week. Forward performance will vary. Past results do not guarantee future returns.
           </div>
         </div>
         </div>
@@ -3632,8 +3976,8 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
       {/* Choose Your Track — moved below hero */}
       <div style={{ maxWidth:880, margin:"0 auto", padding:"0 24px 100px" }}>
         <div style={{ textAlign:"center", marginBottom:48 }}>
-          <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:12 }}>CHOOSE YOUR TRACK</div>
-          <h2 style={{ fontSize:28, fontWeight:700, letterSpacing:"-0.03em" }}>Futures or Forex — same intelligence, same edge.</h2>
+          <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:12 }}>{t.chooseTrackLabel}</div>
+          <h2 style={{ fontSize:28, fontWeight:700, letterSpacing:"-0.03em" }}>{t.chooseTrackTitle}</h2>
         </div>
         <div style={{ display:"flex", gap:20, flexWrap:"wrap", justifyContent:"center" }}>
           {/* Futures */}
@@ -3705,15 +4049,15 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
       {/* How It Works */}
       <div id="how-it-works" style={{ maxWidth:880, margin:"0 auto", padding:"0 24px 80px" }}>
         <div style={{ textAlign:"center", marginBottom:40 }}>
-          <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:14 }}>THE METHODOLOGY</div>
-          <h2 style={{ fontSize:32, fontWeight:700, letterSpacing:"-0.03em", marginBottom:0 }}>How Signal Boss Works</h2>
+          <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:14 }}>{t.methodologyLabel}</div>
+          <h2 style={{ fontSize:32, fontWeight:700, letterSpacing:"-0.03em", marginBottom:0 }}>{t.methodologyTitle}</h2>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(220px,1fr))", gap:16 }}>
           {["01","02","03","04"].map(n => (
             <div key={n} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
               <div style={{ fontSize:11, color:C.accent, fontFamily:"monospace", marginBottom:10 }}>{n}</div>
               <div style={{ fontWeight:600, fontSize:14, marginBottom:8 }}>{t.features[n].title}</div>
-              <div style={{ color:C.textMid, fontSize:13, lineHeight:1.7 }}>{t.features[n].desc}</div>
+              <div style={{ color:C.textMid, fontSize:13, lineHeight:1.7, whiteSpace:"pre-line" }}>{t.features[n].desc}</div>
             </div>
           ))}
         </div>
@@ -3727,60 +4071,56 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
 
           {/* Opening punch */}
           <p style={{ fontSize:28, fontWeight:700, color:C.text, lineHeight:1.5, marginBottom:24, letterSpacing:"-0.02em" }}>
-            If Charts Worked, 98% Wouldn't Be Losing.
+            {t.whyHeadline}
           </p>
 
           {/* Gym analogy */}
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:28 }}>
-            Imagine joining a gym and following a workout plan that makes 98% of its members weaker and fatter. Chart-based trading is the 'workout plan' for many traders, and put simply it's making them poorer and weaker financially. Signal Boss allows traders to get valid, institutional grade signals that are triggered by the conditions that truly move markets.
+            {t.whyGym}
           </p>
 
           <p style={{ fontSize:20, fontWeight:600, color:"#c9cdd6", lineHeight:1.6, marginBottom:8, letterSpacing:"-0.01em" }}>
-            Charts show you what already happened.<br />
-            <span style={{ color:C.text }}>They Don't Show Conditions.</span>
+            {t.whyChartsShowa}<br />
+            <span style={{ color:C.text }}>{t.whyChartsShowb}</span>
           </p>
 
           <p style={{ fontSize:18, fontWeight:600, color:C.accent, lineHeight:1.6, marginBottom:32, letterSpacing:"-0.01em" }}>
-            The Problem Isn't Charts. It's Using Them Without The Right Context.
+            {t.whyProblemTitle}
           </p>
 
           {/* The reframe */}
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:16 }}>
-            The problem is that charts alone don't tell you if the market is in a condition where a large, sustained move is statistically likely.
+            {t.whyProblemBody}
           </p>
           <p style={{ fontSize:17, color:C.text, fontWeight:600, lineHeight:1.9, marginBottom:32 }}>
-            Intuitively, you already know this.
+            {t.whyIntuitive}
           </p>
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:32 }}>
-            That information doesn't live on a chart. It lives in volatility — specifically, in implied volatility derived from exchange-traded futures, where institutional positioning is expressed first and retail traders rarely look.
+            {t.whyVolatility}
           </p>
 
           {/* Stacked rhythm lines */}
           <div style={{ margin:"0 0 28px 0", paddingLeft:20, borderLeft:`2px solid ${C.border}` }}>
-            {[
-              "Price action tells you what the market already did.",
-              "Market structure tells you where it's been.",
-              "Volatility tells you what it's preparing to do right now.",
-            ].map(line => (
+            {(t.whyRhythm || []).map(line => (
               <p key={line} style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.7, marginBottom:6 }}>{line}</p>
             ))}
-            <p style={{ fontSize:17, color:C.text, fontWeight:600, lineHeight:1.7, marginTop:10 }}>Only one of those is forward-looking.</p>
+            <p style={{ fontSize:17, color:C.text, fontWeight:600, lineHeight:1.7, marginTop:10 }}>{t.whyForwardLooking}</p>
           </div>
 
           {/* How Signal Boss fits */}
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
-            Signal Boss doesn't replace your chart process. It gives you the layer that's been missing from it.
+            {t.whyReplace}
           </p>
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:28 }}>
-            When a Signal Boss alert fires, it means volatility has reached an inflection point — the condition under which large price movement statistically occurs. If you still want to look at your chart before you pull the trigger, look. Most of the time, you'll see the chart confirming what the volatility already told you.
+            {t.whyWhenFires}
           </p>
 
           {/* Three components */}
           <p style={{ fontSize:17, color:C.text, fontWeight:600, lineHeight:1.9, marginBottom:14 }}>
-            Every Signal Boss alert delivers three components:
+            {t.whyThreeComponents}
           </p>
           <div style={{ margin:"0 0 28px 0", display:"flex", flexDirection:"column", gap:10 }}>
-            {["Entry Price", "Smart Stop", "Smart Take Profit"].map(item => (
+            {(t.whyThreeItems || []).map(item => (
               <div key={item} style={{ display:"flex", alignItems:"center", gap:12 }}>
                 <span style={{ color:C.accent, fontSize:14 }}>◆</span>
                 <span style={{ fontSize:16, fontWeight:600, color:C.text, fontFamily:"monospace" }}>{item}</span>
@@ -3788,36 +4128,35 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
             ))}
           </div>
           <p style={{ fontSize:15, color:C.textMid, lineHeight:1.9, marginBottom:32 }}>
-            Not just an entry and a wish. A complete trade — built from the same volatility data that institutions use to price risk.
+            {t.whyNotJust}
           </p>
 
           {/* Premise */}
           <div style={{ background:C.bg, borderRadius:10, padding:"18px 22px", borderLeft:`3px solid ${C.accent}`, marginBottom:32 }}>
             <p style={{ fontSize:15, color:C.text, lineHeight:1.8, fontStyle:"italic", margin:0 }}>
-              "Correct volatility regime + defined risk + proper sizing = professional trading. Get the Signal, confirm with your chart."
+              {t.whyQuote}
             </p>
           </div>
 
           {/* The gut-punch question */}
           <div style={{ background:`linear-gradient(135deg, #0c0e10, #0a0c0e)`, border:`1px solid ${C.accent}22`, borderRadius:12, padding:"24px 28px", marginBottom:28 }}>
-            <p style={{ fontSize:15, color:C.textMid, lineHeight:1.8, marginBottom:10 }}>Ask yourself a simple question:</p>
+            <p style={{ fontSize:15, color:C.textMid, lineHeight:1.8, marginBottom:10 }}>{t.whyAskSimple}</p>
             <p style={{ fontSize:18, fontWeight:600, color:C.text, lineHeight:1.7, marginBottom:0, fontStyle:"italic" }}>
-              If charts alone were the answer…<br />
-              why are you not already generating consistent wealth using them?
+              {t.whyAskQuestion}
             </p>
           </div>
 
           {/* Closing */}
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
-            Signal Boss does not predict candles. It allows you to focus on what actually makes money:{" "}
-            <span style={{ color:C.long, fontWeight:700 }}>managing your risk</span> and{" "}
-            <span style={{ color:C.long, fontWeight:700 }}>managing your profits</span>.
+            {t.whyDoesNotPredict}{" "}
+            <span style={{ color:C.long, fontWeight:700 }}>{t.whyRisk}</span> and{" "}
+            <span style={{ color:C.long, fontWeight:700 }}>{t.whyProfits}</span>.
           </p>
           <p style={{ fontSize:17, color:"#c9cdd6", lineHeight:1.9, marginBottom:8 }}>
-            We identify <span style={{ color:C.text, fontWeight:600 }}>volatility expansion conditions</span> — the environment where large, sustained price movement statistically occurs. Trade with the context your charts were never designed to give you.
+            {t.whyIdentify}
           </p>
           <p style={{ fontSize:17, color:C.textMid, lineHeight:1.9, marginBottom:36, fontStyle:"italic" }}>
-            The gym is still full. You don't have to stay on the same plan.
+            {t.whyGymClosing}
           </p>
 
           {/* Signature */}
@@ -3953,16 +4292,16 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
         )}
         <div style={{ textAlign:"center", marginTop:32 }}>
           <span style={{ fontSize:13, color:C.textMid }}>Serious about institutional access? </span>
-          <span onClick={() => onNavigate("institutional")} style={{ fontSize:13, color:C.accent, cursor:"pointer", textDecoration:"underline" }}>Institutional Access →</span>
+          <span onClick={() => onNavigate("curveshift")} style={{ fontSize:13, color:C.accent, cursor:"pointer", textDecoration:"underline" }}>Institutional Access →</span>
         </div>
       </div>
 
       {/* Testimonials */}
       <div style={{ maxWidth:880, margin:"0 auto", padding:"0 24px 100px" }}>
         <div style={{ textAlign:"center", marginBottom:48 }}>
-          <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:12 }}>EARLY USERS</div>
-          <h2 style={{ fontSize:28, fontWeight:600, letterSpacing:"-0.03em" }}>What traders are saying</h2>
-          <p style={{ color:C.textMid, marginTop:8, fontSize:13 }}>From our beta group — real traders, real feedback.</p>
+          <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:12 }}>{t.earlyUsersLabel}</div>
+          <h2 style={{ fontSize:28, fontWeight:600, letterSpacing:"-0.03em" }}>{t.earlyUsersTitle}</h2>
+          <p style={{ color:C.textMid, marginTop:8, fontSize:13 }}>{t.earlyUsersSub}</p>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(260px,1fr))", gap:20 }}>
           {(track==="forex" ? [
@@ -3973,11 +4312,11 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
             { quote:"I was skeptical that futures IV would apply to my spot forex trades. The correlation is real. I've been tracking it for two months and the directional alignment is remarkable. Exactly what they say.", name:"R.K.", detail:"Forex prop trader · Amsterdam, NL", stars:5 },
             { quote:"The methodology explanation is what sold me. Not the signals — the explanation. I understood why it worked before I subscribed. That kind of transparency is unheard of in this space.", name:"S.D.", detail:"Forex & CFD trader · Sydney, AU", stars:5 },
           ] : [
-            { quote:"I've tried a dozen signal services. Most give you arrows on a chart with zero context. Signal Boss tells me why — the cycles, the VWAP alignment, the confluence score. That's what I actually needed.", name:"R.T.", detail:"ES & NQ trader · Chicago, IL", stars:5 },
+            { quote:"I've tried a dozen signal services. Most give you arrows on a chart with zero context. Signal Boss gives me a clean entry, a defined stop, and a defined target — on every single alert. That's what I actually needed.", name:"R.T.", detail:"ES & NQ trader · Chicago, IL", stars:5 },
             { quote:"The Account Risk Calculator alone is worth the subscription. I finally understand my true trading capital on a $100K funded account. Passed my FTMO challenge on the second attempt after using it.", name:"M.K.", detail:"Prop trader · Dallas, TX", stars:5 },
             { quote:"Clean, no noise. I get the signal, I see the confluence, I make the call. No second-guessing the setup because the methodology is transparent. That's rare.", name:"D.L.", detail:"Futures trader · Austin, TX", stars:5 },
             { quote:"I was skeptical of another signal tool, but the IV inflection approach actually makes sense. It's grounded in something real, not just a black box. First week using it I avoided two bad trades.", name:"S.W.", detail:"Options & futures · New York, NY", stars:5 },
-            { quote:"Setup took five minutes. Signals come through clean. The 3-cycle confluence filter cuts out so much of the noise I used to trade through. My win rate isn't magic — I'm just trading better setups.", name:"J.A.", detail:"Day trader · Phoenix, AZ", stars:5 },
+            { quote:"Setup took five minutes. Signals come through clean. The vol rotation filter cuts out so much of the noise I used to trade through. My win rate isn't magic — I'm just trading better setups.", name:"J.A.", detail:"Day trader · Phoenix, AZ", stars:5 },
             { quote:"Love that it tells me when NOT to trade. Most tools just fire signals constantly. Signal Boss only fires when all the conditions are right. That patience is built in — which is exactly what I needed.", name:"C.R.", detail:"Retail futures trader · Denver, CO", stars:5 },
           ]).map((item, i) => (
             <div key={i} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:14, padding:24, display:"flex", flexDirection:"column", gap:16 }}>
@@ -4000,27 +4339,13 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
       {/* Who It's For / Not For */}
       <div style={{ maxWidth:880, margin:"0 auto", padding:"0 24px 100px" }}>
         <div style={{ textAlign:"center", marginBottom:48 }}>
-          <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:12 }}>KNOW YOUR FIT</div>
-          <h2 style={{ fontSize:28, fontWeight:600, letterSpacing:"-0.03em" }}>Signal Boss is built for some traders.<br /><span style={{ color:C.textMid }}>Not all of them.</span></h2>
+          <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:12 }}>{t.knowYourFitLabel}</div>
+          <h2 style={{ fontSize:28, fontWeight:600, letterSpacing:"-0.03em" }}>{t.knowYourFitTitle}<br /><span style={{ color:C.textMid }}>{t.knowYourFitSub}</span></h2>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(280px,1fr))", gap:20 }}>
           <div style={{ background:"#0b130e", border:`1px solid ${C.long}33`, borderRadius:14, padding:28 }}>
-            <div style={{ fontSize:11, fontWeight:700, color:C.long, fontFamily:"monospace", letterSpacing:"0.12em", marginBottom:20 }}>THIS IS FOR YOU IF...</div>
-            {(track==="forex" ? [
-              "You trade major forex pairs or crosses and want institutional signal intelligence",
-              "You're working through an FTMO, FundedNext, or other forex prop challenge",
-              "You understand that currency futures are a leading indicator for spot forex",
-              "You want to know why a signal fired — derived from which futures, at what confluence",
-              "You're comfortable making your own trading decisions with better information",
-              "You value clean, transparent methodology over black-box arrows on a chart",
-            ] : [
-              "You trade futures actively and want confluence-based signals, not noise",
-              "You're working through a prop firm challenge or protecting your own trading account",
-              "You understand that signals are tools, not guarantees — and trade accordingly",
-              "You want to know why a signal fired, not just that it did",
-              "You're comfortable making your own trading decisions with better information",
-              "You value clean, minimal interfaces over cluttered dashboards",
-            ]).map((item, i) => (
+            <div style={{ fontSize:11, fontWeight:700, color:C.long, fontFamily:"monospace", letterSpacing:"0.12em", marginBottom:20 }}>{t.fitForLabel}</div>
+            {(track==="forex" ? t.fitForForex : t.fitFor).map((item, i) => (
               <div key={i} style={{ display:"flex", gap:10, marginBottom:12, alignItems:"flex-start" }}>
                 <span style={{ color:C.long, marginTop:2, flexShrink:0 }}>✓</span>
                 <span style={{ fontSize:13, color:"#c9cdd6", lineHeight:1.7 }}>{item}</span>
@@ -4028,22 +4353,8 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
             ))}
           </div>
           <div style={{ background:"#130b0b", border:`1px solid ${C.short}22`, borderRadius:14, padding:28 }}>
-            <div style={{ fontSize:11, fontWeight:700, color:"#f87171", fontFamily:"monospace", letterSpacing:"0.12em", marginBottom:20 }}>THIS IS NOT FOR YOU IF...</div>
-            {(track==="forex" ? [
-              "You're looking for a fully automated system that trades for you",
-              "You expect signals to be profitable without your own risk management",
-              "You're a complete beginner with no understanding of forex or currency markets",
-              "You want a copy-trading or managed account service",
-              "You're not prepared to lose capital — trading involves real financial risk",
-              "You need someone else to be responsible for your trading decisions",
-            ] : [
-              "You're looking for a fully automated system that trades for you",
-              "You expect signals to be profitable without your own risk management",
-              "You're a complete beginner with no understanding of futures markets",
-              "You want passive investing or long-only equity strategies",
-              "You're not prepared to lose capital — trading involves real financial risk",
-              "You need someone else to be responsible for your trading decisions",
-            ]).map((item, i) => (
+            <div style={{ fontSize:11, fontWeight:700, color:"#f87171", fontFamily:"monospace", letterSpacing:"0.12em", marginBottom:20 }}>{t.fitNotLabel}</div>
+            {(track==="forex" ? t.fitNotForex : t.fitNot).map((item, i) => (
               <div key={i} style={{ display:"flex", gap:10, marginBottom:12, alignItems:"flex-start" }}>
                 <span style={{ color:"#f87171", marginTop:2, flexShrink:0 }}>✗</span>
                 <span style={{ fontSize:13, color:C.textMid, lineHeight:1.7 }}>{item}</span>
@@ -4093,10 +4404,16 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
             <span style={{ color:"#2a3030" }}>·</span>
             <span style={{ cursor:"pointer", color:C.accent }}>Affiliates</span>
             <span style={{ color:"#2a3030" }}>·</span>
-            <span style={{ cursor:"pointer", color:C.accent }}>Institutional Access</span>
+            <span style={{ cursor:"pointer", color:C.accent }} onClick={() => onNavigate("curveshift")}>Institutional Access</span>
           </div>
           <div style={{ marginTop:16, fontSize:12, color:"#4b5563", fontFamily:"monospace", textAlign:"center" }}>
             © {new Date().getFullYear()} Signal Boss · All rights reserved
+          </div>
+          <div style={{ marginTop:10, fontSize:11, color:"#374151", fontFamily:"monospace", textAlign:"center", letterSpacing:"0.04em" }}>
+            For institutional fixed income analytics —{" "}
+            <span onClick={() => onNavigate("curveshift")} style={{ color:"#4b5563", cursor:"pointer", borderBottom:"1px solid #374151", paddingBottom:1 }}>
+              CurveShift Analytics ↗
+            </span>
           </div>
         </div>
       </div>
@@ -4157,7 +4474,7 @@ function AuthPage({ mode, onNavigate, onAuth, t, track }) {
                     </button>
                   ))}
                 </div>
-                {signupTrack && <div style={{ fontSize:11, color:C.textDim, marginTop:6, fontFamily:"monospace" }}>{signupTrack==="futures" ? "ES · NQ · CL · GC · RTY · ZB · /6E · /6B · /6A" : "EUR/USD · GBP/USD · AUD/USD"}</div>}
+                {signupTrack && <div style={{ fontSize:11, color:C.textDim, marginTop:6, fontFamily:"monospace" }}>{signupTrack==="futures" ? "ES · NQ · CL · GC · RTY · ZN · /6E" : "EUR/USD · via /6E"}</div>}
               </div>
               <div><label style={labelStyle}>{t.plan}</label>
                 <select value={plan} onChange={e=>setPlan(e.target.value)} style={{ width:"100%", padding:"11px 14px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace" }}>
@@ -4197,7 +4514,9 @@ const TICK_VALUES = {
   CL: { tick: 0.01, tickVal: 10.00, unit: "pts",  label: "CL (Crude Oil)"  },
   GC: { tick: 0.10, tickVal: 10.00, unit: "pts",  label: "GC (Gold)"       },
   SI: { tick: 0.005,tickVal: 25.00, unit: "pts",  label: "SI (Silver)"     },
-  ZB: { tick: 0.03125,tickVal:31.25,unit: "pts",  label: "ZB (T-Bond)"     },
+  ZB: { tick: 0.03125,   tickVal: 31.25,  unit: "pts",  label: "ZB (30-Yr T-Bond)" },
+  ZN: { tick: 0.015625,  tickVal: 15.625, unit: "pts",  label: "ZN (10-Yr T-Note)" },
+  ZF: { tick: 0.0078125, tickVal:  7.8125,unit: "pts",  label: "ZF (5-Yr T-Note)"  },
   "EUR/USD": { tick:0.0001, tickVal:10.00, unit:"pips", label:"EUR/USD"    },
   "GBP/USD": { tick:0.0001, tickVal:10.00, unit:"pips", label:"GBP/USD"    },
   "USD/JPY": { tick:0.01,   tickVal:9.09,  unit:"pips", label:"USD/JPY"    },
@@ -4427,14 +4746,35 @@ function PositionTracker() {
 }
 
 function Dashboard({ user, onNavigate, t, lang, setLang }) {
-  const isAdmin = user?.publicMetadata?.role === "admin";
-  const [signals, setSignals]     = useState(() => Array.from({length:6},(_,i)=>({...generateSignal(i),isNew:false,status:i<4?"ACTIVE":"CANCELLED"})));
+  const isAdmin      = user?.publicMetadata?.role === "admin";
+  const isSubscribed = user?.publicMetadata?.subscribed === true;
+  const [signals, setSignals]     = useState([]);
+  const [lastUpdated, setLastUpdated] = useState(null);
+  const [cycleState, setCycleState] = useState({});   // live dots per instrument
   const [activeTab, setActiveTab] = useState("signals");
   const [adminStats, setAdminStats] = useState(null);
+  const [history, setHistory]       = useState([]);
+  const [manualForm, setManualForm] = useState({ instrument:"NQ", direction:"LONG", price:"", stop:"", tp:"", note:"" });
+  const [manualStatus, setManualStatus] = useState(null);  // null | {ok, msg}
+  const [histTypeFilter, setHistTypeFilter] = useState("ALL");
   const [exitMode, setExitMode]   = useState("INFLECTION");
   const [timeframe, setTimeframe] = useState("5m");
   const [filterDir, setFilterDir] = useState("ALL");
   const [filterStr, setFilterStr] = useState("ALL");
+  const ALL_INSTS = ['ES','NQ','CL','GC','RTY','ZN','6E'];
+  const [filterInst, setFilterInst] = useState(() => {
+    try { return new Set(JSON.parse(localStorage.getItem("sb_inst_filter")) || ALL_INSTS); }
+    catch { return new Set(ALL_INSTS); }
+  });
+  const toggleInst = (sym) => {
+    setFilterInst(prev => {
+      const next = new Set(prev);
+      if (next.has(sym)) { if (next.size > 1) next.delete(sym); }
+      else next.add(sym);
+      localStorage.setItem("sb_inst_filter", JSON.stringify([...next]));
+      return next;
+    });
+  };
   const [vwapRule, setVwapRule]   = useState("daily");
   const [rrPref, setRrPref]       = useState(() => {
     const saved = localStorage.getItem("sb_rr_pref");
@@ -4445,70 +4785,39 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
     twoDay:  { enabled:true, label:"3-Day",  resetTime:"8:20 AM", every:"3 trading days" },
     fourDay: { enabled:true, label:"6-Day",  resetTime:"8:20 AM", every:"6 trading days" },
   });
-  const idRef = useRef(100);
   const [todayCount, setTodayCount] = useState(47);
-  const [history,    setHistory]    = useState([]);
-  const [histStats,  setHistStats]  = useState(null);
   const [backtest,   setBacktest]   = useState(FALLBACK_BACKTEST);
-  const [btInstrument, setBtInstrument] = useState("NQ");
+  const [btOrbIdx, setBtOrbIdx] = useState(0);
 
   useEffect(() => {
-    if (!SIGNALS_URL) return;
+    const url = SIGNALS_URL || GIST_URL;
     const load = () => {
-      fetch(`${SIGNALS_URL}?t=${Date.now()}`)
+      fetch(`${url}?t=${Date.now()}`)
         .then(r => r.json())
         .then(data => {
-          if (data.signals && data.signals.length === 0) {
-            setSignals([]);
-          } else if (data.signals && data.signals.length > 0) {
-            setSignals(data.signals.map((s, i) => {
-              // If engine didn't supply risk, generate it so Smart Stop/TP always shows
-              const risk = s.risk || (() => {
-                const tk       = INST_TICK[s.instrument] || INST_TICK.ES;
-                const isLong   = s.direction === "LONG";
-                const stopTicks = 10;
-                const stopPx    = +(stopTicks * tk.size).toFixed(4);
-                const p         = s.price || 5247;
-                return {
-                  stopPrice:  +(isLong ? p - stopPx : p + stopPx).toFixed(4),
-                  stopPx, stopTicks,
-                  stopUsd:    +(stopTicks * tk.value).toFixed(2),
-                  tp2_0Price: +(isLong ? p + stopPx*2.0 : p - stopPx*2.0).toFixed(4),
-                  tp2_5Price: +(isLong ? p + stopPx*2.5 : p - stopPx*2.5).toFixed(4),
-                  tp3_0Price: +(isLong ? p + stopPx*3.0 : p - stopPx*3.0).toFixed(4),
-                  tp2_0Usd:   +(stopTicks * 2.0 * tk.value).toFixed(2),
-                  tp2_5Usd:   +(stopTicks * 2.5 * tk.value).toFixed(2),
-                  tp3_0Usd:   +(stopTicks * 3.0 * tk.value).toFixed(2),
-                  volRegime: "NORMAL", suggestedRR: 2.5, zAtr: "0.84", conditionsMet: 4,
-                };
-              })();
-              return { ...s, isNew: i === 0, risk };
-            }));
-            setTodayCount(data.count || data.signals.length);
-          }
+          setSignals(data.signals || []);
+          setLastUpdated(new Date().toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" }));
         })
         .catch(() => {});
     };
     load();
-    const iv = setInterval(load, 30000);
+    const iv = setInterval(load, 60000);
     return () => clearInterval(iv);
   }, []);
 
+  // Fetch live cycle dot state + current prices every 60s
   useEffect(() => {
-    if (!HISTORY_URL) return;
-    const loadHistory = () => {
-      fetch(`${HISTORY_URL}?t=${Date.now()}`)
+    if (!CYCLE_STATE_URL) return;
+    const loadDots = () => {
+      fetch(`${CYCLE_STATE_URL}?t=${Date.now()}`)
         .then(r => r.json())
-        .then(data => {
-          if (data.history) setHistory(data.history);
-          if (data.stats)   setHistStats(data.stats);
-        })
+        .then(data => { if (data.instruments) setCycleState(data.instruments); })
         .catch(() => {});
     };
-    loadHistory();
-    const iv = setInterval(loadHistory, 60000);
+    loadDots();
+    const iv = setInterval(loadDots, 60000);
     return () => clearInterval(iv);
-  }, []);
+  }, [isAdmin]);
 
   useEffect(() => {
     if (!BACKTEST_URL) return;
@@ -4518,23 +4827,40 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
       .catch(() => {});
   }, []);
 
+  const fetchHistory = () =>
+    fetch(`${API_URL}/history?t=${Date.now()}`)
+      .then(r => r.json())
+      .then(data => { if (Array.isArray(data)) setHistory(data); })
+      .catch(() => {});
+
+  useEffect(() => {
+    fetchHistory();
+    const iv = setInterval(fetchHistory, 5 * 60 * 1000);
+    return () => clearInterval(iv);
+  }, []);
+
   const dismiss  = id => setSignals(prev => prev.map(s => s.id===id?{...s,status:"CANCELLED"}:s));
   const active   = signals.filter(s => s.status==="ACTIVE");
   const longs    = active.filter(s => s.direction==="LONG").length;
   const shorts   = active.filter(s => s.direction==="SHORT").length;
   const strong   = active.filter(s => s.trigger==="AAA" || s.trigger==="AAA+").length;
-  const filtered = signals.filter(s => {
+  // One card per instrument — keep only the most recent card per symbol
+  const deduped = signals.filter((s, i, arr) =>
+    arr.findIndex(x => (x.instrument||x.symbol) === (s.instrument||s.symbol)) === i
+  );
+  const filtered = deduped.filter(s => {
     if (filterDir!=="ALL" && s.direction!==filterDir) return false;
     if (filterStr!=="ALL" && s.trigger!==filterStr) return false;
+    if (!filterInst.has(s.instrument || s.symbol)) return false;
     return true;
   });
 
   const tabs = [
     { id:"signals",  label:t.liveSignals,   icon:"◉" },
+    { id:"history",  label:"History",        icon:"◷" },
     { id:"backtest", label:"Backtest",       icon:"◫" },
-    { id:"history",  label:"Signal History", icon:"◷" },
     { id:"pnl",      label:"P&L Tracker",   icon:"◈" },
-    { id:"config",   label:t.configuration, icon:"⚙" },
+    { id:"config",   label:"Playbook",      icon:"◧" },
     { id:"prop",     label:t.propCalc,       icon:"⬡" },
     { id:"account",  label:t.account,        icon:"◎" },
     ...(isAdmin ? [{ id:"admin", label:"Admin", icon:"⬛" }] : []),
@@ -4552,8 +4878,18 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
       {/* Sidebar */}
       <div style={{ width:215, background:C.surface, borderRight:`1px solid ${C.border}`, display:"flex", flexDirection:"column", flexShrink:0 }}>
         <div style={{ padding:"20px 18px 16px", borderBottom:`1px solid ${C.border}` }}>
-          <div onClick={() => onNavigate("landing")} style={{ fontWeight:700, fontSize:15, fontFamily:"monospace", cursor:"pointer" }}>SIGNAL<span style={{ color:C.accent }}>BOSS</span></div>
-          <div style={{ marginTop:8, display:"flex", alignItems:"center", gap:6 }}>
+          <div onClick={() => onNavigate("landing")} style={{ display:"flex", alignItems:"center", gap:9, cursor:"pointer" }}>
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink:0 }}>
+              <rect width="28" height="28" rx="6" fill={C.accent} fillOpacity="0.12"/>
+              <rect x="0.5" y="0.5" width="27" height="27" rx="5.5" stroke={C.accent} strokeOpacity="0.35"/>
+              <path d="M16 4L9 15.5h6L11 24l10-13h-6L16 4z" fill={C.accent}/>
+            </svg>
+            <div style={{ lineHeight:1 }}>
+              <div style={{ fontWeight:800, fontSize:14, fontFamily:"monospace", letterSpacing:"0.06em", color:C.text }}>SIGNAL<span style={{ color:C.accent }}>BOSS</span></div>
+              <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.12em", marginTop:2 }}>FUTURES · LIVE</div>
+            </div>
+          </div>
+          <div style={{ marginTop:10, display:"flex", alignItems:"center", gap:6 }}>
             <LiveDot color={C.long} size={5} />
             <span style={{ fontSize:10, color:C.textMid, fontFamily:"monospace" }}>{t.engineActive}</span>
           </div>
@@ -4582,7 +4918,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
               <div style={{ fontSize:9, color:C.textMid, marginTop:1, fontFamily:"monospace" }}>SHORT</div>
             </div>
           </div>
-          <div style={{ marginTop:10, textAlign:"center" }}><SignalCounter count={todayCount} /></div>
+          <div style={{ marginTop:10, textAlign:"center" }}><SignalCounter count={signals.length} /></div>
         </div>
         <div style={{ padding:"12px 18px", borderTop:`1px solid ${C.border}`, display:"flex", alignItems:"center", gap:10 }}>
           <UserButton afterSignOutUrl="/" appearance={clerkDark} />
@@ -4604,171 +4940,308 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
 
         {activeTab==="signals" && (
           <div style={{ padding:22 }}>
-            {/* Demo notice — hidden for admin */}
-            {!isAdmin && (
-            <div style={{ marginBottom:18, background:"#0e0a04", border:`1px solid #f59e0b44`, borderRadius:10, padding:"12px 18px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                <span style={{ fontSize:14 }}>⚠</span>
-                <span style={{ fontSize:12, color:"#f59e0b", fontFamily:"monospace", fontWeight:600, letterSpacing:"0.08em" }}>SIMULATED DEMO</span>
-                <span style={{ fontSize:12, color:"#9ca3af" }}>— These are not live signals. Real-time signal delivery requires a subscription.</span>
-              </div>
-              <button onClick={() => onNavigate("signup")} style={{ padding:"7px 18px", background:C.accent, color:"#080909", border:"none", borderRadius:6, fontWeight:700, fontSize:12, cursor:"pointer", whiteSpace:"nowrap" }}>
-                Get Started →
-              </button>
+            {/* Live status bar */}
+            <div style={{ marginBottom:18, background:C.surface, border:`1px solid ${C.long}33`, borderRadius:10, padding:"10px 18px", display:"flex", alignItems:"center", gap:10 }}>
+              <LiveDot color={C.long} size={6} />
+              <span style={{ fontSize:12, color:C.long, fontFamily:"monospace", fontWeight:600, letterSpacing:"0.08em" }}>LIVE SIGNALS</span>
+              <span style={{ fontSize:12, color:C.textMid }}>· Updating every minute</span>
+              {lastUpdated && <span style={{ fontSize:11, color:C.textDim, marginLeft:"auto", fontFamily:"monospace" }}>Last fetch: {lastUpdated}</span>}
             </div>
-            )}
-            <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12, marginBottom:18 }}>
+            {/* Stats */}
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:12, marginBottom:18 }}>
               <StatTile label={t.activeSignals} value={active.length} color={C.accent} />
-              <StatTile label={t.long}   value={longs}  color={C.long}  sub={t.active.toLowerCase()} />
-              <StatTile label={t.short}  value={shorts} color={C.short} sub={t.active.toLowerCase()} />
-              <StatTile label={t.strongSig} value={strong} color={C.strong} sub={t.threeCycles} />
+              <StatTile label={t.long}  value={longs}  color={C.long}  sub={t.active.toLowerCase()} />
+              <StatTile label={t.short} value={shorts} color={C.short} sub={t.active.toLowerCase()} />
             </div>
+            {/* Direction filter */}
             <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap", alignItems:"center" }}>
               <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginRight:4 }}>{t.direction}</span>
               {["ALL","LONG","SHORT"].map(d => (
                 <button key={d} onClick={() => setFilterDir(d)} className="tab-btn" style={{ padding:"5px 14px", borderRadius:5, fontSize:11, fontFamily:"monospace", fontWeight:600, background:filterDir===d?(d==="LONG"?C.longDim:d==="SHORT"?C.shortDim:C.accentDim):C.surface, color:filterDir===d?(d==="LONG"?C.long:d==="SHORT"?C.short:C.accent):C.textMid, border:`1px solid ${filterDir===d?(d==="LONG"?C.long+"33":d==="SHORT"?C.short+"33":C.accent+"33"):C.border}` }}>{d}</button>
               ))}
-              <div style={{ width:1, height:18, background:C.border, margin:"0 4px" }} />
-              <span style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>TRIGGER</span>
-              {["ALL","AAA+","AAA","AA","A"].map(s => (
-                <button key={s} onClick={() => setFilterStr(s)} className="tab-btn" style={{ padding:"5px 14px", borderRadius:5, fontSize:11, fontFamily:"monospace", background:filterStr===s?C.accentDim:C.surface, color:filterStr===s?C.accent:C.textMid, border:`1px solid ${filterStr===s?C.accent+"33":C.border}` }}>
-                  {s === "ALL" ? "ALL" : `Trigger ${s}`}
-                </button>
-              ))}
             </div>
+            {/* Signal cards */}
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(310px,1fr))", gap:14 }}>
-              {filtered.map(sig => <SignalCard key={sig.id} signal={sig} onDismiss={dismiss} exitMode={exitMode} rrPref={rrPref} setRrPref={(v)=>{ setRrPref(v); localStorage.setItem("sb_rr_pref", v); }} t={t} />)}
-              {filtered.length===0 && <div style={{ gridColumn:"1/-1", textAlign:"center", padding:"60px 0", color:C.textDim, fontFamily:"monospace", fontSize:13 }}>{t.noSignals}</div>}
-            </div>
-            {/* CTA Banner */}
-            <div style={{ marginTop:32, background:`linear-gradient(135deg, ${C.surface}, #0e120a)`, border:`1px solid ${C.long}33`, borderRadius:14, padding:"24px 28px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:16 }}>
-              <div>
-                <div style={{ fontSize:10, color:C.long, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:6 }}>THIS IS THE DEMO</div>
-                <div style={{ fontSize:16, fontWeight:700, marginBottom:4 }}>Ready for live signals on your account?</div>
-                <div style={{ fontSize:13, color:C.textMid }}>Start your free trial and get real-time alerts the moment conditions align.</div>
-              </div>
-              <button onClick={() => onNavigate("signup")} style={{ padding:"12px 28px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:13, cursor:"pointer", whiteSpace:"nowrap" }}>
-                Get Started →
-              </button>
+              {filtered.map(sig => <LiveSignalCard key={sig.id} signal={sig} />)}
+              {filtered.length === 0 && (
+                <div style={{ gridColumn:"1/-1", textAlign:"center", padding:"60px 0", color:C.textDim, fontFamily:"monospace", fontSize:13 }}>
+                  No signals have fired yet today.<br />
+                  <span style={{ fontSize:11, color:C.textDim, marginTop:8, display:"block" }}>Ready alerts go out at 9:00 AM ET · Signals fire on range breakouts</span>
+                </div>
+              )}
             </div>
           </div>
         )}
 
+        {activeTab==="history" && (() => {
+          const isOrb = s => s.type === "VOLATILITY_ORB" || s.type === "ORB";
+          const isSbc = s => s.type === "SB_CRITERIA" || s.type === "MANUAL";
+
+          const TYPE_META = {
+            "VOLATILITY_ORB": { label:"Volatility Aligned ORB", color:"#38bdf8", bg:"#38bdf811" },
+            "SB_CRITERIA":    { label:"SB Criteria Met",         color:"#a78bfa", bg:"#a78bfa11" },
+            "ORB":            { label:"Volatility Aligned ORB",  color:"#38bdf8", bg:"#38bdf811" },
+            "MANUAL":         { label:"SB Criteria Met",         color:"#a78bfa", bg:"#a78bfa11" },
+          };
+          const getTypeMeta = s =>
+            TYPE_META[s.type] || { label: s.trigger || "Signal", color:C.textMid, bg:C.surface };
+
+          const getStatusMeta = s => {
+            const st = s.status || "ACTIVE";
+            if (st === "ACTIVE")    return { label:"ACTIVE",    color:C.long };
+            if (st === "CANCELLED") return { label:"CLOSED",    color:C.textDim };
+            if (st === "WIN")       return { label:"WIN ✓",     color:C.long };
+            if (st === "LOSS")      return { label:"LOSS",      color:C.short };
+            return { label:st, color:C.textMid };
+          };
+
+          // P&L for a closed signal (1 contract)
+          const computePnl = s => {
+            const ticks = s.stop_ticks || s.risk?.stopTicks || 0;
+            const tv    = s.tick_value || 5.0;
+            const rr    = s.rr || s.risk?.suggestedRR || 2.0;
+            if (s.status === "WIN")  return +(ticks * tv * rr).toFixed(0);
+            if (s.status === "LOSS") return -(ticks * tv);
+            return null;
+          };
+
+          const histRows = history
+            .filter(s => filterInst.has(s.instrument))
+            .filter(s => {
+              if (histTypeFilter === "ALL")            return true;
+              if (histTypeFilter === "VOLATILITY_ORB") return isOrb(s);
+              if (histTypeFilter === "SB_CRITERIA")    return isSbc(s);
+              return true;
+            });
+
+          // Live stats from persistent history
+          const closed  = histRows.filter(s => s.status === "WIN" || s.status === "LOSS");
+          const wins    = closed.filter(s => s.status === "WIN").length;
+          const liveWR  = closed.length > 0 ? (wins / closed.length * 100).toFixed(0) : null;
+          const netPnl  = closed.reduce((acc, s) => acc + (computePnl(s) || 0), 0);
+
+          // Admin outcome updater
+          const markOutcome = async (id, outcome) => {
+            try {
+              await fetch(`${API_URL}/update-signal`, {
+                method: "POST",
+                headers: { "Content-Type":"application/json", "X-Admin-Key":"sb_admin_2026_jr" },
+                body: JSON.stringify({ id, outcome }),
+              });
+              fetchHistory();
+            } catch(e) { console.error(e); }
+          };
+
+
+          return (
+            <div style={{ padding:22, maxWidth:980 }}>
+              <div style={{ marginBottom:20 }}>
+                <h2 style={{ fontSize:18, fontWeight:700, marginBottom:4 }}>Signal History</h2>
+                <p style={{ color:C.textMid, fontSize:13 }}>Persistent record — every signal, every outcome</p>
+              </div>
+
+              {/* ── Live Track Record ─────────────────────────────────────── */}
+              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>LIVE TRACK RECORD</div>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10, marginBottom:24 }}>
+                {[
+                  { label:"TOTAL SIGNALS",  value: histRows.length,  color:C.accent },
+                  { label:"CLOSED",         value: closed.length,    color:C.textMid },
+                  { label:"LIVE WIN RATE",  value: liveWR ? `${liveWR}%` : "—",
+                    color: liveWR && parseInt(liveWR)>=40 ? C.long : C.warn },
+                  { label:"NET P&L (1 ct)", value: closed.length > 0 ? `${netPnl>=0?"+":""}$${netPnl.toLocaleString()}` : "—",
+                    color: netPnl > 0 ? C.long : netPnl < 0 ? C.short : C.textMid },
+                ].map(s => (
+                  <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"14px 16px" }}>
+                    <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:6 }}>{s.label}</div>
+                    <div style={{ fontSize:20, fontWeight:700, color:s.color, fontFamily:"monospace" }}>{s.value}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* ── Filters ──────────────────────────────────────────────── */}
+              <div style={{ display:"flex", gap:8, marginBottom:14, flexWrap:"wrap" }}>
+                {[
+                  { key:"ALL",            label:"All" },
+                  { key:"VOLATILITY_ORB", label:"Volatility Aligned Breakout Trades" },
+                  { key:"SB_CRITERIA",    label:"SB Criteria Met" },
+                ].map(({ key, label }) => (
+                  <button key={key} onClick={() => setHistTypeFilter(key)}
+                    style={{ padding:"6px 14px", fontSize:12, fontFamily:"monospace", cursor:"pointer", borderRadius:7,
+                      background: histTypeFilter===key ? C.accent+"22" : "transparent",
+                      border:`1px solid ${histTypeFilter===key ? C.accent : C.border}`,
+                      color: histTypeFilter===key ? C.accent : C.textMid }}>
+                    {label}
+                  </button>
+                ))}
+                <div style={{ marginLeft:"auto", display:"flex", gap:6 }}>
+                  {ALL_INSTS.map(sym => (
+                    <button key={sym} onClick={() => toggleInst(sym)}
+                      style={{ padding:"5px 10px", fontSize:11, fontFamily:"monospace", cursor:"pointer", borderRadius:6,
+                        background: filterInst.has(sym) ? C.accentDim : "transparent",
+                        border:`1px solid ${filterInst.has(sym)?C.accent+"44":C.border}`,
+                        color: filterInst.has(sym) ? C.accent : C.textDim, fontWeight:600 }}>
+                      {sym}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── Table ────────────────────────────────────────────────── */}
+              {histRows.length === 0 ? (
+                <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:32,
+                  color:C.textMid, fontSize:13, textAlign:"center" }}>
+                  {history.length === 0
+                    ? "No signals yet. First Volatility Aligned ORB fires at 8:30 AM ET on the next trading day."
+                    : "No signals match the current filters."}
+                </div>
+              ) : (
+                <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, overflow:"hidden" }}>
+                  <div style={{ display:"grid",
+                    gridTemplateColumns: isAdmin ? "70px 55px 1fr 55px 75px 80px 75px 90px 100px" : "70px 55px 1fr 55px 75px 80px 75px 90px",
+                    padding:"8px 16px", borderBottom:`1px solid ${C.border}`,
+                    fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.08em" }}>
+                    <span>DATE</span><span>TIME</span><span>TYPE</span>
+                    <span>INST</span><span>DIR</span><span>ENTRY</span><span>R:R</span><span>OUTCOME</span>
+                    {isAdmin && <span>MARK</span>}
+                  </div>
+                  {histRows.map((s, i) => {
+                    const tm  = getTypeMeta(s);
+                    const sm  = getStatusMeta(s);
+                    const pnl = computePnl(s);
+                    const entry = s.entry || s.price;
+                    return (
+                      <div key={s.id || i}
+                        style={{ display:"grid",
+                          gridTemplateColumns: isAdmin ? "70px 55px 1fr 55px 75px 80px 75px 90px 100px" : "70px 55px 1fr 55px 75px 80px 75px 90px",
+                          padding:"10px 16px", borderBottom: i < histRows.length-1 ? `1px solid ${C.border}` : "none",
+                          fontSize:13, alignItems:"center", background: i%2===0?"transparent":C.bg+"44" }}>
+                        <span style={{ fontFamily:"monospace", fontSize:11, color:C.textMid }}>{s.date ? s.date.slice(5) : "—"}</span>
+                        <span style={{ fontFamily:"monospace", fontSize:11, color:C.textDim }}>{s.time || "—"}</span>
+                        <span style={{ display:"flex", alignItems:"center", gap:6 }}>
+                          <span style={{ padding:"2px 8px", borderRadius:4, fontSize:10, fontFamily:"monospace", fontWeight:700,
+                            background:tm.bg, color:tm.color, whiteSpace:"nowrap" }}>{tm.label}</span>
+                          {s.triggerDetail && isOrb(s) && <span style={{ fontSize:10, color:C.textDim, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{(s.triggerDetail||"").replace(/Volatility Aligned (ORB|Breakout Trade[s]?) ?·? ?/gi,"").replace(/ ?· ?VWAP \+ 1D confirmed/gi,"")}</span>}
+                        </span>
+                        <span style={{ fontFamily:"monospace", fontWeight:700, fontSize:12 }}>{s.instrument}</span>
+                        <span style={{ fontFamily:"monospace", fontWeight:700, fontSize:12,
+                          color: s.direction==="LONG" ? C.long : C.short }}>
+                          {s.direction==="LONG" ? "▲ L" : "▼ S"}
+                        </span>
+                        <span style={{ fontFamily:"monospace", fontSize:12 }}>{entry ? entry.toLocaleString() : "—"}</span>
+                        <span style={{ fontFamily:"monospace", fontSize:11, color:C.textDim }}>{(s.rr || s.risk?.suggestedRR || "—")+":1"}</span>
+                        <span style={{ fontFamily:"monospace", fontSize:11, fontWeight:700 }}>
+                          <span style={{ color:sm.color }}>{sm.label}</span>
+                          {pnl !== null && <span style={{ marginLeft:5, fontSize:10, color: pnl>=0?C.long:C.short }}>{pnl>=0?"+":""}{pnl}</span>}
+                        </span>
+                        {isAdmin && (
+                          <span style={{ display:"flex", gap:4 }}>
+                            {["WIN","LOSS"].map(o => (
+                              <button key={o} onClick={() => markOutcome(s.id, o)}
+                                style={{ padding:"3px 8px", fontSize:10, fontFamily:"monospace", cursor:"pointer", borderRadius:5,
+                                  background: s.status===o ? (o==="WIN"?C.long+"33":C.short+"33") : "transparent",
+                                  border:`1px solid ${s.status===o?(o==="WIN"?C.long:C.short):C.border}`,
+                                  color: s.status===o ? (o==="WIN"?C.long:C.short) : C.textDim,
+                                  fontWeight: s.status===o ? 700 : 400 }}>
+                                {o}
+                              </button>
+                            ))}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              <div style={{ marginTop:10, fontSize:11, color:C.textDim, fontFamily:"monospace" }}>
+                {histRows.length} record{histRows.length!==1?"s":""} · persistent — no cap
+              </div>
+            </div>
+          );
+        })()}
+
         {activeTab==="backtest" && (() => {
-          const btData = BACKTEST_STATIC[btInstrument];
-          const ov     = btData.overall;
-          const byTrig = btData.by_trigger;
-          const breakEven = (1 / (1 + btData.rr) * 100).toFixed(1);
+          const bt  = ORB_BACKTESTS[btOrbIdx];
+          const pts = bt.curve || [];
+          const lo  = pts.length ? Math.min(0, ...pts) : 0;
+          const hi  = pts.length ? Math.max(...pts) : 0;
+          const span = hi - lo || 1;
+          const W = 780, H = 160, pad = 8;
+          const xStep = pts.length > 1 ? (W - pad*2) / (pts.length - 1) : 1;
+          const toY   = v => H - pad - ((v - lo) / span) * (H - pad*2);
+          const zero  = toY(0);
+          const pathD = pts.map((v,i) => `${i===0?"M":"L"}${pad+i*xStep},${toY(v)}`).join(" ");
+          const fillD = pts.length ? `${pathD} L${pad+(pts.length-1)*xStep},${H-pad} L${pad},${H-pad} Z` : "";
           return (
           <div style={{ padding:22, maxWidth:900 }}>
 
-            {/* Header + instrument selector */}
-            <div style={{ marginBottom:22 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:14, flexWrap:"wrap" }}>
-                <h2 style={{ fontSize:18, fontWeight:700, margin:0 }}>Backtest Results</h2>
-                <span style={{ fontSize:10, fontFamily:"monospace", background:C.accentDim, color:C.accent, padding:"2px 8px", borderRadius:4, border:`1px solid ${C.accent}44` }}>HYPOTHETICAL</span>
-              </div>
-              {/* Instrument cards — each shows its own strategy */}
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:18 }}>
-                {[
-                  { sym:"ES", label:"E-mini S&P 500", tag:"Scaled Exit", tagDesc:"TP1 at 2:1 · 50% off · stop → BE · TP2 at 5:1", tagColor:C.accent },
-                  { sym:"NQ", label:"E-mini Nasdaq-100", tag:"Single Target", tagDesc:"Full position runs to 5:1 · max alpha capture", tagColor:C.long },
-                ].map(({ sym, label, tag, tagDesc, tagColor }) => (
-                  <button key={sym} onClick={() => setBtInstrument(sym)} style={{
-                    padding:"14px 16px", borderRadius:10, cursor:"pointer", textAlign:"left",
-                    background: btInstrument===sym ? C.accentDim : C.surface,
-                    border: `1px solid ${btInstrument===sym ? C.accent : C.border}`,
-                    transition:"all 0.15s",
-                  }}>
-                    <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
-                      <span style={{ fontSize:15, fontWeight:700, fontFamily:"monospace", color: btInstrument===sym ? C.accent : C.text }}>{sym}</span>
-                      <span style={{ fontSize:10, fontFamily:"monospace", fontWeight:700, color:tagColor, background:tagColor+"18", padding:"2px 7px", borderRadius:4 }}>{tag}</span>
-                    </div>
-                    <div style={{ fontSize:11, color:C.textMid, marginBottom:4 }}>{label}</div>
-                    <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace" }}>{tagDesc}</div>
-                  </button>
-                ))}
-              </div>
-              <p style={{ color:C.textMid, fontSize:12, margin:0, lineHeight:1.6 }}>
-                <strong style={{ color:C.text }}>{btData.name}</strong>
-                &nbsp;·&nbsp;{btData.period}&nbsp;·&nbsp;5-min bars&nbsp;·&nbsp;Tier-based stops (cycle invalidation + ATR floor, scaled per signal conviction)
-                <br/><span style={{ fontSize:11, color:C.textDim }}>{btData.exit_strategy}</span>
-              </p>
+            {/* Header */}
+            <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:18, flexWrap:"wrap" }}>
+              <h2 style={{ fontSize:18, fontWeight:700, margin:0 }}>Backtest Results</h2>
+              <span style={{ fontSize:10, fontFamily:"monospace", background:C.accentDim, color:C.accent, padding:"2px 8px", borderRadius:4, border:`1px solid ${C.accent}44` }}>HYPOTHETICAL</span>
             </div>
 
-            {/* Stats grid */}
-            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(128px,1fr))", gap:10, marginBottom:22 }}>
-              {[
-                { label:"TRADES",        value: ov.trades,                                    sub:`${(ov.trades / (btData.period.match(/\d+/)?.[0] ?? 45) * 5).toFixed(1)}/week`,  color: C.text },
-                { label:"WIN RATE",      value: `${ov.win_rate}%`,                             sub: btInstrument==="ES" ? "any profit (TP1 or TP2)" : `B/E: ${breakEven}%`, color: C.long },
-                { label:"PROFIT FACTOR", value: `${ov.profit_factor}x`,                        sub:"gross W ÷ gross L",                     color: C.accent },
-                { label:"NET P&L",       value: `+$${ov.total_pnl.toLocaleString()}`,          sub:`${ov.wins}W / ${ov.losses}L`,            color: C.long },
-                { label:"MAX DRAWDOWN",  value: `$${ov.max_drawdown.toLocaleString()}`,        sub:"peak-to-trough",                        color: C.warn },
-                { label:"AVG HOLD",      value: `${ov.avg_hold_min}m`,                         sub:"per trade",                             color: C.textMid },
-              ].map(s => (
-                <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"14px 16px" }}>
-                  <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:5 }}>{s.label}</div>
-                  <div style={{ fontSize:17, fontWeight:700, color:s.color, fontFamily:"monospace" }}>{s.value}</div>
-                  <div style={{ fontSize:10, color:C.textDim, marginTop:3 }}>{s.sub}</div>
-                </div>
+            {/* Backtest selector */}
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:20 }}>
+              {ORB_BACKTESTS.map((b, i) => (
+                <button key={b.id} onClick={() => setBtOrbIdx(i)} style={{
+                  padding:"14px 16px", borderRadius:10, cursor:"pointer", textAlign:"left",
+                  background: btOrbIdx===i ? C.accentDim : C.surface,
+                  border:`1px solid ${btOrbIdx===i ? C.accent : C.border}`,
+                  transition:"all 0.15s",
+                }}>
+                  <div style={{ fontSize:15, fontWeight:700, fontFamily:"monospace", color: btOrbIdx===i ? C.accent : C.text, marginBottom:4 }}>{b.label}</div>
+                  <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace" }}>{b.sub}</div>
+                </button>
               ))}
             </div>
 
-            {/* By-trigger breakdown */}
-            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, overflow:"hidden", marginBottom:22 }}>
-              <div style={{ padding:"14px 18px", borderBottom:`1px solid ${C.border}` }}>
-                <div style={{ fontSize:13, fontWeight:600 }}>Results by Trigger Tier</div>
-                <div style={{ fontSize:11, color:C.textDim, marginTop:3 }}>Higher tiers show stronger alignment across cycles</div>
+            {/* Risk note */}
+            {bt.riskNote && (
+              <div style={{ background:C.warn+"11", border:`1px solid ${C.warn}44`, borderRadius:10, padding:"12px 18px", marginBottom:20, display:"flex", gap:10, alignItems:"flex-start" }}>
+                <span style={{ color:C.warn, fontSize:14, lineHeight:1 }}>⚠</span>
+                <span style={{ fontSize:12, color:C.textMid, lineHeight:1.6 }}>{bt.riskNote}</span>
               </div>
-              <div style={{ overflowX:"auto" }}>
-                <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12, fontFamily:"monospace" }}>
-                  <thead>
-                    <tr style={{ borderBottom:`1px solid ${C.border}` }}>
-                      {["Trigger","Trades","Win Rate","Profit Factor","Net P&L","Avg Hold"].map(h => (
-                        <th key={h} style={{ padding:"9px 14px", textAlign:"left", fontSize:9, color:C.textDim, letterSpacing:"0.08em", fontWeight:600, whiteSpace:"nowrap" }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {["AAA+","AAA","AA","A"].filter(tier => byTrig[tier]).map((tier, i) => {
-                      const d = byTrig[tier];
-                      const tierColor = tier==="AAA+" ? C.accent : tier==="AAA" ? C.long : tier==="AA" ? C.textMid : C.textDim;
-                      return (
-                        <tr key={tier} style={{ background: i%2===0?"transparent":C.bg+"66", borderBottom:`1px solid ${C.border}22` }}>
-                          <td style={{ padding:"10px 14px" }}>
-                            <span style={{ fontWeight:700, color:tierColor, fontSize:13 }}>Trigger {tier}</span>
-                          </td>
-                          <td style={{ padding:"10px 14px", color:C.text }}>{d.trades}</td>
-                          <td style={{ padding:"10px 14px", color: d.win_rate >= 40 ? C.long : d.win_rate >= 33 ? C.accent : C.warn, fontWeight:600 }}>{d.win_rate}%</td>
-                          <td style={{ padding:"10px 14px", color: d.profit_factor >= 1.5 ? C.long : d.profit_factor >= 1 ? C.accent : C.short, fontWeight:600 }}>{d.profit_factor}x</td>
-                          <td style={{ padding:"10px 14px", color: d.total_pnl >= 0 ? C.long : C.short, fontWeight:700 }}>
-                            {d.total_pnl >= 0 ? "+" : ""}${d.total_pnl.toLocaleString()}
-                          </td>
-                          <td style={{ padding:"10px 14px", color:C.textMid }}>{d.avg_hold_min}m</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            )}
 
-            {/* Equity curve */}
-            {ov.equity && ov.equity.length > 0 && (() => {
-              const pts   = ov.equity;
-              const lo    = Math.min(0, ...pts);
-              const hi    = Math.max(...pts);
-              const span  = hi - lo || 1;
-              const W     = 780, H = 160, pad = 8;
-              const xStep = (W - pad*2) / (pts.length - 1);
-              const toY   = v => H - pad - ((v - lo) / span) * (H - pad*2);
-              const zero  = toY(0);
-              const pathD = pts.map((v, i) => `${i===0?"M":"L"}${pad + i*xStep},${toY(v)}`).join(" ");
-              const fillD = `${pathD} L${pad+(pts.length-1)*xStep},${H-pad} L${pad},${H-pad} Z`;
-              return (
+            {bt.comingSoon ? (
+              /* Volatility Filtered — methodology description */
+              <div>
+                <div style={{ fontSize:13, color:C.textMid, marginBottom:18, lineHeight:1.6 }}>
+                  How Signal Boss calculates dynamic stop-loss and take-profit levels based on each day's opening range volatility.
+                </div>
+                {bt.description.map(d => (
+                  <div key={d.heading} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"18px 20px", marginBottom:12 }}>
+                    <div style={{ fontSize:12, fontWeight:700, color:C.accent, fontFamily:"monospace", letterSpacing:"0.06em", marginBottom:8 }}>{d.heading}</div>
+                    <p style={{ fontSize:13, color:C.textMid, margin:0, lineHeight:1.7 }}>{d.body}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <>
+                {/* Stats grid */}
+                <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(130px,1fr))", gap:10, marginBottom:22 }}>
+                  {[
+                    { label:"NET P&L",        value:`+$${bt.netPnl.toLocaleString()}`,  sub:`${bt.wins}W / ${bt.losses}L`,    color:C.long },
+                    { label:"TRADES",         value: bt.trades,                          sub: bt.dates,                         color:C.text },
+                    { label:"WIN RATE",       value:`${bt.winRate}%`,                    sub:`B/E at ${(100/(1+4)).toFixed(1)}%`, color:C.long },
+                    { label:"PROFIT FACTOR",  value:`${bt.profitFactor}x`,               sub:"gross W ÷ gross L",               color:C.accent },
+                    { label:"AVG WIN",        value:`$${bt.avgWin.toLocaleString()}`,    sub:"per winning trade",               color:C.long },
+                    { label:"AVG LOSS",       value:`$${bt.avgLoss.toLocaleString()}`,   sub:"per losing trade",                color:C.short },
+                    { label:"MAX DRAWDOWN",   value:`$${bt.maxDrawdown.toLocaleString()}`, sub:"peak-to-trough",               color:C.warn },
+                    { label:"EXPECTANCY",     value:`$${bt.expectancy.toLocaleString()}`, sub:"avg $ earned per trade",        color:C.long },
+                  ].map(s => (
+                    <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"14px 16px" }}>
+                      <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:5 }}>{s.label}</div>
+                      <div style={{ fontSize:17, fontWeight:700, color:s.color, fontFamily:"monospace" }}>{s.value}</div>
+                      <div style={{ fontSize:10, color:C.textDim, marginTop:3 }}>{s.sub}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Equity curve */}
                 <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:"18px 20px", marginBottom:22 }}>
                   <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", marginBottom:10, display:"flex", justifyContent:"space-between" }}>
-                    <span>EQUITY CURVE  ({ov.trades} trades · 1 contract)</span>
+                    <span>EQUITY CURVE  ({bt.trades} trades · 1 contract · cumulative)</span>
                     <span style={{ color:C.long }}>+${hi.toLocaleString()} peak</span>
                   </div>
                   <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:H, display:"block" }}>
@@ -4783,238 +5256,125 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                     <path d={pathD} fill="none" stroke={C.long} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
                   </svg>
                   <div style={{ display:"flex", gap:14, marginTop:8, fontSize:10, color:C.textDim, fontFamily:"monospace" }}>
-                    <span style={{ color:C.long }}>● {ov.wins} wins</span>
-                    <span style={{ color:C.short }}>● {ov.losses} losses</span>
+                    <span style={{ color:C.long }}>● {bt.wins} wins</span>
+                    <span style={{ color:C.short }}>● {bt.losses} losses</span>
                     <span style={{ marginLeft:"auto" }}>Zero line = breakeven</span>
                   </div>
                 </div>
-              );
-            })()}
 
-            {/* Trade log — 50 sample trades */}
-            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, overflow:"hidden", marginBottom:22 }}>
-              <div style={{ padding:"14px 18px", borderBottom:`1px solid ${C.border}`, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-                <div style={{ fontSize:13, fontWeight:600 }}>Sample Trade Log</div>
-                <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace" }}>50 of {ov.trades} trades shown · all times ET</div>
-              </div>
-              <div style={{ overflowX:"auto" }}>
-                <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12, fontFamily:"monospace" }}>
-                  <thead>
-                    <tr style={{ borderBottom:`1px solid ${C.border}` }}>
-                      {["#","Date","Time ET","Trigger","Dir","Entry","Stop","Target","Exit","P&L","Hold","Result"].map(h => (
-                        <th key={h} style={{ padding:"8px 12px", textAlign:"left", fontSize:9, color:C.textDim, letterSpacing:"0.08em", fontWeight:600, whiteSpace:"nowrap" }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {btData.trades.map((tr, i) => {
-                      const isWin  = tr.win;
-                      const isLong = tr.dir === "LONG";
-                      const rowBg  = i % 2 === 0 ? "transparent" : C.bg+"66";
-                      const tierColor = tr.trigger==="AAA+" ? C.accent : tr.trigger==="AAA" ? C.long : tr.trigger==="AA" ? C.textMid : C.textDim;
-                      return (
-                        <tr key={i} style={{ background:rowBg, borderBottom:`1px solid ${C.border}22` }}>
-                          <td style={{ padding:"8px 10px", color:C.textDim }}>{tr.n}</td>
-                          <td style={{ padding:"8px 10px", color:C.text, whiteSpace:"nowrap" }}>{tr.date}</td>
-                          <td style={{ padding:"8px 10px", color:C.textMid, whiteSpace:"nowrap" }}>{tr.time}</td>
-                          <td style={{ padding:"8px 10px" }}>
-                            <span style={{ fontSize:10, fontWeight:700, color:tierColor }}>{tr.trigger}</span>
-                          </td>
-                          <td style={{ padding:"8px 10px" }}>
-                            <span style={{ color: isLong ? C.long : C.short, fontWeight:700 }}>{tr.dir}</span>
-                          </td>
-                          <td style={{ padding:"8px 10px", color:C.text }}>{tr.entry.toLocaleString()}</td>
-                          <td style={{ padding:"8px 10px", color:C.short }}>{tr.stop.toLocaleString()}</td>
-                          <td style={{ padding:"8px 10px", color:C.long }}>{tr.tp.toLocaleString()}</td>
-                          <td style={{ padding:"8px 10px", color: isWin ? C.long : C.short, fontWeight:600 }}>{tr.exit.toLocaleString()}</td>
-                          <td style={{ padding:"8px 10px", color: isWin ? C.long : C.short, fontWeight:700 }}>
-                            {isWin ? "+" : ""}${Math.abs(tr.pnl).toLocaleString()}
-                          </td>
-                          <td style={{ padding:"8px 10px", color:C.textMid }}>{tr.duration}m</td>
-                          <td style={{ padding:"8px 10px" }}>
-                            <span style={{ fontSize:9, padding:"2px 6px", borderRadius:3, fontWeight:600,
-                              background: tr.reason==="TP" ? C.long+"22" : C.short+"22",
-                              color:      tr.reason==="TP" ? C.long      : C.short,
-                            }}>{tr.reason}</span>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Disclaimer */}
-            <div style={{ background:C.surface, border:`1px solid ${C.border}44`, borderRadius:10, padding:"16px 20px" }}>
-              <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.06em", marginBottom:6 }}>IMPORTANT DISCLOSURE</div>
-              <p style={{ fontSize:12, color:C.textMid, margin:0, lineHeight:1.7 }}>
-                Hypothetical results based on walk-forward backtesting on historical data. Past performance is not indicative of future results. All trading involves risk of loss.
-              </p>
-              <p style={{ fontSize:11, color:C.textDim, margin:"8px 0 0", lineHeight:1.6 }}>
-                Results shown are hypothetical, based on {btData.period} of historical 5-min data on {btData.name}.
-                5:1 R:R · Hybrid stop (cycle invalidation or ATR×1.2, whichever triggers first).
-                Win rate, profit factor, and P&L figures do not account for slippage, commissions, or execution differences.
-                For educational purposes only. Not financial advice.
-              </p>
-            </div>
+                {/* Disclosure */}
+                <div style={{ background:C.surface, border:`1px solid ${C.border}44`, borderRadius:10, padding:"16px 20px" }}>
+                  <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.06em", marginBottom:6 }}>IMPORTANT DISCLOSURE</div>
+                  <p style={{ fontSize:12, color:C.textMid, margin:0, lineHeight:1.7 }}>
+                    Hypothetical results based on backtesting on historical data from ThinkOrSwim. Past performance is not indicative of future results. All trading involves risk of loss.
+                  </p>
+                  <p style={{ fontSize:11, color:C.textDim, margin:"8px 0 0", lineHeight:1.6 }}>
+                    {bt.dates} · {bt.period}. Results do not account for slippage, commissions, or execution differences. For educational purposes only. Not financial advice.
+                  </p>
+                </div>
+              </>
+            )}
 
           </div>
           );
         })()}
 
-        {activeTab==="history" && (
-          <div style={{ padding:22, maxWidth:860 }}>
-            <div style={{ marginBottom:20 }}>
-              <h2 style={{ fontSize:18, fontWeight:600, marginBottom:4 }}>Signal History</h2>
-              <p style={{ color:C.textMid, fontSize:13 }}>Live forward track record — every signal logged from entry to exit in real time.</p>
-            </div>
-
-            {/* Stats bar */}
-            {histStats && histStats.total_signals > 0 && (
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(130px,1fr))", gap:10, marginBottom:20 }}>
-                {[
-                  { label:"SIGNALS",    value: histStats.total_signals,             color: C.text },
-                  { label:"WIN RATE",   value: `${histStats.win_rate}%`,             color: histStats.win_rate >= 55 ? C.long : C.warn },
-                  { label:"AVG P&L",    value: `$${Math.abs(histStats.avg_pnl_usd).toLocaleString()}`, color: histStats.avg_pnl_usd >= 0 ? C.long : C.short },
-                  { label:"TOTAL P&L",  value: `${histStats.total_pnl_usd >= 0 ? "+" : ""}$${histStats.total_pnl_usd.toLocaleString()}`, color: histStats.total_pnl_usd >= 0 ? C.long : C.short },
-                  { label:"AVG HOLD",   value: `${histStats.avg_duration_min}m`,     color: C.accent },
-                ].map(s => (
-                  <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"14px 16px" }}>
-                    <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:6 }}>{s.label}</div>
-                    <div style={{ fontSize:18, fontWeight:700, color:s.color, fontFamily:"monospace" }}>{s.value}</div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* History list */}
-            {history.length === 0 ? (
-              <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:40, textAlign:"center" }}>
-                <div style={{ fontSize:28, marginBottom:12 }}>◷</div>
-                <div style={{ fontSize:14, fontWeight:600, marginBottom:6 }}>No history yet</div>
-                <div style={{ fontSize:12, color:C.textMid }}>Signal entries and exits will appear here as the engine runs. Check back in a few hours.</div>
-              </div>
-            ) : (
-              <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-                {history.map((entry, i) => {
-                  const isClosed = entry.status === "CLOSED";
-                  const isWin    = entry.winner === true;
-                  const isLong   = entry.direction === "LONG";
-                  const dirColor = isLong ? C.long : C.short;
-                  const pnlColor = isWin ? C.long : entry.winner === false ? C.short : C.textMid;
-                  return (
-                    <div key={entry.id || i} style={{ background:C.surface, border:`1px solid ${isClosed ? (isWin ? C.long+"22" : C.short+"22") : dirColor+"33"}`, borderRadius:10, padding:"14px 18px", display:"flex", flexWrap:"wrap", gap:12, alignItems:"center", justifyContent:"space-between" }}>
-                      {/* Left: instrument + direction + status */}
-                      <div style={{ display:"flex", alignItems:"center", gap:10, minWidth:140 }}>
-                        <div style={{ width:8, height:8, borderRadius:"50%", background: isClosed ? (isWin ? C.long : C.short) : dirColor, flexShrink:0 }} />
-                        <div>
-                          <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                            <span style={{ fontSize:14, fontWeight:700, color:dirColor, fontFamily:"monospace" }}>{entry.direction}</span>
-                            <span style={{ fontSize:14, fontWeight:700, fontFamily:"monospace" }}>{entry.symbol}</span>
-                            <span style={{ fontSize:9, color:C.textDim, background:C.border, padding:"1px 5px", borderRadius:3, fontFamily:"monospace" }}>{isClosed ? "CLOSED" : "ACTIVE"}</span>
-                          </div>
-                          <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginTop:2 }}>{entry.entry_time}{entry.exit_time ? ` → ${entry.exit_time}` : " → now"}</div>
-                        </div>
-                      </div>
-
-                      {/* Middle: entry → exit prices */}
-                      <div style={{ fontFamily:"monospace", fontSize:12 }}>
-                        <span style={{ color:C.textMid }}>Entry </span>
-                        <span style={{ color:C.text, fontWeight:600 }}>{entry.entry_price?.toLocaleString()}</span>
-                        {entry.exit_price && <>
-                          <span style={{ color:C.textDim }}> → </span>
-                          <span style={{ color:C.text, fontWeight:600 }}>{entry.exit_price?.toLocaleString()}</span>
-                        </>}
-                      </div>
-
-                      {/* Right: P&L + conditions + duration */}
-                      <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                        <div style={{ textAlign:"right" }}>
-                          {isClosed && entry.pnl_usd !== null ? (
-                            <div style={{ fontSize:15, fontWeight:700, color:pnlColor, fontFamily:"monospace" }}>
-                              {entry.pnl_usd >= 0 ? "+" : ""}${entry.pnl_usd.toLocaleString()}
-                            </div>
-                          ) : (
-                            <div style={{ fontSize:11, color:C.accent, fontFamily:"monospace" }}>● LIVE</div>
-                          )}
-                          <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginTop:2 }}>
-                            {entry.conditions_met}/5 · {entry.strength}
-                            {isClosed && entry.duration_min > 0 ? ` · ${entry.duration_min}m` : ""}
-                          </div>
-                        </div>
-                        {isClosed && entry.exit_reason && (
-                          <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", background:C.bg, padding:"2px 7px", borderRadius:3, maxWidth:110, textAlign:"center", lineHeight:1.4 }}>
-                            {entry.exit_reason}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            <div style={{ marginTop:16, fontSize:11, color:C.textDim, fontFamily:"monospace", textAlign:"center" }}>
-              Live forward track record · Updates every 5 minutes · Not financial advice
-            </div>
-          </div>
-        )}
 
         {activeTab==="config" && (
-          <div style={{ padding:22, maxWidth:660 }}>
-            <h2 style={{ fontSize:18, fontWeight:600, marginBottom:4 }}>{t.configuration}</h2>
-            <p style={{ color:C.textMid, fontSize:13, marginBottom:22 }}>{t.configSub}</p>
-            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:14 }}>
-              <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>{t.timeframe}</div>
-              <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-                <button className="tab-btn" style={{ padding:"7px 16px", borderRadius:6, fontSize:12, fontFamily:"monospace", background:C.accentDim, color:C.accent, border:`1px solid ${C.accent+"44"}` }}>5m</button>
-              </div>
+          <div style={{ padding:22, maxWidth:720 }}>
+            <div style={{ marginBottom:22 }}>
+              <h2 style={{ fontSize:18, fontWeight:700, marginBottom:4 }}>Signal Playbook</h2>
+              <p style={{ color:C.textMid, fontSize:13, lineHeight:1.6 }}>How to read, interpret, and execute every signal from Signal Boss — step by step.</p>
             </div>
-            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:14 }}>
-              <div style={{ fontWeight:600, fontSize:14, marginBottom:6 }}>{t.vwapSettings}</div>
-              <div style={{ fontSize:12, color:C.textMid, marginBottom:14 }}>{t.vwapSettingsSub}</div>
-              <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-                {VWAP_RULES.map(rule => (
-                  <div key={rule.id} onClick={() => setVwapRule(rule.id)} style={{ padding:"12px 14px", borderRadius:8, cursor:"pointer", background:vwapRule===rule.id?C.accentDim:C.bg, border:`1px solid ${vwapRule===rule.id?C.accent+"44":C.border}`, display:"flex", alignItems:"center", gap:12 }}>
-                    <div style={{ width:14, height:14, borderRadius:"50%", border:`2px solid ${vwapRule===rule.id?C.accent:C.border}`, background:vwapRule===rule.id?C.accent:"transparent", flexShrink:0 }} />
-                    <div>
-                      <div style={{ fontSize:13, fontWeight:600, color:vwapRule===rule.id?C.accent:C.text }}>{rule.label}</div>
-                      <div style={{ fontSize:11, color:C.textMid, marginTop:2 }}>{rule.desc}</div>
-                    </div>
+
+            {/* Step 1 — Read the signal */}
+            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:12 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:14 }}>
+                <div style={{ width:26, height:26, borderRadius:"50%", background:C.accentDim, border:`1px solid ${C.accent}44`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, color:C.accent, fontFamily:"monospace", flexShrink:0 }}>1</div>
+                <div style={{ fontSize:14, fontWeight:700 }}>Read the Signal</div>
+              </div>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+                {[
+                  { field:"Instrument", desc:"Which contract to trade — ES, NQ, RTY, or CL" },
+                  { field:"Direction",  desc:"LONG (buy) or SHORT (sell)" },
+                  { field:"Entry",      desc:"The price to enter the trade. Use a limit or stop-limit order." },
+                  { field:"Stop",       desc:"Your maximum loss on this trade. Do not move it wider." },
+                  { field:"Target",     desc:"Your take-profit level. Where you close for a win." },
+                  { field:"Strength",   desc:"Signal conviction — STRONG signals have higher follow-through history." },
+                ].map(r => (
+                  <div key={r.field} style={{ background:C.bg, borderRadius:8, padding:"12px 14px", border:`1px solid ${C.border}` }}>
+                    <div style={{ fontSize:10, fontFamily:"monospace", color:C.accent, letterSpacing:"0.08em", marginBottom:4 }}>{r.field}</div>
+                    <div style={{ fontSize:12, color:C.textMid, lineHeight:1.5 }}>{r.desc}</div>
                   </div>
                 ))}
               </div>
             </div>
-            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:14 }}>
-              <div style={{ fontWeight:600, fontSize:14, marginBottom:6 }}>{t.exitMode}</div>
-              <div style={{ fontSize:12, color:C.textMid, marginBottom:16, lineHeight:1.6 }}>{t.exitModeQ}</div>
-              <div style={{ padding:14, borderRadius:8, background:C.accentDim, border:`1px solid ${C.accent}44` }}>
-                <div style={{ fontSize:13, fontWeight:600, color:C.accent, marginBottom:6 }}>{t.exitRule}</div>
-                <div style={{ fontSize:11, color:C.textMid, lineHeight:1.6 }}>{t.exitRuleDesc}</div>
+
+            {/* Step 2 — Sizing */}
+            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:12 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:14 }}>
+                <div style={{ width:26, height:26, borderRadius:"50%", background:C.accentDim, border:`1px solid ${C.accent}44`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, color:C.accent, fontFamily:"monospace", flexShrink:0 }}>2</div>
+                <div style={{ fontSize:14, fontWeight:700 }}>Size Your Position</div>
+              </div>
+              <div style={{ fontSize:12, color:C.textMid, lineHeight:1.8, marginBottom:12 }}>
+                Risk a fixed percentage of your account on each trade — typically <span style={{ color:C.accent, fontWeight:600 }}>0.5% – 1%</span> per signal. Never risk more than you're comfortable losing on a single trade.
+              </div>
+              <div style={{ background:C.accentDim, border:`1px solid ${C.accent}22`, borderRadius:8, padding:"12px 16px" }}>
+                <div style={{ fontSize:11, fontFamily:"monospace", color:C.accent, letterSpacing:"0.06em", marginBottom:6 }}>QUICK FORMULA</div>
+                <div style={{ fontSize:12, color:C.textMid, fontFamily:"monospace", lineHeight:1.8 }}>
+                  Dollar Risk = Account × Risk %<br/>
+                  Contracts = Dollar Risk ÷ (Entry − Stop) × Tick Value
+                </div>
               </div>
             </div>
-            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20 }}>
-              <div style={{ fontWeight:600, fontSize:14, marginBottom:6 }}>{t.cycleSettings}</div>
-              <div style={{ fontSize:12, color:C.textMid, marginBottom:16 }}>{t.cycleSub}</div>
-              {Object.entries(cycleConfig).map(([key,cyc]) => (
-                <div key={key} style={{ padding:"12px 0", borderBottom:`1px solid ${C.border}` }}>
-                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
-                    <div>
-                      <span style={{ fontWeight:600, fontSize:14 }}>{cyc.label}</span>
-                      <span style={{ fontSize:11, color:C.textMid, marginLeft:8, fontFamily:"monospace" }}>{cyc.every}</span>
-                    </div>
-                    <div onClick={() => setCycleConfig(prev=>({...prev,[key]:{...prev[key],enabled:!prev[key].enabled}}))}
-                      style={{ width:40, height:22, borderRadius:11, background:cyc.enabled?C.accent:C.border, position:"relative", cursor:"pointer", transition:"background 0.2s" }}>
-                      <div style={{ position:"absolute", top:3, left:cyc.enabled?21:3, width:16, height:16, borderRadius:"50%", background:"#fff", transition:"left 0.2s" }} />
-                    </div>
-                  </div>
-                  <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                    <span style={{ fontSize:11, color:C.textMid, fontFamily:"monospace" }}>{cyc.every}</span>
-                  </div>
+
+            {/* Step 3 — Entry */}
+            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:12 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:12 }}>
+                <div style={{ width:26, height:26, borderRadius:"50%", background:C.accentDim, border:`1px solid ${C.accent}44`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, color:C.accent, fontFamily:"monospace", flexShrink:0 }}>3</div>
+                <div style={{ fontSize:14, fontWeight:700 }}>Execute the Entry</div>
+              </div>
+              {[
+                "Place a stop-limit order at the signal's Entry price.",
+                "Set your hard stop immediately upon fill — do not wait.",
+                "If the entry price is missed by more than a few ticks, skip the trade.",
+                "Do not chase a signal more than 3–5 ticks past the entry level.",
+              ].map((rule, i) => (
+                <div key={i} style={{ display:"flex", gap:10, marginBottom:8, alignItems:"flex-start" }}>
+                  <span style={{ color:C.long, fontSize:13, lineHeight:1, marginTop:1, flexShrink:0 }}>●</span>
+                  <span style={{ fontSize:12, color:C.textMid, lineHeight:1.6 }}>{rule}</span>
                 </div>
               ))}
             </div>
+
+            {/* Step 4 — Management */}
+            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:12 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:12 }}>
+                <div style={{ width:26, height:26, borderRadius:"50%", background:C.accentDim, border:`1px solid ${C.accent}44`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, color:C.accent, fontFamily:"monospace", flexShrink:0 }}>4</div>
+                <div style={{ fontSize:14, fontWeight:700 }}>Manage the Trade</div>
+              </div>
+              {[
+                "Scale out 50% at 2R (twice your initial risk). Move stop to breakeven.",
+                "Let the runner target the full signal level (4R).",
+                "Stop after 2–3 losses in a single session — protect your capital.",
+                "Max 2–3 trades per day. More trades ≠ more money.",
+                "A REVERSED signal means exit immediately at market.",
+              ].map((rule, i) => (
+                <div key={i} style={{ display:"flex", gap:10, marginBottom:8, alignItems:"flex-start" }}>
+                  <span style={{ color:C.accent, fontSize:13, lineHeight:1, marginTop:1, flexShrink:0 }}>●</span>
+                  <span style={{ fontSize:12, color:C.textMid, lineHeight:1.6 }}>{rule}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Mindset */}
+            <div style={{ background:C.accentDim, border:`1px solid ${C.accent}22`, borderRadius:12, padding:"16px 20px" }}>
+              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.12em", marginBottom:8 }}>RULE #1</div>
+              <p style={{ fontSize:13, color:C.textMid, margin:0, lineHeight:1.7 }}>
+                The signal is not the trade — <strong style={{ color:C.text }}>your execution is.</strong> A great signal traded poorly is a loss. A good signal traded with discipline is a business.
+              </p>
+            </div>
+
           </div>
         )}
 
@@ -5024,10 +5384,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
 
         {activeTab==="admin" && isAdmin && (() => {
           const active    = signals.filter(s => s.status === "ACTIVE").length;
-          const cancelled = signals.filter(s => s.status === "CANCELLED").length;
-          const wins      = history.filter(s => s.winner === true).length;
-          const winRate   = history.length > 0 ? Math.round((wins / history.length) * 100) : null;
-          const totalPnl  = history.reduce((acc, s) => acc + (s.pnl_usd || 0), 0);
+          const cancelled = signals.filter(s => s.status === "REVERSED").length;
           return (
             <div style={{ padding:22, maxWidth:860 }}>
               <div style={{ marginBottom:20 }}>
@@ -5039,10 +5396,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
               <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(150px,1fr))", gap:10, marginBottom:28 }}>
                 {[
                   { label:"ACTIVE SIGNALS",  value: active,   color: active > 0 ? C.long : C.textDim },
-                  { label:"CANCELLED",       value: cancelled, color: C.warn },
-                  { label:"HISTORY RECORDS", value: history.length, color: C.accent },
-                  { label:"LIVE WIN RATE",   value: winRate !== null ? `${winRate}%` : "—", color: winRate >= 60 ? C.long : winRate !== null && winRate < 50 ? C.short : C.warn },
-                  { label:"LIVE TOTAL P&L",  value: history.length > 0 ? `${totalPnl >= 0 ? "+" : ""}$${totalPnl.toLocaleString()}` : "—", color: totalPnl >= 0 ? C.long : C.short },
+                  { label:"REVERSED",         value: cancelled, color: C.warn },
                 ].map(s => (
                   <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"14px 16px" }}>
                     <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:6 }}>{s.label}</div>
@@ -5069,12 +5423,107 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                 </div>
               )}
 
+              <AdminCharts />
+
+              {/* ── Manual Signal Form ─────────────────────────────── */}
+              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>POST MANUAL SIGNAL</div>
+              <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:28 }}>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:12 }}>
+                  {/* Instrument */}
+                  <div>
+                    <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginBottom:5 }}>INSTRUMENT</div>
+                    <select
+                      value={manualForm.instrument}
+                      onChange={e => setManualForm(p=>({...p, instrument:e.target.value}))}
+                      style={{ width:"100%", padding:"8px 10px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace" }}>
+                      {["ES","NQ","CL","GC","RTY","ZN","6E"].map(s=><option key={s}>{s}</option>)}
+                    </select>
+                  </div>
+                  {/* Direction */}
+                  <div>
+                    <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginBottom:5 }}>DIRECTION</div>
+                    <div style={{ display:"flex", gap:8 }}>
+                      {["LONG","SHORT"].map(d=>(
+                        <button key={d} onClick={()=>setManualForm(p=>({...p,direction:d}))}
+                          style={{ flex:1, padding:"8px 0", background: manualForm.direction===d ? (d==="LONG"?C.long:C.short)+"22" : "transparent",
+                            border:`1px solid ${manualForm.direction===d?(d==="LONG"?C.long:C.short):C.border}`,
+                            borderRadius:7, color:manualForm.direction===d?(d==="LONG"?C.long:C.short):C.textMid,
+                            fontFamily:"monospace", fontWeight:700, fontSize:13, cursor:"pointer" }}>
+                          {d==="LONG"?"▲ LONG":"▼ SHORT"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Price / Stop / TP */}
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10, marginBottom:12 }}>
+                  {[["price","ENTRY PRICE (opt)"],["stop","STOP (opt)"],["tp","TARGET (opt)"]].map(([field,label])=>(
+                    <div key={field}>
+                      <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginBottom:5 }}>{label}</div>
+                      <input type="number" placeholder="auto"
+                        value={manualForm[field]}
+                        onChange={e=>setManualForm(p=>({...p,[field]:e.target.value}))}
+                        style={{ width:"100%", padding:"8px 10px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace", boxSizing:"border-box" }} />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Note */}
+                <div style={{ marginBottom:14 }}>
+                  <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginBottom:5 }}>NOTE (optional)</div>
+                  <input type="text" placeholder="e.g. ORB breakout confirmed · strong volume"
+                    value={manualForm.note}
+                    onChange={e=>setManualForm(p=>({...p,note:e.target.value}))}
+                    style={{ width:"100%", padding:"8px 10px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, boxSizing:"border-box" }} />
+                </div>
+
+                {/* Submit */}
+                <button
+                  onClick={async ()=>{
+                    setManualStatus({ok:null,msg:"Sending..."});
+                    try {
+                      const resp = await fetch(`${API_URL}/manual-signal`, {
+                        method:"POST",
+                        headers:{"Content-Type":"application/json","X-Admin-Key":"sb_admin_2026_jr"},
+                        body: JSON.stringify({
+                          instrument: manualForm.instrument,
+                          direction:  manualForm.direction,
+                          price:  manualForm.price  ? parseFloat(manualForm.price)  : undefined,
+                          stop:   manualForm.stop   ? parseFloat(manualForm.stop)   : undefined,
+                          tp:     manualForm.tp     ? parseFloat(manualForm.tp)     : undefined,
+                          note:   manualForm.note,
+                        }),
+                      });
+                      const data = await resp.json();
+                      if (resp.ok) {
+                        setManualStatus({ok:true,  msg:`✅ Signal posted: ${data.id}`});
+                        setManualForm(p=>({...p, price:"", stop:"", tp:"", note:""}));
+                      } else {
+                        setManualStatus({ok:false, msg:`❌ ${data.error || "Error"}`});
+                      }
+                    } catch(e) {
+                      setManualStatus({ok:false, msg:`❌ ${e.message}`});
+                    }
+                  }}
+                  style={{ padding:"10px 24px", background:manualForm.direction==="LONG"?C.long:C.short,
+                    border:"none", borderRadius:8, color:"#fff", fontWeight:700, fontSize:13,
+                    fontFamily:"monospace", cursor:"pointer" }}>
+                  {manualForm.direction==="LONG"?"▲ POST LONG":"▼ POST SHORT"} {manualForm.instrument}
+                </button>
+
+                {manualStatus && (
+                  <div style={{ marginTop:10, fontSize:12, fontFamily:"monospace",
+                    color: manualStatus.ok === true ? C.long : manualStatus.ok === false ? C.warn : C.textMid }}>
+                    {manualStatus.msg}
+                  </div>
+                )}
+              </div>
+
               <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>QC CHECKLIST</div>
               <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:28 }}>
                 {[
                   ["Gist signals URL configured", !!SIGNALS_URL],
-                  ["Gist history URL configured",  !!HISTORY_URL],
-                  ["Signal history populated",     history.length > 0],
                   ["Active signals present",        signals.filter(s=>s.status==="ACTIVE").length > 0],
                   ["Risk data on signals",          signals.some(s=>s.risk)],
                 ].map(([label, ok]) => (
@@ -5091,7 +5540,6 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                   { label:"Stripe Dashboard", url:"https://dashboard.stripe.com" },
                   { label:"Clerk Dashboard",  url:"https://dashboard.clerk.com" },
                   { label:"Signals Gist",     url: SIGNALS_URL },
-                  { label:"History Gist",     url: HISTORY_URL },
                 ].map(({ label, url }) => (
                   <a key={label} href={url} target="_blank" rel="noreferrer"
                     style={{ padding:"9px 18px", background:C.surface, border:`1px solid ${C.border}`, borderRadius:8, color:C.accent, fontSize:13, fontFamily:"monospace", textDecoration:"none", fontWeight:600 }}>
@@ -5150,70 +5598,207 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   );
 }
 
+const OTP_SERVICE_ID  = "service_1q4u736";
+const OTP_TEMPLATE_ID = "qi3tplv";
+const OTP_PUBLIC_KEY  = "w5a8bPV-pgN-NHGbM";
+
+function generateOTP() {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
 function StandaloneCalc({ onNavigate, t }) {
+  const { user: clerkUser, isLoaded } = useUser();
+
+  // Persist access in localStorage so visitors don't re-enter on every visit
+  const [unlocked, setUnlocked] = useState(
+    () => !!localStorage.getItem("sb_calc_access")
+  );
+
   const [email, setEmail]       = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [step, setStep]         = useState("email"); // "email" | "otp" | "done"
+  const [otp, setOtp]           = useState("");
+  const [sentOtp, setSentOtp]   = useState("");
+  const [sending, setSending]   = useState(false);
+  const [verifying, setVerifying] = useState(false);
   const [error, setError]       = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const handleSubmit = async () => {
-    if (!email || !email.includes("@")) { setError("Please enter a valid email."); return; }
-    setSubmitting(true);
+
+  const handleSendOtp = async () => {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Please enter a valid email address."); return;
+    }
+    setSending(true); setError("");
+    const code = generateOTP();
+    setSentOtp(code);
     try {
-      await fetch("https://formspree.io/f/mbdaqgye", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({
-          email,
-          _subject: "🔢 Signal Boss Calculator Access Request",
-          source: "Risk Calculator Gate",
-        }),
-      });
-    } catch(e) { /* silent fail */ }
-    setSubmitted(true); setError(""); setSubmitting(false);
+      await emailjs.send(OTP_SERVICE_ID, OTP_TEMPLATE_ID, {
+        email,
+        passcode: code,
+        time: new Date(Date.now() + 15*60000).toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" }),
+        visitor_email: email,
+      }, OTP_PUBLIC_KEY);
+    } catch(e) {
+      setError("Couldn't send code. Try again."); setSending(false); return;
+    }
+    setSending(false);
+    setStep("otp");
   };
+
+  const handleVerifyOtp = () => {
+    setVerifying(true);
+    if (otp.trim() === sentOtp) {
+      localStorage.setItem("sb_calc_access", email);
+      setUnlocked(true);
+      setStep("done");
+    } else {
+      setError("Incorrect code. Check your email and try again.");
+    }
+    setVerifying(false);
+  };
+
+  // Wait for Clerk to finish loading before deciding gate visibility
+  if (!isLoaded) return null;
+
+  // Admins and any logged-in Clerk user skip the gate entirely
+  const hasAccess = unlocked || !!clerkUser;
+
   return (
     <div style={{ minHeight:"100vh", background:C.bg, padding:"100px 24px 40px" }}>
-      <div style={{ maxWidth:860, margin:"0 auto" }}>
+      <div style={{ maxWidth:900, margin:"0 auto" }}>
         <div style={{ marginBottom:32 }}>
           <div onClick={() => onNavigate("landing")} style={{ fontSize:11, color:C.textMid, cursor:"pointer", marginBottom:16, fontFamily:"monospace" }}>← Back to Signal Boss</div>
           <h1 style={{ fontSize:28, fontWeight:700, letterSpacing:"-0.02em", marginBottom:8 }}>Account Risk Calculator</h1>
           <p style={{ color:C.textMid, fontSize:14 }}>Free tool. No subscription required. Know your real risk before you trade.</p>
         </div>
-        {!submitted ? (
-          <div style={{ maxWidth:480, background:C.surface, border:`1px solid ${C.prop}44`, borderRadius:14, padding:32, marginBottom:40 }}>
+
+        {/* Gate — only shown to non-auth, non-verified visitors */}
+        {!hasAccess && (
+          <div style={{ maxWidth:460, background:C.surface, border:`1px solid ${C.prop}44`, borderRadius:14, padding:32, marginBottom:40 }}>
             <div style={{ fontSize:13, fontWeight:600, color:C.prop, marginBottom:8 }}>⬡ Free Access</div>
-            <p style={{ fontSize:13, color:C.textMid, lineHeight:1.6, marginBottom:20 }}>
-              Enter your email to unlock the full calculator. We'll also send you a free guide on prop firm risk management.
-            </p>
-            <input type="email" value={email} onChange={e => { setEmail(e.target.value); setError(""); }}
-              placeholder="your@email.com" onKeyDown={e => e.key==="Enter" && handleSubmit()}
-              style={{ width:"100%", boxSizing:"border-box", padding:"12px 16px", background:C.bg, border:`1px solid ${error?C.short:C.border}`, borderRadius:7, color:C.text, fontSize:14, fontFamily:"monospace", outline:"none", marginBottom:10, display:"block" }} />
-            <button onClick={handleSubmit} disabled={submitting} style={{ width:"100%", padding:"12px", background:C.prop, color:"#fff", border:"none", borderRadius:7, fontWeight:700, fontSize:14, cursor:"pointer", opacity:submitting?0.7:1 }}>
-              {submitting ? "Unlocking..." : "Get Access →"}
-            </button>
-            {error && <div style={{ fontSize:12, color:C.short, marginTop:10, fontFamily:"monospace" }}>{error}</div>}
-            <div style={{ fontSize:11, color:C.textDim, marginTop:12, textAlign:"center" }}>No spam. Unsubscribe anytime.</div>
+
+            {step === "email" && (<>
+              <p style={{ fontSize:13, color:C.textMid, lineHeight:1.6, marginBottom:20 }}>
+                Enter your email to unlock the full calculator. We'll send a 6-digit verification code.
+              </p>
+              <input type="email" value={email} onChange={e => { setEmail(e.target.value); setError(""); }}
+                placeholder="your@email.com" onKeyDown={e => e.key==="Enter" && handleSendOtp()}
+                style={{ width:"100%", boxSizing:"border-box", padding:"12px 16px", background:C.bg,
+                  border:`1px solid ${error?C.short:C.border}`, borderRadius:7, color:C.text,
+                  fontSize:14, fontFamily:"monospace", outline:"none", marginBottom:10, display:"block" }} />
+              <button onClick={handleSendOtp} disabled={sending}
+                style={{ width:"100%", padding:"12px", background:C.prop, color:"#fff", border:"none", borderRadius:7, fontWeight:700, fontSize:14, cursor:"pointer", opacity:sending?0.7:1 }}>
+                {sending ? "Sending code…" : "Send Verification Code →"}
+              </button>
+              {error && <div style={{ fontSize:12, color:C.short, marginTop:10, fontFamily:"monospace" }}>{error}</div>}
+              <div style={{ fontSize:11, color:C.textDim, marginTop:12, textAlign:"center" }}>No spam. Unsubscribe anytime.</div>
+            </>)}
+
+            {step === "otp" && (<>
+              <p style={{ fontSize:13, color:C.textMid, lineHeight:1.6, marginBottom:6 }}>
+                Code sent to <strong style={{ color:C.text }}>{email}</strong>. Enter it below:
+              </p>
+              <div style={{ fontSize:11, color:C.textDim, marginBottom:16, cursor:"pointer" }}
+                onClick={() => { setStep("email"); setError(""); }}>← Use a different email</div>
+              <input type="text" inputMode="numeric" maxLength={6} value={otp}
+                onChange={e => { setOtp(e.target.value.replace(/\D/,"")); setError(""); }}
+                placeholder="6-digit code" onKeyDown={e => e.key==="Enter" && handleVerifyOtp()}
+                style={{ width:"100%", boxSizing:"border-box", padding:"14px 16px", background:C.bg,
+                  border:`1px solid ${error?C.short:C.border}`, borderRadius:7, color:C.text,
+                  fontSize:22, fontFamily:"monospace", outline:"none", marginBottom:10,
+                  display:"block", letterSpacing:"0.3em", textAlign:"center" }} />
+              <button onClick={handleVerifyOtp} disabled={verifying || otp.length < 6}
+                style={{ width:"100%", padding:"12px", background:C.long, color:"#fff", border:"none", borderRadius:7, fontWeight:700, fontSize:14, cursor:"pointer", opacity:(verifying||otp.length<6)?0.5:1 }}>
+                {verifying ? "Verifying…" : "Verify & Unlock →"}
+              </button>
+              {error && <div style={{ fontSize:12, color:C.short, marginTop:10, fontFamily:"monospace" }}>{error}</div>}
+              <div style={{ fontSize:11, color:C.textDim, marginTop:12, textAlign:"center", cursor:"pointer" }}
+                onClick={handleSendOtp}>Didn't get it? Resend code</div>
+            </>)}
           </div>
-        ) : (
-          <div style={{ maxWidth:440, background:C.surface, border:`1px solid ${C.long}33`, borderRadius:14, padding:22, marginBottom:32, display:"flex", gap:12, alignItems:"center" }}>
+        )}
+
+        {/* Confirmation banner for newly verified visitors */}
+        {step === "done" && (
+          <div style={{ maxWidth:460, background:C.surface, border:`1px solid ${C.long}33`, borderRadius:14, padding:22, marginBottom:32, display:"flex", gap:12, alignItems:"center" }}>
             <span style={{ fontSize:22 }}>✓</span>
             <div>
-              <div style={{ fontWeight:600, color:C.long, marginBottom:4 }}>You're in!</div>
-              <div style={{ fontSize:13, color:C.textMid }}>Check {email} for your free risk management guide.</div>
+              <div style={{ fontWeight:600, color:C.long, marginBottom:4 }}>Verified — you're in!</div>
+              <div style={{ fontSize:13, color:C.textMid }}>Access saved for this browser. You won't need to verify again.</div>
             </div>
           </div>
         )}
+
+        {/* Calculator — blurred behind gate for unverified, shown fully for verified/auth */}
         <div style={{ position:"relative" }}>
-          {!submitted && (
+          {!hasAccess && (
             <div style={{ position:"absolute", inset:0, backdropFilter:"blur(6px)", background:"#08090966", zIndex:10, borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center" }}>
               <div style={{ textAlign:"center", color:C.textMid, fontFamily:"monospace", fontSize:13 }}>
                 <div style={{ fontSize:28, marginBottom:10 }}>🔒</div>
-                Enter your email above to unlock
+                Verify your email above to unlock
               </div>
             </div>
           )}
           <PropCalc t={t} />
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Futures Demo — YouTube video page
+// ---------------------------------------------------------------------------
+// When your video is ready, replace YOUTUBE_VIDEO_ID with your actual YouTube video ID.
+// Example: if URL is https://www.youtube.com/watch?v=dQw4w9WgXcQ, the ID is dQw4w9WgXcQ
+const YOUTUBE_VIDEO_ID = null; // ← paste your YouTube video ID here
+
+function FuturesDemo({ onNavigate }) {
+  return (
+    <div style={{ minHeight:"100vh", background:C.bg, display:"flex", flexDirection:"column", alignItems:"center", paddingTop:60, paddingBottom:80, paddingLeft:20, paddingRight:20 }}>
+      <div style={{ maxWidth:860, width:"100%" }}>
+
+        {/* Back */}
+        <div onClick={() => onNavigate("landing")} style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", cursor:"pointer", marginBottom:32, display:"inline-flex", alignItems:"center", gap:6 }}>
+          ← BACK
+        </div>
+
+        {/* Header */}
+        <div style={{ marginBottom:32 }}>
+          <div style={{ fontSize:11, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>SIGNAL BOSS · FUTURES DEMO</div>
+          <h1 style={{ fontSize:28, fontWeight:700, color:C.text, margin:"0 0 12px", lineHeight:1.2 }}>See the engine in action</h1>
+          <p style={{ fontSize:14, color:C.textMid, margin:0, maxWidth:560, lineHeight:1.6 }}>
+            Watch how Signal Boss identifies multi-cycle momentum confluences in real time — entry price, smart stop, and take profit on every signal.
+          </p>
+        </div>
+
+        {/* Video */}
+        <div style={{ position:"relative", width:"100%", paddingBottom:"56.25%", background:C.surface, borderRadius:12, border:`1px solid ${C.border}`, overflow:"hidden", marginBottom:36 }}>
+          {YOUTUBE_VIDEO_ID ? (
+            <iframe
+              src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?rel=0&modestbranding=1`}
+              title="Signal Boss Demo"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              style={{ position:"absolute", top:0, left:0, width:"100%", height:"100%" }}
+            />
+          ) : (
+            <div style={{ position:"absolute", top:0, left:0, width:"100%", height:"100%", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:12 }}>
+              <div style={{ fontSize:40 }}>▶</div>
+              <div style={{ fontSize:13, color:C.textMid, fontFamily:"monospace" }}>Demo video coming soon</div>
+            </div>
+          )}
+        </div>
+
+        {/* CTA */}
+        <div style={{ display:"flex", gap:12, flexWrap:"wrap" }}>
+          <button onClick={() => onNavigate("signup")} style={{ padding:"13px 32px", background:C.long, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:14, cursor:"pointer" }}>
+            Get Started →
+          </button>
+          <button onClick={() => onNavigate("landing")} style={{ padding:"13px 24px", background:"transparent", color:C.textMid, border:`1px solid ${C.border}`, borderRadius:8, fontWeight:500, fontSize:14, cursor:"pointer" }}>
+            Learn More
+          </button>
+        </div>
+
       </div>
     </div>
   );
@@ -5248,7 +5833,7 @@ function DemoChooser({ onNavigate, setTrack }) {
             <span style={{ color:C.long }}>$</span><span style={{ color:"#a78bfa" }}>€</span><span style={{ color:C.accent }}>¥</span>
           </div>
           <div style={{ fontSize:28, fontWeight:800, color:C.accent, fontFamily:"monospace", letterSpacing:"0.08em", marginBottom:12 }}>FOREX</div>
-          <h3 style={{ fontSize:16, fontWeight:600, marginBottom:12, letterSpacing:"-0.01em", color:C.textMid }}>EUR/USD · GBP/USD · Crosses</h3>
+          <h3 style={{ fontSize:16, fontWeight:600, marginBottom:12, letterSpacing:"-0.01em", color:C.textMid }}>EUR/USD · Institutional-Grade</h3>
           <p style={{ fontSize:14, color:C.textMid, lineHeight:1.75, marginBottom:24 }}>
             Signals derived from exchange-traded currency futures. Institutional positioning, delivered in spot forex terms.
           </p>
@@ -5364,18 +5949,27 @@ function ContactPage({ onNavigate }) {
 // ─── Clerk Auth Pages ──────────────────────────────────────────────────────
 
 function ClerkAuthPage({ mode, onNavigate, initialEmail }) {
+  const authAppearance = {
+    ...clerkDark,
+    elements: {
+      ...clerkDark.elements,
+      footerAction: { display:"none" },
+      footer:       { display:"none" },
+      badge:        { display:"none" },
+    },
+  };
   return (
     <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", padding:24 }}>
       {mode === "sign-in"
-        ? <SignIn afterSignInUrl="/" signUpUrl="#" signUpForceRedirectUrl="/"
-            appearance={{ elements: { footerAction: { display:"none" } } }} />
-        : <SignUp afterSignUpUrl="/" signInUrl="#" signInForceRedirectUrl="/"
+        ? <SignIn afterSignInUrl="/?signed_in=1" signUpUrl="#" signUpForceRedirectUrl="/?signed_in=1"
+            appearance={authAppearance} />
+        : <SignUp afterSignUpUrl="/?signed_in=1" signInUrl="#" signInForceRedirectUrl="/?signed_in=1"
             initialValues={initialEmail ? { emailAddress: initialEmail } : undefined}
-            appearance={{ elements: { footerAction: { display:"none" } } }} />
+            appearance={authAppearance} />
       }
       <div style={{ position:"absolute", bottom:32, fontSize:13, color:C.textMid }}>
         {mode === "sign-in"
-          ? <span>No account? <span onClick={() => onNavigate("signup")} style={{ color:C.accent, cursor:"pointer" }}>Start free trial →</span></span>
+          ? <span>No account? <span onClick={() => onNavigate("signup")} style={{ color:C.accent, cursor:"pointer" }}>Get Started →</span></span>
           : <span>Already subscribed? <span onClick={() => onNavigate("login")} style={{ color:C.accent, cursor:"pointer" }}>Sign in →</span></span>
         }
       </div>
@@ -5411,9 +6005,10 @@ function SubscribePage({ user, plan, onNavigate, t, track }) {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({
-          userId: user.id,
-          email:  user.primaryEmailAddress?.emailAddress || "",
-          plan:   selectedPlan,
+          userId:   user.id,
+          email:    user.primaryEmailAddress?.emailAddress || "",
+          plan:     selectedPlan,
+          referral: localStorage.getItem("sb_ref") || null,
         }),
       });
       const data = await resp.json();
@@ -5518,6 +6113,507 @@ function SubscribePage({ user, plan, onNavigate, t, track }) {
 }
 
 
+// ─── Public Backtests Page ───────────────────────────────────────────────────
+// ─── CurveShift Analytics Page ───────────────────────────────────────────────
+function CurveShiftPage({ onNavigate }) {
+  useEffect(() => { window.scrollTo(0, 0); }, []);
+
+  const CS = {
+    bg:       "#07111f",
+    navy2:    "#0c1c2e",
+    navy3:    "#112238",
+    panel:    "#0f2035",
+    border:   "rgba(255,255,255,.09)",
+    border2:  "rgba(255,255,255,.16)",
+    text:     "#d8e6f4",
+    muted:    "#7896b2",
+    subtle:   "#2d4a63",
+    gold:     "#c8a050",
+    gold2:    "#e0bb72",
+    teal:     "#3abfab",
+    red:      "#d96060",
+    green:    "#50c89a",
+    white:    "#f0f7ff",
+  };
+
+  const mono = { fontFamily:"'IBM Plex Mono','Courier New',monospace" };
+  const cond = { fontFamily:"'DM Sans','Segoe UI',sans-serif", letterSpacing:"0.06em" };
+
+  return (
+    <div style={{ background:CS.bg, color:CS.text, minHeight:"100vh", fontFamily:"'DM Sans','Segoe UI',sans-serif" }}>
+
+      {/* ── HERO ── */}
+      <div style={{ position:"relative", minHeight:"92vh", display:"flex", alignItems:"center", padding:"80px 0 60px", overflow:"hidden" }}>
+        {/* gold top accent */}
+        <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg, ${CS.gold} 0%, rgba(200,160,80,.1) 60%, transparent 100%)` }} />
+        {/* bg texture */}
+        <div style={{ position:"absolute", inset:0, background:`radial-gradient(ellipse at 70% 50%, rgba(17,34,56,.8) 0%, ${CS.bg} 70%)`, pointerEvents:"none" }} />
+
+        <div style={{ position:"relative", maxWidth:1100, margin:"0 auto", padding:"0 32px", width:"100%", display:"grid", gridTemplateColumns:"1.1fr .9fr", gap:56, alignItems:"center" }}>
+          {/* Left */}
+          <div>
+            <div style={{ display:"inline-flex", alignItems:"center", gap:9, border:`1px solid rgba(200,160,80,.35)`, borderRadius:3, padding:"7px 14px", fontSize:12, color:CS.gold, ...cond, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:28 }}>
+              <span style={{ width:6, height:6, borderRadius:"50%", background:CS.gold, display:"inline-block", animation:"pulse 2s infinite" }} />
+              U.S. Treasury &amp; Eurobond traders · Institutional grade
+            </div>
+            <h1 style={{ fontSize:"clamp(38px,4.5vw,62px)", fontWeight:700, lineHeight:1.08, color:CS.white, letterSpacing:"-0.02em", marginBottom:22 }}>
+              See the <em style={{ fontStyle:"italic", fontWeight:400, color:CS.gold2 }}>Regime.</em><br/>
+              Rank the Curve.<br/>
+              Trade the Edge.
+            </h1>
+            <p style={{ fontSize:17, color:CS.text, lineHeight:1.7, maxWidth:"52ch", marginBottom:36 }}>
+              Systematic regime diagnostics and relative value intelligence purpose-built for professional U.S. Treasury and Eurobond traders — cutting signal from noise so you execute the right playbook at the right time.
+            </p>
+            <div style={{ display:"flex", gap:14, flexWrap:"wrap", marginBottom:36 }}>
+              <a href="mailto:info@signalboss.net" style={{ padding:"13px 28px", background:CS.gold, color:CS.bg, borderRadius:4, fontWeight:700, fontSize:14, ...cond, textTransform:"uppercase", letterSpacing:"0.06em", textDecoration:"none" }}>
+                Request Access →
+              </a>
+              <span onClick={() => onNavigate("landing")} style={{ padding:"13px 28px", border:`1px solid ${CS.border2}`, color:CS.white, borderRadius:4, fontSize:14, ...cond, cursor:"pointer", textTransform:"uppercase", letterSpacing:"0.06em" }}>
+                ← Signal Boss
+              </span>
+            </div>
+            <div style={{ display:"flex", gap:28, flexWrap:"wrap", paddingTop:24, borderTop:`1px solid ${CS.border}` }}>
+              {["UST & Eurobond focused","Regime-aware signals","DV01-normalized RV","No buy/sell arrows"].map(t => (
+                <div key={t} style={{ fontSize:12, color:CS.muted, ...cond, display:"flex", alignItems:"center", gap:8 }}>
+                  <span style={{ width:5, height:5, borderRadius:"50%", background:CS.gold, display:"inline-block", flexShrink:0 }} />{t}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Dashboard Card */}
+          <div style={{ background:"rgba(11,28,46,.92)", border:`1px solid ${CS.border2}`, borderRadius:8, overflow:"hidden", boxShadow:"0 32px 80px rgba(0,0,0,.5)" }}>
+            <div style={{ background:CS.navy3, padding:"13px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", borderBottom:`1px solid ${CS.border}` }}>
+              <span style={{ fontSize:11, color:CS.muted, ...cond, textTransform:"uppercase", letterSpacing:"0.08em" }}>CurveShift Output — Illustrative</span>
+              <div style={{ display:"flex", alignItems:"center", gap:6, fontSize:11, color:CS.teal, ...cond, fontWeight:600 }}>
+                <span style={{ width:6, height:6, borderRadius:"50%", background:CS.teal, display:"inline-block", animation:"pulse 1.6s ease infinite" }} />LIVE
+              </div>
+            </div>
+            <div style={{ padding:20 }}>
+              {/* Regime block */}
+              <div style={{ background:"rgba(58,191,171,.07)", border:`1px solid rgba(58,191,171,.22)`, borderRadius:6, padding:"16px 18px", marginBottom:16 }}>
+                <div style={{ fontSize:11, color:CS.teal, ...cond, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:6 }}>Current Regime Classification</div>
+                <div style={{ fontSize:20, fontWeight:600, color:CS.white }}>Defensive · Flattening Bias</div>
+                <div style={{ fontSize:13, color:CS.muted, marginTop:4 }}>Stability: 82% · 3-state model · 14-day lookback</div>
+              </div>
+              {/* RV row */}
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8, marginBottom:16 }}>
+                {[
+                  { label:"Richest",  value:"Front-end", sub:"z: −2.1σ", color:CS.red },
+                  { label:"Cheapest", value:"Belly",      sub:"z: +1.8σ", color:CS.green },
+                  { label:"Setups",   value:"2",          sub:"Regime-aligned", color:CS.gold },
+                ].map(r => (
+                  <div key={r.label} style={{ background:"rgba(255,255,255,.04)", border:`1px solid ${CS.border}`, borderRadius:5, padding:"12px 10px", textAlign:"center" }}>
+                    <div style={{ fontSize:10, color:CS.muted, ...cond, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:5 }}>{r.label}</div>
+                    <div style={{ fontSize:17, fontWeight:700, color:r.color }}>{r.value}</div>
+                    <div style={{ fontSize:11, color:CS.muted, marginTop:3 }}>{r.sub}</div>
+                  </div>
+                ))}
+              </div>
+              {/* Spark */}
+              <div style={{ marginBottom:14 }}>
+                <div style={{ fontSize:11, color:CS.muted, ...cond, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:8 }}>2s10s UST Spread — 60D Z-Score</div>
+                <div style={{ display:"flex", gap:3, alignItems:"flex-end", height:34 }}>
+                  {[30,38,34,48,44,56,50,64,60,74,84,91,100,90,78].map((h,i) => (
+                    <div key={i} style={{ flex:1, borderRadius:"2px 2px 0 0", height:`${h}%`, background: h >= 84 ? CS.gold : CS.subtle }} />
+                  ))}
+                </div>
+              </div>
+              {/* Chips */}
+              <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                {[
+                  { label:"Regime Filter ✓", on:true },
+                  { label:"RV ≥ 1.5σ ✓",    on:true },
+                  { label:"Liquidity",        on:false },
+                  { label:"Vol-adj",          on:false },
+                ].map(c => (
+                  <div key={c.label} style={{ fontSize:11, ...cond, textTransform:"uppercase", letterSpacing:"0.04em", padding:"5px 10px", borderRadius:3,
+                    background: c.on ? "rgba(200,160,80,.13)" : "rgba(255,255,255,.04)",
+                    border: `1px solid ${c.on ? "rgba(200,160,80,.35)" : CS.border}`,
+                    color: c.on ? CS.gold : CS.muted }}>
+                    {c.label}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── METRICS BAR ── */}
+      <div style={{ background:CS.navy3, borderTop:`1px solid ${CS.border}`, borderBottom:`1px solid ${CS.border}` }}>
+        <div style={{ maxWidth:1100, margin:"0 auto", padding:"0 32px", display:"grid", gridTemplateColumns:"repeat(4,1fr)" }}>
+          {[
+            { label:"Instruments Tracked", value:"80+",          sub:"UST & Eurobond spreads, flies, boxes" },
+            { label:"Regime States",        value:"6",            sub:"Macro + curve dimensions" },
+            { label:"Signal Lookbacks",     value:"Configurable", sub:"30 / 60 / 90 / 252 day" },
+            { label:"Audience",             value:"Pro Only",     sub:"Institutional rates & macro" },
+          ].map(m => (
+            <div key={m.label} style={{ padding:"28px 24px", borderRight:`1px solid ${CS.border}` }}>
+              <div style={{ fontSize:11, color:CS.muted, ...cond, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>{m.label}</div>
+              <div style={{ fontSize:28, fontWeight:700, color:CS.white, lineHeight:1, marginBottom:6 }}>{m.value}</div>
+              <div style={{ fontSize:12, color:CS.muted }}>{m.sub}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── PLATFORM ── */}
+      <div style={{ padding:"100px 32px", maxWidth:1100, margin:"0 auto" }}>
+        <div style={{ marginBottom:56 }}>
+          <div style={{ fontSize:12, color:CS.gold, ...cond, textTransform:"uppercase", letterSpacing:"0.15em", marginBottom:14, display:"flex", alignItems:"center", gap:10 }}>
+            <span style={{ display:"inline-block", width:28, height:1, background:CS.gold }} />Platform Overview
+          </div>
+          <h2 style={{ fontSize:"clamp(28px,3.5vw,44px)", fontWeight:700, color:CS.white, marginBottom:18, lineHeight:1.15 }}>Decision intelligence built<br/>for the Treasury desk</h2>
+          <p style={{ fontSize:16, color:CS.muted, lineHeight:1.75, maxWidth:"58ch" }}>CurveShift organizes professional fixed income decision-making into a repeatable sequence: state → relative value → timing → structure. Less scanning. More execution.</p>
+        </div>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", border:`1px solid ${CS.border}` }}>
+          {[
+            { num:"01 — Regime",       title:"Regime Diagnostics",   body:"Classifies macro and curve regime states, scores transition probability, and flags 'don't fight it' conditions across U.S. Treasury and Eurobond markets — so your trade is aligned before you put it on." },
+            { num:"02 — Relative Value", title:"RV Rankings",         body:"Ranks UST and Eurobond instruments and spreads by rich/cheap distortion using z-score normalization, momentum state, and multi-lookback deviation across your full watchlist." },
+            { num:"03 — Filter",        title:"Opportunity Filters",  body:"Surfaces only regime-aligned setups when your statistical thresholds are confirmed — cutting churn and cognitive load across both Treasury and Eurobond spread books." },
+          ].map((f, i) => (
+            <div key={f.num} style={{ padding:"40px 34px", borderLeft: i > 0 ? `1px solid ${CS.border}` : "none", position:"relative", overflow:"hidden" }}>
+              <div style={{ fontSize:11, color:CS.gold, ...cond, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:20, opacity:0.65 }}>{f.num}</div>
+              <h4 style={{ fontSize:22, fontWeight:600, color:CS.white, marginBottom:14 }}>{f.title}</h4>
+              <p style={{ fontSize:15, color:CS.muted, lineHeight:1.7 }}>{f.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── QUOTE DIVIDER ── */}
+      <div style={{ background:CS.navy3, borderTop:`1px solid ${CS.border}`, borderBottom:`1px solid ${CS.border}`, padding:"64px 32px", textAlign:"center" }}>
+        <blockquote style={{ fontSize:"clamp(20px,2.5vw,28px)", fontWeight:300, fontStyle:"italic", color:CS.white, maxWidth:700, margin:"0 auto 14px", lineHeight:1.4 }}>
+          "The regime is the context. The RV is the trade.<br/>Everything else is noise."
+        </blockquote>
+        <cite style={{ fontSize:12, color:CS.gold, ...cond, textTransform:"uppercase", letterSpacing:"0.12em", fontStyle:"normal" }}>CurveShift Analytics — Design Philosophy</cite>
+      </div>
+
+      {/* ── WORKFLOW ── */}
+      <div style={{ background:CS.navy2, padding:"100px 32px" }}>
+        <div style={{ maxWidth:1100, margin:"0 auto", display:"grid", gridTemplateColumns:"1fr 1fr", gap:64, alignItems:"start" }}>
+          <div>
+            <div style={{ fontSize:12, color:CS.gold, ...cond, textTransform:"uppercase", letterSpacing:"0.15em", marginBottom:14, display:"flex", alignItems:"center", gap:10 }}>
+              <span style={{ display:"inline-block", width:28, height:1, background:CS.gold }} />Workflow
+            </div>
+            <h2 style={{ fontSize:"clamp(26px,3vw,40px)", fontWeight:700, color:CS.white, marginBottom:48, lineHeight:1.2 }}>A repeatable process for<br/>serious Treasury traders</h2>
+            {[
+              { n:"01", title:"Identify the Regime",   body:"Read the macro and curve environment across UST and Eurobond markets: risk posture, inflation pressure, liquidity tone, and directional bias. Don't fight the regime." },
+              { n:"02", title:"Rank RV Distortions",   body:"Scan the richness/cheapness ladder — z-normalized, momentum-contextualized — across UST spreads, flies, boxes, and Eurobond relative value on your configured watchlist." },
+              { n:"03", title:"Filter for Conviction", body:"Only surface setups when regime alignment and statistical threshold both confirm across your target instruments. Lower churn, higher quality." },
+              { n:"04", title:"Structure the Risk",    body:"DV01-balanced framing, invalidation levels, and ratio guidance for Treasury and Eurobond spreads. Your execution, your risk — CurveShift provides the analytical map." },
+            ].map((s, i) => (
+              <div key={s.n} style={{ display:"flex", gap:24, padding:"28px 0", borderBottom: i < 3 ? `1px solid ${CS.border}` : "none" }}>
+                <span style={{ fontSize:13, fontWeight:700, color:CS.gold, ...cond, flexShrink:0, paddingTop:2 }}>{s.n}</span>
+                <div>
+                  <h5 style={{ fontSize:19, fontWeight:600, color:CS.white, marginBottom:8 }}>{s.title}</h5>
+                  <p style={{ fontSize:15, color:CS.muted, lineHeight:1.7 }}>{s.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Who card */}
+          <div style={{ background:CS.panel, border:`1px solid ${CS.border2}`, borderRadius:6, overflow:"hidden" }}>
+            <div style={{ height:200, background:`linear-gradient(to bottom, rgba(7,17,31,.1), rgba(7,17,31,.7)), url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=900&q=80') center/cover` }} />
+            <div style={{ padding:"30px 28px" }}>
+              <h4 style={{ fontSize:22, fontWeight:600, color:CS.white, marginBottom:20 }}>Built for professionals who live in the rates market</h4>
+              {["U.S. Treasury futures and cash traders","Eurobond relative value specialists","Fixed income prop desks & small macro funds","Systematic-discretionary hybrid managers","CTA and global macro rates allocators"].map(item => (
+                <div key={item} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:`1px solid ${CS.border}`, fontSize:15, fontWeight:500, color:CS.text }}>
+                  <span style={{ color:CS.teal, fontSize:13, flexShrink:0 }}>✓</span>{item}
+                </div>
+              ))}
+              <div style={{ marginTop:20, padding:"14px 16px", background:"rgba(255,255,255,.03)", border:`1px solid ${CS.border}`, borderRadius:4, fontSize:13, color:CS.muted, lineHeight:1.65 }}>
+                ⚠ Analytics and decision-support tools only. CurveShift does not provide individualized investment advice.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── MODULES ── */}
+      <div style={{ padding:"100px 32px" }}>
+        <div style={{ maxWidth:1100, margin:"0 auto" }}>
+          <div style={{ fontSize:12, color:CS.gold, ...cond, textTransform:"uppercase", letterSpacing:"0.15em", marginBottom:14, display:"flex", alignItems:"center", gap:10 }}>
+            <span style={{ display:"inline-block", width:28, height:1, background:CS.gold }} />Modules
+          </div>
+          <h2 style={{ fontSize:"clamp(26px,3vw,40px)", fontWeight:700, color:CS.white, marginBottom:16, lineHeight:1.2 }}>One cohesive suite.<br/>Six purpose-built tools.</h2>
+          <p style={{ fontSize:16, color:CS.muted, lineHeight:1.75, maxWidth:"58ch", marginBottom:48 }}>Consistent naming, consistent logic, single purpose: make regime shifts and RV opportunities across U.S. Treasuries and Eurobonds unmistakably obvious.</p>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:14 }}>
+            {[
+              { tier:"Core · I",     title:"CurveShift Regime™",   badge:"Regime",        body:"Regime state classification, stability scoring, and transition detection across UST and Eurobond environments. Identifies 'don't fight it' conditions and early inflection signals." },
+              { tier:"Core · II",    title:"CurveShift RV™",       badge:"Relative Value", body:"Rich/cheap ladder with z-score normalization, momentum context, and multi-lookback deviation across your full Treasury and Eurobond instrument watchlist." },
+              { tier:"Core · III",   title:"CurveShift Filter™",   badge:"Filter",         body:"Qualifies setups only when your thresholds are met: regime-aligned, statistically significant, within configurable volatility bands for your chosen instruments." },
+              { tier:"Advanced · IV",title:"CurveShift Structure™",badge:"Structure",      body:"Risk framing and invalidation logic: DV01-balanced trade guidance, ratio structuring, and position hygiene rules for UST and Eurobond spread positioning." },
+              { tier:"Advanced · V", title:"Watchlists & Presets", badge:"Configure",      body:"Save your preferred Treasury curves, Eurobond spreads, flies, lookbacks, and full dashboard configurations. Deploy your exact workflow instantly each session." },
+              { tier:"UX · VI",      title:"Low-Noise Interface",  badge:"Interface",      body:"Professional, distraction-free presentation. Consistent panel layouts, fast readouts, and zero clutter. Signal clarity by design, built for the rates desk." },
+            ].map(m => (
+              <div key={m.title} style={{ background:CS.panel, border:`1px solid ${CS.border}`, borderRadius:6, padding:"30px 26px" }}>
+                <div style={{ fontSize:11, color:CS.teal, ...cond, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:12 }}>{m.tier}</div>
+                <h4 style={{ fontSize:20, fontWeight:600, color:CS.white, marginBottom:12 }}>{m.title}</h4>
+                <p style={{ fontSize:14, color:CS.muted, lineHeight:1.75 }}>{m.body}</p>
+                <div style={{ display:"inline-block", marginTop:16, fontSize:11, fontWeight:600, ...cond, textTransform:"uppercase", letterSpacing:"0.06em", padding:"4px 10px", borderRadius:3, background:"rgba(200,160,80,.11)", border:"1px solid rgba(200,160,80,.25)", color:CS.gold }}>{m.badge}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── PRICING ── */}
+      <div style={{ background:CS.navy2, padding:"100px 32px" }}>
+        <div style={{ maxWidth:1100, margin:"0 auto" }}>
+          <div style={{ fontSize:12, color:CS.gold, ...cond, textTransform:"uppercase", letterSpacing:"0.15em", marginBottom:14, display:"flex", alignItems:"center", gap:10 }}>
+            <span style={{ display:"inline-block", width:28, height:1, background:CS.gold }} />Access
+          </div>
+          <h2 style={{ fontSize:"clamp(26px,3vw,40px)", fontWeight:700, color:CS.white, marginBottom:16, lineHeight:1.2 }}>Built for a small cohort<br/>of serious traders</h2>
+          <p style={{ fontSize:16, color:CS.muted, lineHeight:1.75, maxWidth:"58ch", marginBottom:48 }}>Purposely limited. We want a tight feedback loop with professionals who actually live in the U.S. Treasury and Eurobond markets.</p>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:14 }}>
+            {[
+              {
+                tier:"Tier 01", name:"Professional", price:"$995", per:"/month · billed monthly",
+                desc:"Independent prop traders & discretionary managers", featured:false,
+                items:["CurveShift Regime™ + CurveShift RV™","CurveShift Filter™","UST & Eurobond coverage","Single-user seat","Ongoing updates"],
+              },
+              {
+                tier:"Tier 02", name:"Desk", price:"$2,195", per:"/month · up to 5 seats",
+                desc:"Small funds, prop desks & trading teams", featured:true,
+                items:["Everything in Professional","CurveShift Structure™","Team onboarding session","Custom presets & dashboards","Priority support"],
+              },
+              {
+                tier:"Tier 03", name:"Private Cohort", price:"Application", per:"Reviewed individually",
+                desc:"Application-only · limited seats available", featured:false,
+                items:["All modules + roadmap access","Direct product feedback loop","Priority feature requests","White-glove onboarding & support"],
+              },
+            ].map(p => (
+              <div key={p.name} style={{ background:CS.panel, border:`1px solid ${p.featured ? "rgba(200,160,80,.42)" : CS.border}`, borderRadius:6, padding:"36px 30px", position:"relative",
+                background: p.featured ? `linear-gradient(155deg, rgba(200,160,80,.07) 0%, ${CS.panel} 55%)` : CS.panel }}>
+                {p.featured && <div style={{ position:"absolute", top:-1, right:24, background:CS.gold, color:CS.bg, fontSize:11, fontWeight:700, ...cond, textTransform:"uppercase", letterSpacing:"0.06em", padding:"5px 13px", borderRadius:"0 0 5px 5px" }}>Most Popular</div>}
+                <div style={{ fontSize:11, color:CS.muted, ...cond, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>{p.tier}</div>
+                <h4 style={{ fontSize:26, fontWeight:700, color:CS.white, marginBottom:6 }}>{p.name}</h4>
+                <p style={{ fontSize:14, color:CS.muted, marginBottom:22 }}>{p.desc}</p>
+                <div style={{ fontSize: p.price==="Application" ? 28 : 46, fontWeight:700, color:CS.white, lineHeight:1, letterSpacing:"-0.02em", paddingTop: p.price==="Application" ? 10 : 0 }}>{p.price}</div>
+                <div style={{ fontSize:13, color:CS.muted, marginBottom:24, marginTop:4, ...cond }}>{p.per}</div>
+                <hr style={{ border:"none", borderTop:`1px solid ${CS.border}`, marginBottom:22 }} />
+                <ul style={{ listStyle:"none" }}>
+                  {p.items.map(item => (
+                    <li key={item} style={{ display:"flex", alignItems:"flex-start", gap:10, padding:"8px 0", fontSize:14, color:CS.muted, lineHeight:1.5 }}>
+                      <span style={{ color:CS.teal, flexShrink:0, fontSize:13 }}>✓</span>{item}
+                    </li>
+                  ))}
+                </ul>
+                <a href="mailto:info@signalboss.net" style={{ display:"block", width:"100%", marginTop:24, textAlign:"center", padding:13, borderRadius:4, fontSize:13, fontWeight:600, ...cond, textTransform:"uppercase", letterSpacing:"0.06em", textDecoration:"none", cursor:"pointer",
+                  background: p.featured ? CS.gold : "transparent",
+                  color: p.featured ? CS.bg : CS.text,
+                  border: p.featured ? "none" : `1px solid ${CS.border2}` }}>
+                  Apply →
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── CONTACT ── */}
+      <div style={{ padding:"100px 32px", background:CS.bg }}>
+        <div style={{ maxWidth:1100, margin:"0 auto", display:"grid", gridTemplateColumns:".45fr 1fr", gap:68, alignItems:"start" }}>
+          <div>
+            <div style={{ fontSize:12, color:CS.gold, ...cond, textTransform:"uppercase", letterSpacing:"0.15em", marginBottom:14, display:"flex", alignItems:"center", gap:10 }}>
+              <span style={{ display:"inline-block", width:28, height:1, background:CS.gold }} />Request Access
+            </div>
+            <h3 style={{ fontSize:"clamp(22px,2.5vw,34px)", fontWeight:700, color:CS.white, lineHeight:1.2, marginBottom:16 }}>If you trade Treasuries or Eurobonds professionally, let's talk</h3>
+            <p style={{ fontSize:16, color:CS.muted, lineHeight:1.75 }}>We review every application individually. Tell us what you trade, what problems you're solving, and what you want CurveShift to do for your desk.</p>
+            <div style={{ marginTop:26, padding:"16px 18px", background:"rgba(200,160,80,.07)", border:"1px solid rgba(200,160,80,.22)", borderRadius:4, fontSize:14, color:CS.muted, lineHeight:1.65 }}>
+              Prefer a direct line?<br/>
+              <strong style={{ color:CS.gold2 }}>info@signalboss.net</strong>
+            </div>
+          </div>
+          <div style={{ background:"rgba(11,28,46,.92)", border:`1px solid ${CS.border2}`, borderRadius:8, padding:38 }}>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
+              {[
+                { label:"Full Name",         id:"nm",  type:"text",  placeholder:"Jane Smith",                    full:false },
+                { label:"Email Address",     id:"em",  type:"email", placeholder:"jane@fund.com",                 full:false },
+                { label:"Role / Title",      id:"rl",  type:"text",  placeholder:"Prop trader, PM, analyst…",    full:false },
+                { label:"Markets You Trade", id:"mk",  type:"text",  placeholder:"UST futures, Eurobonds, swaps…",full:false },
+                { label:"Firm / Organization",id:"fm", type:"text",  placeholder:"Fund name or 'Independent'",   full:false },
+              ].map(f => (
+                <div key={f.id} style={{ gridColumn: f.full ? "1 / -1" : "auto", display:"flex", flexDirection:"column", gap:7 }}>
+                  <label style={{ fontSize:11, color:CS.muted, ...cond, textTransform:"uppercase", letterSpacing:"0.08em" }}>{f.label}</label>
+                  <input type={f.type} placeholder={f.placeholder} style={{ background:"rgba(255,255,255,.05)", border:`1px solid ${CS.border2}`, borderRadius:4, padding:"12px 14px", color:CS.white, fontSize:15, outline:"none", fontFamily:"inherit" }} />
+                </div>
+              ))}
+              <div style={{ gridColumn:"1 / -1", display:"flex", flexDirection:"column", gap:7 }}>
+                <label style={{ fontSize:11, color:CS.muted, ...cond, textTransform:"uppercase", letterSpacing:"0.08em" }}>What do you want CurveShift to help you do?</label>
+                <textarea placeholder="What you trade, what problems you're solving, what gaps exist in your current process…" style={{ background:"rgba(255,255,255,.05)", border:`1px solid ${CS.border2}`, borderRadius:4, padding:"12px 14px", color:CS.white, fontSize:15, outline:"none", fontFamily:"inherit", minHeight:110, resize:"vertical" }} />
+              </div>
+              <a href="mailto:info@signalboss.net" style={{ gridColumn:"1 / -1", display:"block", textAlign:"center", padding:14, background:CS.gold, color:CS.bg, border:"none", borderRadius:4, fontSize:14, fontWeight:700, ...cond, textTransform:"uppercase", letterSpacing:"0.06em", textDecoration:"none", cursor:"pointer" }}>
+                Send Request →
+              </a>
+            </div>
+            <div style={{ fontSize:13, color:CS.muted, marginTop:16, lineHeight:1.65 }}>CurveShift Analytics provides analytical tools only. No content constitutes investment advice. Applications are reviewed personally — we respond within 2 business days.</div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── FOOTER ── */}
+      <div style={{ borderTop:`1px solid ${CS.border}`, padding:"36px 32px", background:CS.bg }}>
+        <div style={{ maxWidth:1100, margin:"0 auto", display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:36, flexWrap:"wrap" }}>
+          <div>
+            <div style={{ fontSize:18, fontWeight:700, color:CS.white, ...cond, marginBottom:4 }}>CurveShift Analytics</div>
+            <div style={{ fontSize:13, color:CS.muted }}>© {new Date().getFullYear()} All rights reserved</div>
+            <div style={{ marginTop:12, display:"flex", gap:20, flexWrap:"wrap" }}>
+              {["Platform","Modules","Access","info@signalboss.net"].map(l => (
+                <span key={l} style={{ fontSize:12, color:CS.muted, ...cond, cursor:"pointer" }}>{l}</span>
+              ))}
+              <span onClick={() => onNavigate("landing")} style={{ fontSize:12, color:CS.gold, ...cond, cursor:"pointer" }}>← Signal Boss</span>
+            </div>
+          </div>
+          <div style={{ fontSize:13, color:CS.subtle, maxWidth:"52ch", lineHeight:1.75 }}>
+            CurveShift Analytics provides analytics and decision-support tools only. No content constitutes investment advice or a recommendation to buy or sell any security. Trading futures and derivatives involves substantial risk of loss.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+
+function PublicBacktests({ onNavigate }) {
+  const [btIdx, setBtIdx] = useState(0);
+  const bt   = ORB_BACKTESTS[btIdx];
+  const pts  = bt.curve || [];
+  const lo   = pts.length ? Math.min(0, ...pts) : 0;
+  const hi   = pts.length ? Math.max(...pts) : 0;
+  const span = hi - lo || 1;
+  const W = 780, H = 160, pad = 8;
+  const xStep = pts.length > 1 ? (W - pad*2) / (pts.length - 1) : 1;
+  const toY   = v => H - pad - ((v - lo) / span) * (H - pad*2);
+  const zero  = toY(0);
+  const pathD = pts.map((v,i) => `${i===0?"M":"L"}${pad+i*xStep},${toY(v)}`).join(" ");
+  const fillD = pts.length ? `${pathD} L${pad+(pts.length-1)*xStep},${H-pad} L${pad},${H-pad} Z` : "";
+
+  return (
+    <div style={{ minHeight:"100vh", padding:"40px 24px 80px", maxWidth:960, margin:"0 auto" }}>
+
+      {/* Page header */}
+      <div style={{ marginBottom:32 }}>
+        <div style={{ fontSize:11, color:C.accent, fontFamily:"monospace", letterSpacing:"0.18em", marginBottom:10 }}>VOLATILITY ALIGNED BREAKOUT TRADES</div>
+        <h1 style={{ fontSize:28, fontWeight:800, marginBottom:10, letterSpacing:"-0.03em" }}>Backtest Results</h1>
+        <p style={{ color:C.textMid, fontSize:14, lineHeight:1.7, maxWidth:620 }}>
+          Historical performance of the Signal Boss opening-range breakout strategy across five futures instruments.
+          All results generated in ThinkOrSwim on tick-accurate historical data.
+        </p>
+      </div>
+
+      {/* Selector */}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:24 }}>
+        {ORB_BACKTESTS.map((b, i) => (
+          <button key={b.id} onClick={() => setBtIdx(i)} style={{
+            padding:"14px 16px", borderRadius:10, cursor:"pointer", textAlign:"left",
+            background: btIdx===i ? C.accentDim : C.surface,
+            border:`1px solid ${btIdx===i ? C.accent : C.border}`,
+            transition:"all 0.15s",
+          }}>
+            <div style={{ fontSize:15, fontWeight:700, fontFamily:"monospace", color:btIdx===i?C.accent:C.text, marginBottom:4 }}>{b.label}</div>
+            <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace" }}>{b.sub}</div>
+          </button>
+        ))}
+      </div>
+
+      {/* Risk note */}
+      {bt.riskNote && (
+        <div style={{ background:C.warn+"11", border:`1px solid ${C.warn}44`, borderRadius:10, padding:"12px 18px", marginBottom:20, display:"flex", gap:10, alignItems:"flex-start" }}>
+          <span style={{ color:C.warn, fontSize:14, lineHeight:1 }}>⚠</span>
+          <span style={{ fontSize:12, color:C.textMid, lineHeight:1.6 }}>{bt.riskNote}</span>
+        </div>
+      )}
+
+      {bt.comingSoon ? (
+        <div>
+          <div style={{ fontSize:13, color:C.textMid, marginBottom:18, lineHeight:1.6 }}>How Signal Boss calculates dynamic stop-loss and take-profit levels based on each day's opening range volatility.</div>
+          {bt.description.map(d => (
+            <div key={d.heading} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"18px 20px", marginBottom:12 }}>
+              <div style={{ fontSize:12, fontWeight:700, color:C.accent, fontFamily:"monospace", letterSpacing:"0.06em", marginBottom:8 }}>{d.heading}</div>
+              <p style={{ fontSize:13, color:C.textMid, margin:0, lineHeight:1.7 }}>{d.body}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <>
+          {/* Stats */}
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(130px,1fr))", gap:10, marginBottom:22 }}>
+            {[
+              { label:"NET P&L",       value:`+$${bt.netPnl.toLocaleString()}`,      sub:`${bt.wins}W / ${bt.losses}L`,       color:C.long },
+              { label:"TRADES",        value: bt.trades,                              sub: bt.dates,                            color:C.text },
+              { label:"WIN RATE",      value:`${bt.winRate}%`,                        sub:`B/E at ${(100/(1+4)).toFixed(1)}%`,  color:C.long },
+              { label:"PROFIT FACTOR", value:`${bt.profitFactor}x`,                  sub:"gross W ÷ gross L",                  color:C.accent },
+              { label:"AVG WIN",       value:`$${bt.avgWin.toLocaleString()}`,        sub:"per winning trade",                  color:C.long },
+              { label:"AVG LOSS",      value:`$${bt.avgLoss.toLocaleString()}`,       sub:"per losing trade",                   color:C.short },
+              { label:"MAX DRAWDOWN",  value:`$${bt.maxDrawdown.toLocaleString()}`,   sub:"peak-to-trough",                     color:C.warn },
+              { label:"EXPECTANCY",    value:`$${bt.expectancy.toLocaleString()}`,    sub:"avg $ earned per trade",             color:C.long },
+            ].map(s => (
+              <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"14px 16px" }}>
+                <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:5 }}>{s.label}</div>
+                <div style={{ fontSize:17, fontWeight:700, color:s.color, fontFamily:"monospace" }}>{s.value}</div>
+                <div style={{ fontSize:10, color:C.textDim, marginTop:3 }}>{s.sub}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Equity curve */}
+          <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:"18px 20px", marginBottom:22 }}>
+            <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", marginBottom:10, display:"flex", justifyContent:"space-between" }}>
+              <span>EQUITY CURVE  ({bt.trades} trades · 1 contract · cumulative)</span>
+              <span style={{ color:C.long }}>+${hi.toLocaleString()} peak</span>
+            </div>
+            <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:H, display:"block" }}>
+              <defs>
+                <linearGradient id="pub-eq-fill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={C.long} stopOpacity="0.18"/>
+                  <stop offset="100%" stopColor={C.long} stopOpacity="0.02"/>
+                </linearGradient>
+              </defs>
+              <line x1={pad} y1={zero} x2={W-pad} y2={zero} stroke={C.border} strokeWidth="1" strokeDasharray="3,3"/>
+              <path d={fillD} fill="url(#pub-eq-fill)"/>
+              <path d={pathD} fill="none" stroke={C.long} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
+            </svg>
+            <div style={{ display:"flex", gap:14, marginTop:8, fontSize:10, color:C.textDim, fontFamily:"monospace" }}>
+              <span style={{ color:C.long }}>● {bt.wins} wins</span>
+              <span style={{ color:C.short }}>● {bt.losses} losses</span>
+              <span style={{ marginLeft:"auto" }}>Zero line = breakeven</span>
+            </div>
+          </div>
+
+          {/* Disclosure */}
+          <div style={{ background:C.surface, border:`1px solid ${C.border}44`, borderRadius:10, padding:"16px 20px", marginBottom:32 }}>
+            <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.06em", marginBottom:6 }}>IMPORTANT DISCLOSURE</div>
+            <p style={{ fontSize:12, color:C.textMid, margin:0, lineHeight:1.7 }}>
+              Hypothetical results based on backtesting on historical data from ThinkOrSwim. Past performance is not indicative of future results. All trading involves significant risk of loss. Do not trade with money you cannot afford to lose.
+            </p>
+            <p style={{ fontSize:11, color:C.textDim, margin:"8px 0 0", lineHeight:1.6 }}>
+              {bt.dates} · {bt.period}. Results do not account for slippage, commissions, or execution differences. Hypothetical performance results have many inherent limitations. For educational purposes only. Not financial advice.
+            </p>
+          </div>
+        </>
+      )}
+
+      {/* CTA */}
+      <div style={{ textAlign:"center", padding:"40px 24px", background:C.surface, border:`1px solid ${C.border}`, borderRadius:16 }}>
+        <div style={{ fontSize:11, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:12 }}>LIVE SIGNALS</div>
+        <h2 style={{ fontSize:22, fontWeight:700, marginBottom:10 }}>Ready to trade with these signals?</h2>
+        <p style={{ color:C.textMid, fontSize:14, marginBottom:24, maxWidth:480, margin:"0 auto 24px" }}>
+          Signal Boss delivers the same strategy in real-time — entry, stop, and target on every alert.
+        </p>
+        <button onClick={() => onNavigate("signup")} style={{ padding:"14px 36px", background:C.accent, border:"none", borderRadius:8, color:"#080d14", cursor:"pointer", fontWeight:800, fontSize:15, fontFamily:"monospace", letterSpacing:"0.06em" }}>
+          GET STARTED →
+        </button>
+      </div>
+
+    </div>
+  );
+}
+
+
 function AppInner() {
   const { isSignedIn, isLoaded } = useAuth();
   const { user: clerkUser }      = useUser();
@@ -5529,6 +6625,7 @@ function AppInner() {
   const t = T[lang];
 
   const isSubscribed = clerkUser?.publicMetadata?.subscribed === true;
+  const isAdmin      = clerkUser?.publicMetadata?.role === "admin";
   const activePlan   = clerkUser?.publicMetadata?.plan || null;
 
   // Handler: calc email form → Clerk signup → calculator
@@ -5547,12 +6644,17 @@ function AppInner() {
         setPostAuthDest(null);
         setPage("calc");
       } else {
-        setPage(isSubscribed ? "dashboard" : "subscribe");
+        setPage((isSubscribed || isAdmin) ? "dashboard" : "subscribe");
       }
     }
     // Session expired or signed out while on dashboard
     if (!isSignedIn && page === "dashboard") {
       setPage("landing");
+    }
+    // Post-login redirect (?signed_in=1 in URL)
+    if (isSignedIn && window.location.search.includes("signed_in=1")) {
+      window.history.replaceState({}, "", "/");
+      setPage((isSubscribed || isAdmin) ? "dashboard" : "subscribe");
     }
     // Stripe success redirect (?subscribed=true in URL)
     if (isSignedIn && window.location.search.includes("subscribed=true")) {
@@ -5565,8 +6667,8 @@ function AppInner() {
     <>
       <style>{css}</style>
       {page !== "dashboard" && (
-        <div style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, display:"flex", justifyContent:"space-between", alignItems:"center", padding:"14px 32px", borderBottom:`1px solid ${C.border}44`, backdropFilter:"blur(16px)", background:"#08090988" }}>
-          <div onClick={() => { setPage("landing"); setTrack(null); }} style={{ fontWeight:800, fontSize:20, cursor:"pointer", fontFamily:"monospace", color:"#ffffff", letterSpacing:"0.04em" }}>
+        <div style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, display:"flex", justifyContent:"space-between", alignItems:"center", padding:"14px 32px", borderBottom:`1px solid ${C.border}44`, backdropFilter:"blur(16px)", background:"#000000ee" }}>
+          <div onClick={() => { setPage("landing"); setTrack(null); }} style={{ fontWeight:800, fontSize:22, cursor:"pointer", fontFamily:"monospace", color:"#ffffff", letterSpacing:"0.04em" }}>
             SIGNAL<span style={{ color:C.accent }}>BOSS</span>
           </div>
           {/* Center: track toggle + nav links */}
@@ -5577,13 +6679,21 @@ function AppInner() {
               <button onClick={() => setTrack("forex")} style={{ padding:"6px 18px", borderRadius:6, border:"none", background:track==="forex"?C.accentDim:"transparent", color:track==="forex"?C.accent:C.textMid, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"monospace", letterSpacing:"0.08em", transition:"all 0.15s" }}>FOREX</button>
             </div>
             {/* Nav links */}
-            {page === "landing" && (
-              <div style={{ display:"flex", gap:20, alignItems:"center" }}>
-                <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("how-it-works")?.scrollIntoView({behavior:"smooth"})}}>The Edge</a>
-                <span style={{ color:C.border }}>·</span>
-                <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("pricing")?.scrollIntoView({behavior:"smooth"})}}>Pricing</a>
-                <span style={{ color:C.border }}>·</span>
-                <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();setPage("contact")}}>Contact</a>
+            {(page === "landing" || page === "backtests") && (
+              <div style={{ display:"flex", gap:24, alignItems:"center" }}>
+                {[
+                  { label:"The Edge",  action: e=>{e.preventDefault();document.getElementById("how-it-works")?.scrollIntoView({behavior:"smooth"});setPage("landing");} },
+                  { label:"Backtests", action: e=>{e.preventDefault();setPage("backtests");}, active: page==="backtests" },
+                  { label:"Pricing",   action: e=>{e.preventDefault();document.getElementById("pricing")?.scrollIntoView({behavior:"smooth"});setPage("landing");} },
+                  { label:"Contact",   action: e=>{e.preventDefault();setPage("contact");} },
+                ].map(item => (
+                  <a key={item.label} onClick={item.action} style={{
+                    fontSize:12, fontWeight:600, color: item.active ? C.accent : C.textMid,
+                    textDecoration:"none", fontFamily:"'IBM Plex Mono','Courier New',monospace",
+                    letterSpacing:"0.1em", textTransform:"uppercase", cursor:"pointer",
+                    transition:"color 0.2s",
+                  }}>{item.label}</a>
+                ))}
               </div>
             )}
           </div>
@@ -5591,9 +6701,9 @@ function AppInner() {
             <LangSwitcher lang={lang} setLang={setLang} />
             {isSignedIn ? (
               <>
-                <button onClick={() => setPage(isSubscribed ? "dashboard" : "subscribe")}
+                <button onClick={() => setPage((isSubscribed || isAdmin) ? "dashboard" : "subscribe")}
                   style={{ padding:"8px 20px", background:C.accent, border:"none", borderRadius:6, color:"#080909", cursor:"pointer", fontWeight:700, fontSize:13 }}>
-                  {isSubscribed ? "Dashboard →" : "Activate →"}
+                  {(isSubscribed || isAdmin) ? "Dashboard →" : "Activate →"}
                 </button>
                 <div style={{ border:`1px solid ${C.silverBorder}`, borderRadius:"50%", padding:2, boxShadow:`0 0 0 1px ${C.accent}33` }}>
                   <UserButton afterSignOutUrl="/" appearance={clerkDark} />
@@ -5617,15 +6727,29 @@ function AppInner() {
         {page==="contact"      && <ContactPage onNavigate={setPage} />}
         {page==="demo-chooser" && <DemoChooser onNavigate={setPage} setTrack={setTrack} />}
         {page==="dashboard"    && (
-          isSubscribed
+          (isSubscribed || isAdmin)
             ? <Dashboard user={clerkUser} onNavigate={setPage} t={t} lang={lang} setLang={setLang} track={track} />
             : <SubscribePage user={clerkUser} plan={activePlan} onNavigate={setPage} t={t} track={track} />
         )}
         {page==="forex-demo"   && <ForexDemo onNavigate={setPage} t={t} />}
-        {page==="futures-demo" && <Dashboard user={clerkUser} onNavigate={setPage} t={t} lang={lang} setLang={setLang} />}
+        {page==="futures-demo" && <FuturesDemo onNavigate={setPage} />}
+        {page==="backtests"    && <PublicBacktests onNavigate={setPage} />}
+        {page==="curveshift"   && <CurveShiftPage onNavigate={setPage} />}
       </div>
     </>
   );
+}
+
+// ---------------------------------------------------------------------------
+// Referral tracking — reads ?ref=X from URL and persists in localStorage
+// ---------------------------------------------------------------------------
+function useReferral() {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref    = params.get("ref");
+    if (ref) localStorage.setItem("sb_ref", ref.toLowerCase().trim());
+  }, []);
+  return localStorage.getItem("sb_ref") || null;
 }
 
 export default function App() {
