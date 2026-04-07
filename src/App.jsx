@@ -51,7 +51,7 @@ const T = {
     heroSub: "Millions of people are done waiting for a real opportunity — one that isn't a scheme, a course, or another indicator that goes nowhere. Signal Boss delivers institutional-grade trade signals with a clear entry, a defined stop, and a profit target. Built on the same frameworks professional trading desks use, but for those of us who don't have a Wall Street address.\n\nYou don't need another idea. You just need something that actually works.\n\nFollow the signal. Take the trade.",
     engineTagline: "Institutional-Grade Signal Engine · Live",
     chooserTitle1: "Your kitchen table is a fine place", chooserTitle2: "", chooserTitle3: "to change your financial picture.",
-    chooserSub: "Millions of people are done waiting for a real opportunity — one that isn't a scheme, a course, or another indicator that goes nowhere. Signal Boss delivers institutional-grade trade signals with a clear entry, a defined stop, and a profit target. Built on the same frameworks professional trading desks use, but for those of us who don't have a Wall Street address.",
+    chooserSub: "People today are looking for a real opportunity — not some expensive course or indicator, no 'get rich' promise that goes nowhere.\n\nIf you can commit to following a proven trade blueprint, the Signal Boss Platform will help you create additional monthly income — or grow your funds for that vacation, day care expenses, or to supplement your retirement income.\n\nWe provide more than just signals; we provide a clear path forward. Our Members learn a simple, straightforward way to profit using a professional, institutional-grade investment method that works in all economic conditions.\n\nTake your time to explore the site and feel free to Contact us to learn more.",
     whyBuilt: "WHY WE BUILT SIGNAL BOSS",
     whyP1: "Imagine joining a gym where 98% of members get weaker and fatter following the same workout plan. You'd find a different gym.",
     whyP2: "Chart-based trading is that workout plan. And the numbers prove it — financial regulators in Europe tracked retail traders across thousands of accounts and found that between 74% and 89% lose money consistently. In some markets, that number approaches 98%.",
@@ -3677,11 +3677,11 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
             </h1>
           </div>
         </div>
-        <p style={{ fontSize:"clamp(17px,1.8vw,22px)", color:"#d0e4e4", maxWidth:620, lineHeight:1.75, marginBottom:52, fontWeight:500 }}>
+        <div style={{ fontSize:"clamp(15px,1.6vw,19px)", color:"#d0e4e4", maxWidth:660, lineHeight:1.85, marginBottom:48, fontWeight:400, textAlign:"center", whiteSpace:"pre-line" }}>
           {t.chooserSub}
-        </p>
+        </div>
         <div style={{ display:"flex", gap:14, flexWrap:"wrap", justifyContent:"center" }}>
-          <button onClick={() => onNavigate("signup")} style={{ padding:"15px 36px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:600, fontSize:14, cursor:"pointer" }}>{t.startTrial}</button>
+          <button onClick={() => onNavigate("contact")} style={{ padding:"15px 42px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:700, fontSize:15, cursor:"pointer", letterSpacing:"0.06em" }}>LET'S TALK</button>
           <button onClick={() => onNavigate(track==="forex" ? "forex-demo" : track==="futures" ? "futures-demo" : "demo-chooser")} style={{ padding:"15px 36px", background:"transparent", color:C.long, border:`1px solid ${C.long}`, borderRadius:8, fontWeight:500, fontSize:14, cursor:"pointer" }}>{t.viewDemo}</button>
         </div>
 
