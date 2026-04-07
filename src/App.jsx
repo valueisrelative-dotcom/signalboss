@@ -3531,22 +3531,22 @@ const BACKTEST_STATIC = {
 
 const ORB_BACKTESTS = [
   {
-    id: "es-30m", label: "ES", sub: "180 Day", instrument: "ES",
+    id: "es-30m", label: "ES", sub: "380 Day", instrument: "ES",
     name: "E-mini S&P 500", timeframe: "30-min bars",
-    period: "180 trading days", dates: "Jul 10, 2025 – Mar 26, 2026",
-    netPnl: 290450, trades: 707, wins: 388, losses: 319,
-    winRate: 54.9, profitFactor: 2.88, avgWin: 1147, avgLoss: 484,
-    maxDrawdown: 8600, expectancy: 411, riskNote: null,
-    curve: [-475,4125,11412,16200,26075,35638,42512,47362,51512,64462,69188,77688,80975,84512,89262,86912,92988,100838,105288,100038,108638,110938,114938,129388,133800,142750,142975,144862,144775,153575,158925,170175,181688,180225,186488,188362,199250,199262,210950,229800,243125,251638,262188,264975,269812,286300,290400,292388,294250,288500,292825,290450],
+    period: "380 trading days", dates: "Sep 2025 – Apr 2026",
+    netPnl: 261788, trades: 707, wins: 298, losses: 409,
+    winRate: 42.2, profitFactor: 4.05, avgWin: 1147, avgLoss: 484,
+    maxDrawdown: 12473, expectancy: 369, riskNote: null,
+    curve: [3855,5319,14828,22012,69366,82240,91868,88781,93176,106297,104632,112786,110738,126890,138911,144463,154277,157290,158659,163335,172287,191920,207236,208368,235847,242438,251570,246532,240347,262890,261788],
   },
   {
-    id: "nq-30m", label: "NQ", sub: "180 Day", instrument: "NQ",
+    id: "nq-30m", label: "NQ", sub: "380 Day", instrument: "NQ",
     name: "E-mini Nasdaq-100", timeframe: "30-min bars",
-    period: "180 trading days", dates: "Jul 10, 2025 – Mar 27, 2026",
-    netPnl: 261960, trades: 477, wins: 251, losses: 226,
-    winRate: 52.6, profitFactor: 2.40, avgWin: 1787, avgLoss: 826,
-    maxDrawdown: 12655, expectancy: 549, riskNote: null,
-    curve: [1225,2820,9785,16870,16270,30240,25810,30455,33140,44940,57840,63315,71585,78310,80600,84385,84290,82670,83995,97235,96885,103585,103540,101875,117215,123115,134270,150820,152780,154835,149790,149855,150710,157480,160050,156905,151080,150925,151645,162175,165365,178615,190930,204220,195795,210150,217375,233205,243190,249335,246290,246745,259845,261960],
+    period: "380 trading days", dates: "Sep 2025 – Apr 2026",
+    netPnl: 465796, trades: 477, wins: 196, losses: 281,
+    winRate: 41.1, profitFactor: 3.60, avgWin: 1787, avgLoss: 826,
+    maxDrawdown: 19186, expectancy: 684, riskNote: null,
+    curve: [5353,6937,20915,29064,104119,118764,134559,133968,158398,175544,182979,199215,192865,231769,257508,261158,289742,287508,288295,301523,317758,357428,380712,386524,414760,435160,462424,454356,447714,467711,465796],
   },
   {
     id: "nq-1h", label: "NQ", sub: "360 Day", instrument: "NQ",
@@ -3677,7 +3677,7 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
             </h1>
           </div>
         </div>
-        <p style={{ fontSize:"clamp(17px,1.8vw,22px)", color:"#d0e4e4", maxWidth:620, lineHeight:1.75, marginBottom:52, fontWeight:500, transition:"opacity 0.8s ease", opacity: heroPhase===1 ? 1 : 0 }}>
+        <p style={{ fontSize:"clamp(17px,1.8vw,22px)", color:"#d0e4e4", maxWidth:620, lineHeight:1.75, marginBottom:52, fontWeight:500, transition:"opacity 0.8s ease", opacity: heroPhase >= 1 ? 1 : 0 }}>
           {t.chooserSub}
         </p>
         <div style={{ display:"flex", gap:14, flexWrap:"wrap", justifyContent:"center" }}>
@@ -3701,13 +3701,13 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
               {t.realNumbers}<br/><span style={{ color:C.long }}>{t.realData}</span>
             </h2>
             <p style={{ color:C.textMid, fontSize:14, maxWidth:560, margin:"0 auto 24px", lineHeight:1.7 }}>
-              Signal performance · 180 trading days · Jul 2025 – Mar 2026
+              Signal performance · 380 trading days · Sep 2025 – Apr 2026
             </p>
             {/* Instrument cards */}
             <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap" }}>
               {[
-                { sym:"ES", label:"E-mini S&P 500",   pnl:"+$290,450", wr:"54.9%", pf:"2.88x", dd:"$8,600",  ev:"+$411", color:C.accent },
-                { sym:"NQ", label:"E-mini Nasdaq-100", pnl:"+$261,960", wr:"52.6%", pf:"2.40x", dd:"$12,655", ev:"+$549", color:C.long },
+                { sym:"ES", label:"E-mini S&P 500",   pnl:"+$261,788", wr:"42.2%", pf:"4.05x", dd:"$12,473", ev:"+$369", color:C.accent },
+                { sym:"NQ", label:"E-mini Nasdaq-100", pnl:"+$465,796", wr:"41.1%", pf:"3.60x", dd:"$19,186", ev:"+$684", color:C.long },
               ].map(({ sym, label, pnl, wr, pf, dd, ev, color }) => {
                 const active = lpBtInst === sym;
                 return (
@@ -3748,9 +3748,9 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
           {/* Stat callouts */}
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:12, marginBottom:36 }}>
             {[
-              { label:"EXPECTANCY / SIGNAL", value: lpBtInst==="ES" ? "+$411" : "+$549",   sub:"avg $ captured per signal taken",   color:C.long },
+              { label:"EXPECTANCY / SIGNAL", value: lpBtInst==="ES" ? "+$369" : "+$684",   sub:"avg $ captured per signal taken",   color:C.long },
               { label:"PROFIT FACTOR",       value:`${lpBt.profitFactor}x`,                sub:"gross wins ÷ gross losses",         color:C.accent },
-              { label:"NET P&L",             value:`+$${lpBt.netPnl.toLocaleString()}`,    sub:`${lpBt.trades} signals · 180 days`, color:C.long },
+              { label:"NET P&L",             value:`+$${lpBt.netPnl.toLocaleString()}`,    sub:`${lpBt.trades} signals · 380 days`, color:C.long },
               { label:"MAX DRAWDOWN",        value:`$${lpBt.maxDrawdown.toLocaleString()}`,sub:"peak-to-trough",                    color:C.warn },
               { label:"WIN RATE",            value:`${lpBt.winRate}%`,                     sub:`${lpBt.wins}W / ${lpBt.losses}L`,   color:C.textMid },
             ].map(s => (
@@ -3761,6 +3761,37 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
               </div>
             ))}
           </div>
+
+          {/* Micro toggle */}
+          {(() => {
+            const microMap = { ES:"MES", NQ:"MNQ" };
+            const micro = microMap[lpBtInst];
+            const fullPnl = lpBtInst==="ES" ? 261788 : 465796;
+            const fullDd  = lpBtInst==="ES" ? 12473  : 19186;
+            const fullEv  = lpBtInst==="ES" ? 369    : 684;
+            return (
+              <div style={{ marginTop:16, background:C.accentDim, border:`1px solid ${C.accent}33`, borderRadius:10, padding:"14px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12 }}>
+                <div>
+                  <span style={{ fontSize:11, color:C.accent, fontFamily:"monospace", fontWeight:700, letterSpacing:"0.1em" }}>MICRO CONTRACT ({micro})</span>
+                  <span style={{ fontSize:12, color:C.textMid, marginLeft:12, fontFamily:"monospace" }}>Same signals · 1/10 the size</span>
+                </div>
+                <div style={{ display:"flex", gap:20 }}>
+                  <div style={{ textAlign:"center" }}>
+                    <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginBottom:3 }}>NET P&L</div>
+                    <div style={{ fontSize:15, fontWeight:700, color:C.long, fontFamily:"monospace" }}>+${Math.round(fullPnl/10).toLocaleString()}</div>
+                  </div>
+                  <div style={{ textAlign:"center" }}>
+                    <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginBottom:3 }}>MAX DD</div>
+                    <div style={{ fontSize:15, fontWeight:700, color:C.short, fontFamily:"monospace" }}>${Math.round(fullDd/10).toLocaleString()}</div>
+                  </div>
+                  <div style={{ textAlign:"center" }}>
+                    <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginBottom:3 }}>EXPECTANCY</div>
+                    <div style={{ fontSize:15, fontWeight:700, color:C.long, fontFamily:"monospace" }}>+${Math.round(fullEv/10)}</div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Equity curve */}
           {pts.length > 1 && (() => {
