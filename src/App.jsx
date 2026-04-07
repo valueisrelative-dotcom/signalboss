@@ -3677,7 +3677,7 @@ function LandingPage({ onNavigate, onNavigateCalc, t, track, setTrack }) {
             </h1>
           </div>
         </div>
-        <p style={{ fontSize:"clamp(17px,1.8vw,22px)", color:"#d0e4e4", maxWidth:620, lineHeight:1.75, marginBottom:52, fontWeight:500, transition:"opacity 0.8s ease", opacity: heroPhase >= 1 ? 1 : 0 }}>
+        <p style={{ fontSize:"clamp(17px,1.8vw,22px)", color:"#d0e4e4", maxWidth:620, lineHeight:1.75, marginBottom:52, fontWeight:500 }}>
           {t.chooserSub}
         </p>
         <div style={{ display:"flex", gap:14, flexWrap:"wrap", justifyContent:"center" }}>
@@ -6713,10 +6713,11 @@ function AppInner() {
             {(page === "landing" || page === "backtests") && (
               <div style={{ display:"flex", gap:24, alignItems:"center" }}>
                 {[
-                  { label:"The Edge",  action: e=>{e.preventDefault();document.getElementById("how-it-works")?.scrollIntoView({behavior:"smooth"});setPage("landing");} },
-                  { label:"Backtests", action: e=>{e.preventDefault();setPage("backtests");}, active: page==="backtests" },
-                  { label:"Pricing",   action: e=>{e.preventDefault();document.getElementById("pricing")?.scrollIntoView({behavior:"smooth"});setPage("landing");} },
-                  { label:"Contact",   action: e=>{e.preventDefault();setPage("contact");} },
+                  { label:"The Edge",       action: e=>{e.preventDefault();document.getElementById("how-it-works")?.scrollIntoView({behavior:"smooth"});setPage("landing");} },
+                  { label:"Backtests",      action: e=>{e.preventDefault();setPage("backtests");}, active: page==="backtests" },
+                  { label:"Risk Calculator",action: e=>{e.preventDefault();setPage("calc");} },
+                  { label:"Pricing",        action: e=>{e.preventDefault();document.getElementById("pricing")?.scrollIntoView({behavior:"smooth"});setPage("landing");} },
+                  { label:"Contact",        action: e=>{e.preventDefault();setPage("contact");} },
                 ].map(item => (
                   <a key={item.label} onClick={item.action} style={{
                     fontSize:12, fontWeight:600, color: item.active ? C.accent : C.textMid,
