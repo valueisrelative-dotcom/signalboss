@@ -4792,7 +4792,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   const [timeframe, setTimeframe] = useState("5m");
   const [filterDir, setFilterDir] = useState("ALL");
   const [filterStr, setFilterStr] = useState("ALL");
-  const ALL_INSTS = ['ES','NQ','CL','GC','RTY','ZN','6E'];
+  const ALL_INSTS = ['ES','NQ','YM','CL','GC','RTY','ZN','6E'];
   const [filterInst, setFilterInst] = useState(() => {
     try { return new Set(JSON.parse(localStorage.getItem("sb_inst_filter")) || ALL_INSTS); }
     catch { return new Set(ALL_INSTS); }
