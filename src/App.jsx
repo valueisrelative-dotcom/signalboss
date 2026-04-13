@@ -4793,16 +4793,20 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   const [filterDir, setFilterDir] = useState("ALL");
   const [filterStr, setFilterStr] = useState("ALL");
   const ALL_INSTS = ['ES','NQ','YM','CL','GC','RTY','ZN','6E'];
+  const INST_FILTER_V = 2; // increment when ALL_INSTS changes to reset stale caches
   const [filterInst, setFilterInst] = useState(() => {
-    try { return new Set(JSON.parse(localStorage.getItem("sb_inst_filter")) || ALL_INSTS); }
-    catch { return new Set(ALL_INSTS); }
+    try {
+      const raw = JSON.parse(localStorage.getItem("sb_inst_filter"));
+      if (raw && raw.v === INST_FILTER_V && Array.isArray(raw.insts)) return new Set(raw.insts);
+    } catch {}
+    return new Set(ALL_INSTS);
   });
   const toggleInst = (sym) => {
     setFilterInst(prev => {
       const next = new Set(prev);
       if (next.has(sym)) { if (next.size > 1) next.delete(sym); }
       else next.add(sym);
-      localStorage.setItem("sb_inst_filter", JSON.stringify([...next]));
+      localStorage.setItem("sb_inst_filter", JSON.stringify({ v: INST_FILTER_V, insts: [...next] }));
       return next;
     });
   };
