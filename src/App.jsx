@@ -642,6 +642,7 @@ const MICROS   = { ES:"MES", NQ:"MNQ", YM:"MYM", RTY:"M2K", CL:"MCL", GC:"MGC" }
 const INST_TICK = {
   ES:  { size: 0.25,       value: 12.50   },
   NQ:  { size: 0.25,       value:  5.00   },
+  YM:  { size: 1.00,       value:  5.00   },  // Dow Jones futures
   CL:  { size: 0.01,       value: 10.00   },
   GC:  { size: 0.10,       value: 10.00   },
   RTY: { size: 0.10,       value:  5.00   },
