@@ -4859,7 +4859,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   }, []);
 
   const fetchHistory = () =>
-    fetch(`${API_URL}/history?t=${Date.now()}`)
+    fetch(`/history.json?t=${Date.now()}`)
       .then(r => r.json())
       .then(data => { if (Array.isArray(data)) setHistory(data); })
       .catch(() => {});
@@ -5028,6 +5028,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
 
           // P&L for a closed signal (1 contract)
           const computePnl = s => {
+            if (s.pnlUsd != null) return s.pnlUsd;
             const ticks = s.stop_ticks || s.risk?.stopTicks || 0;
             const tv    = s.tick_value || 5.0;
             const rr    = s.rr || s.risk?.suggestedRR || 2.0;
