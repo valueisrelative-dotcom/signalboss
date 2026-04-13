@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Signal 90% of Traders Ignore — Signal Boss</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:          #080c14;
+      --bg-card:     #0d1424;
+      --bg-cover:    #050810;
+      --border:      #1a2540;
+      --border-lit:  #243656;
+      --text:        #f2f6fa;
+      --muted:       #9ab0c8;
+      --dim:         #6a82a0;
+      --gold:        #c9a84c;
+      --gold-light:  #e6c76a;
+      --green:       #22c55e;
+      --red:         #ef4444;
+      --blue:        #3b82f6;
+      --font:        'DM Sans', sans-serif;
+      --mono:        'IBM Plex Mono', monospace;
+      --display:     'Bebas Neue', sans-serif;
+    }
+
+    html { background: var(--bg); }
+
+    body {
+      font-family: var(--font);
+      color: var(--text);
+      font-size: 17px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      background: var(--bg);
+    }
+
+    /* ── Page wrapper ── */
+    .page {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ── Cover ── */
+    .cover {
+      min-height: 100vh;
+      background: var(--bg-cover);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 80px 64px;
+      position: relative;
+      overflow: hidden;
+      page-break-after: always;
+    }
+
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(ellipse at center, rgba(201,168,76,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cover::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold) 0%, transparent 60%);
+    }
+
+    .cover-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 80px;
+    }
+
+    .cover-logo-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--gold) 0%, #8a6c2a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #050810;
+      font-family: var(--font);
+    }
+
+    .cover-logo-text {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text);
+      letter-spacing: -0.2px;
+    }
+
+    .cover-logo-text span { color: var(--gold); }
+
+    .cover-eyebrow {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cover-eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .cover-title {
+      font-family: var(--display);
+      font-size: clamp(52px, 8vw, 80px);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+      color: var(--text);
+      margin-bottom: 28px;
+      max-width: 640px;
+    }
+
+    .cover-title .highlight { color: var(--gold); }
+
+    .cover-subtitle {
+      font-size: 19px;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.55;
+      margin-bottom: 56px;
+      font-weight: 400;
+    }
+
+    .cover-subtitle strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .cover-meta {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--dim);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Section pages ── */
+    .section-page {
+      padding: 80px 64px;
+      border-bottom: 1px solid var(--border);
+      page-break-inside: avoid;
+    }
+
+    .section-page:last-of-type {
+      border-bottom: none;
+    }
+
+    .section-number {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-number::after {
+      content: '';
+      display: block;
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .section-title {
+      font-family: var(--display);
+      font-size: clamp(34px, 5vw, 48px);
+      line-height: 1.0;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      margin-bottom: 32px;
+    }
+
+    .body-text {
+      font-size: 17px;
+      line-height: 1.78;
+      color: var(--muted);
+    }
+
+    .body-text p { margin-bottom: 22px; }
+    .body-text p:last-child { margin-bottom: 0; }
+
+    .body-text strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .body-text em {
+      color: var(--text);
+      font-style: italic;
+    }
+
+    /* ── Pull quote ── */
+    .pull-quote {
+      border-left: 3px solid var(--gold);
+      padding: 20px 28px;
+      margin: 36px 0;
+      background: rgba(201,168,76,0.04);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .pull-quote p {
+      font-size: 19px;
+      line-height: 1.55;
+      color: var(--text);
+      font-weight: 500;
+      margin: 0;
+    }
+
+    /* ── Callout box ── */
+    .callout {
+      background: var(--bg-card);
+      border: 1px solid var(--border-lit);
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin: 36px 0;
+    }
+
+    .callout-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .callout p {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    .callout strong { color: var(--text); }
+
+    /* ── Two participants visual ── */
+    .participants {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 36px 0;
+    }
+
+    .participant-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .participant-card.hedger { border-top: 3px solid var(--blue); }
+    .participant-card.speculator { border-top: 3px solid var(--gold); }
+
+    .participant-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .hedger .participant-label { color: var(--blue); }
+    .speculator .participant-label { color: var(--gold); }
+
+    .participant-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .participant-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── Expected move visual ── */
+    .em-visual {
+      background: var(--bg-card);
+      border: 1px solid var(--border-lit);
+      border-radius: 12px;
+      padding: 32px;
+      margin: 36px 0;
+      text-align: center;
+    }
+
+    .em-range {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 20px;
+    }
+
+    .em-level {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 6px;
+    }
+
+    .em-level.high {
+      background: rgba(239,68,68,0.12);
+      color: var(--red);
+      border: 1px solid rgba(239,68,68,0.25);
+    }
+
+    .em-level.low {
+      background: rgba(34,197,94,0.1);
+      color: var(--green);
+      border: 1px solid rgba(34,197,94,0.2);
+    }
+
+    .em-bar {
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, var(--red), var(--border-lit), var(--green));
+      position: relative;
+    }
+
+    .em-bar::after {
+      content: 'EXPECTED MOVE';
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+
+    .em-price {
+      font-family: var(--mono);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .em-label {
+      font-size: 12px;
+      color: var(--dim);
+    }
+
+    .em-caption {
+      font-size: 13px;
+      color: var(--dim);
+      margin-top: 16px;
+    }
+
+    /* ── Signal card ── */
+    .signal-card {
+      background: #111827;
+      border: 1px solid #1e3a5f;
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin: 36px auto;
+      max-width: 420px;
+      font-family: var(--mono);
+    }
+
+    .signal-card-header {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .signal-card-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #1e3a5f;
+    }
+
+    .signal-card-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 14px;
+    }
+
+    .signal-card-label { color: var(--dim); }
+    .signal-card-value { color: var(--text); font-weight: 600; }
+    .signal-card-value.green { color: var(--green); }
+    .signal-card-value.red { color: var(--red); }
+    .signal-card-value.blue { color: #60a5fa; }
+
+    .signal-card-divider {
+      border: none;
+      border-top: 1px solid #1e3a5f;
+      margin: 12px 0;
+    }
+
+    .signal-card-risk {
+      font-size: 12px;
+      color: var(--dim);
+      padding-top: 4px;
+    }
+
+    .signal-card-risk strong { color: var(--muted); }
+
+    .signal-result {
+      text-align: center;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #1e3a5f;
+      font-size: 13px;
+    }
+
+    .signal-result .result-win {
+      color: var(--green);
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    /* ── Access section ── */
+    .access-section {
+      background: var(--bg-cover);
+      padding: 80px 64px;
+      text-align: center;
+    }
+
+    .access-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .access-title {
+      font-family: var(--display);
+      font-size: clamp(38px, 6vw, 52px);
+      line-height: 1.0;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .access-sub {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+
+    .access-form {
+      display: flex;
+      gap: 12px;
+      max-width: 460px;
+      margin: 0 auto 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .access-form input[type="email"] {
+      flex: 1;
+      min-width: 240px;
+      padding: 14px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-lit);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .access-form input[type="email"]:focus {
+      border-color: var(--gold);
+    }
+
+    .access-form input[type="email"]::placeholder {
+      color: var(--dim);
+    }
+
+    .access-form button {
+      padding: 14px 28px;
+      background: var(--gold);
+      color: #050810;
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .access-form button:hover { background: var(--gold-light); }
+
+    .access-note {
+      font-size: 13px;
+      color: var(--dim);
+      margin-bottom: 40px;
+    }
+
+    .access-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      max-width: 360px;
+      margin: 0 auto 32px;
+    }
+
+    .access-divider::before,
+    .access-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .access-divider span {
+      font-size: 12px;
+      color: var(--dim);
+      white-space: nowrap;
+    }
+
+    .tg-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #229ed9;
+      color: #fff;
+      text-decoration: none;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .tg-btn:hover { background: #1a8bbf; }
+
+    .tg-icon {
+      width: 20px;
+      height: 20px;
+      fill: #fff;
+    }
+
+    /* ── Risk disclosure ── */
+    .risk-footer {
+      padding: 40px 64px;
+      border-top: 1px solid var(--border);
+    }
+
+    .risk-footer p {
+      font-size: 11px;
+      color: var(--dim);
+      line-height: 1.7;
+    }
+
+    /* ── Intro page ── */
+    .intro-section {
+      padding: 80px 64px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .intro-section .body-text p:first-child::first-letter {
+      font-family: var(--display);
+      font-size: 64px;
+      float: left;
+      line-height: 0.8;
+      padding-right: 12px;
+      padding-top: 8px;
+      color: var(--gold);
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { background: #080c14; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .cover { min-height: 100vh; }
+      .access-form button { background: var(--gold) !important; }
+    }
+
+    @page {
+      margin: 0;
+      size: letter;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .cover, .section-page, .access-section, .risk-footer, .intro-section { padding: 48px 28px; }
+      .participants { grid-template-columns: 1fr; }
+      .em-bar::after { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ COVER -->
+<div class="cover">
+  <div class="cover-logo">
+    <div class="cover-logo-mark">SB</div>
+    <div class="cover-logo-text">Signal <span>Boss</span></div>
+  </div>
+
+  <div class="cover-eyebrow">Signal Boss Intelligence Report</div>
+
+  <h1 class="cover-title">
+    The Signal<br>
+    <span class="highlight">90%</span> of Traders<br>Ignore
+  </h1>
+
+  <p class="cover-subtitle">
+    <strong>How institutions really view the market</strong> —
+    and why we built a futures system around it.
+  </p>
+
+  <div class="cover-meta">signalboss.net &nbsp;·&nbsp; 2026</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════ INTRO -->
+<div class="intro-section">
+  <div class="body-text">
+    <p>Most traders are reading the market backwards.</p>
+
+    <p>Charts show you what already happened. Even a 1-minute bar is history. RSI, MACD, moving averages — every one of them is a derivative of price, telling you where it's been, not where it's going.</p>
+
+    <p>Here's what they're missing: We live in a derivatives-driven world. Futures and options are where institutions hedge real exposure — trillions in equities, commodities, bonds — and where speculators take the other side of that bet.</p>
+
+    <p>There are only two real participants moving price: the <strong>hedger</strong> and the <strong>speculator</strong>. When their positions fall out of balance, a move is coming. Every time. It's largely a function of the big players saying <em>"you have to pay me more for that risk"</em> — increased volatility is increased risk. Full stop.</p>
+
+    <p>Options are derivatives of those derivatives. And the options market is where that imbalance gets priced. When a hedger needs protection, they trade options combinations. <strong>This is why derivatives were created in the first place</strong> — to insure that unexpected, asymmetrical moves don't crush them on a future transaction. Hence the term: <em>futures</em>.</p>
+
+    <p>That demand for protection, coupled with speculator interest, reprices volatility. The expected move changes. Before the chart moves a single tick — the signal is already there. We're already on it.</p>
+
+    <p>Volume confirms it. But volume alone is incomplete and usually late to signal. The direction of that volume, weighted against price over time, tells you where the imbalance is being resolved. That's <strong>VWAP</strong>. That's the anchor institutions trade around, even when they'd never admit it.</p>
+
+    <p>Signal Boss reads that imbalance before the chart catches up. Entry, stop, target — delivered the moment conditions align.</p>
+  </div>
+
+  <div class="pull-quote">
+    <p>That's the signal 90% of traders ignore.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════ SECTION 1 -->
+<div class="section-page">
+  <div class="section-number">Section 01</div>
+  <h2 class="section-title">The Two Participants</h2>
+
+  <div class="body-text">
+    <p>Every price move in the futures market comes down to two forces.</p>
+  </div>
+
+  <div class="participants">
+    <div class="participant-card hedger">
+      <div class="participant-label">Participant 01</div>
+      <div class="participant-title">The Hedger</div>
+      <div class="participant-desc">Protecting real exposure. A pension fund holding $4 billion in equities doesn't want to sell during a volatility spike. They buy protection in the derivatives market. They're not guessing — they're paying to reduce risk on a move they believe is coming.</div>
+    </div>
+    <div class="participant-card speculator">
+      <div class="participant-label">Participant 02</div>
+      <div class="participant-title">The Speculator</div>
+      <div class="participant-desc">Takes the other side. No underlying position. They're there for the move — betting that the hedger's fear is overdone, or that the hedger isn't scared enough. Their willingness to take risk is what makes the market function.</div>
+    </div>
+  </div>
+
+  <div class="body-text">
+    <p>When these two forces are in balance, price drifts. When they fall out of balance — when hedgers suddenly need more protection than speculators are willing to sell — price moves. Hard. Fast. And usually before any chart pattern gives you a signal.</p>
+
+    <p>That imbalance has a price. It's called <strong>volatility</strong>. And it changes before the candle does.</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Real Example</div>
+    <p>April 2026. Tariff announcements hit overnight. Institutional desks holding equity index exposure don't wait for a chart pattern — they immediately buy put protection on ES and NQ futures. That demand reprices implied volatility upward <strong>before the open</strong>. The expected move widens. The signal is live. The chart hasn't moved yet.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════ SECTION 2 -->
+<div class="section-page">
+  <div class="section-number">Section 02</div>
+  <h2 class="section-title">The Expected Move</h2>
+
+  <div class="body-text">
+    <p>Every morning, before markets open, the options market publishes something most futures traders have never looked at: the <strong>expected move</strong>.</p>
+
+    <p>It's not an opinion. It's not a forecast. It's the market's priced-in range for the session — derived from the cost of options protection at that moment. If institutions are paying up for hedges, the expected move widens. If they're calm, it contracts.</p>
+  </div>
+
+  <div class="pull-quote">
+    <p>"Based on everything we know right now — here is the range we expect price to trade within today."<br>
+    <span style="font-size:14px; color: var(--dim); font-style: normal;">— What the options market says, every morning, to anyone willing to look.</span></p>
+  </div>
+
+  <div class="em-visual">
+    <div style="margin-bottom: 32px;">
+      <div class="em-range">
+        <div class="em-level high">Upper Boundary</div>
+        <div class="em-bar"></div>
+        <div class="em-level low">Lower Boundary</div>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: space-around; gap: 24px;">
+      <div>
+        <div class="em-price" style="color: var(--red);">+1.8%</div>
+        <div class="em-label">Implied upside today</div>
+      </div>
+      <div style="border-left: 1px solid var(--border); padding-left: 24px;">
+        <div class="em-price" style="color: var(--green);">−1.8%</div>
+        <div class="em-label">Implied downside today</div>
+      </div>
+    </div>
+    <div class="em-caption">The options market prices this in before 9:30 AM. Most futures traders never check it.</div>
+  </div>
+
+  <div class="body-text">
+    <p>When price approaches the boundary of that range, something significant happens. Hedgers who bought protection at that level are now in the money. Speculators who sold it are getting squeezed. The imbalance resolves — in the direction of least resistance.</p>
+
+    <p>That boundary isn't on your chart. It doesn't show up on RSI. Most futures traders walk right past it every single day.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════ SECTION 3 -->
+<div class="section-page">
+  <div class="section-number">Section 03</div>
+  <h2 class="section-title">VWAP: Where the Money Settles</h2>
+
+  <div class="body-text">
+    <p>Volume tells you <em>how much</em> traded. Price tells you <em>where</em> it traded. Neither alone tells you anything useful about institutional intent.</p>
+
+    <p><strong>VWAP — Volume Weighted Average Price</strong> — tells you where the majority of capital transacted over a given period. It's the single benchmark every institutional desk uses to measure execution quality. A buy above VWAP is expensive. A sell below it is a concession.</p>
+
+    <p>Large players aren't ignoring this. They're evaluated against it.</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Why It Matters</div>
+    <p>When price is above VWAP, institutions that need to sell are under pressure. When price is below, buyers have the upper hand. When price approaches VWAP with momentum from either direction — it's not retail traders driving it. <strong>It's the resolution of institutional imbalance.</strong></p>
+  </div>
+
+  <div class="body-text">
+    <p>Combined with the expected move, VWAP gives you something no lagging indicator can: <strong>context</strong>. Not where price was. Where the weight of money says it should be — right now.</p>
+
+    <p>That's where Signal Boss looks. Not at the candle. At the pressure behind it.</p>
+  </div>
+
+  <div class="pull-quote">
+    <p>Charts show you what happened. Expected move + VWAP tell you what's happening — before the chart catches up.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════ SECTION 4 -->
+<div class="section-page">
+  <div class="section-number">Section 04</div>
+  <h2 class="section-title">What the Signal Looks Like</h2>
+
+  <div class="body-text">
+    <p>No chart required. No interpretation. No second-guessing.</p>
+
+    <p>When conditions align — expected move boundary, volume-weighted price context, momentum confirmation — Signal Boss delivers one card to your phone. This is what subscribers received on NQ this morning:</p>
+  </div>
+
+  <div class="signal-card">
+    <div class="signal-card-header">🔴 SIGNAL BOSS</div>
+    <div class="signal-card-sub">NQ / MNQ &nbsp;·&nbsp; SHORT &nbsp;·&nbsp; Apr 8, 2026 &nbsp;9:05 AM ET</div>
+
+    <div class="signal-card-row">
+      <span class="signal-card-label">🔵 Entry</span>
+      <span class="signal-card-value blue">25,155.50</span>
+    </div>
+    <div class="signal-card-row">
+      <span class="signal-card-label">🔴 Stop</span>
+      <span class="signal-card-value red">25,169.50</span>
+    </div>
+    <div class="signal-card-row">
+      <span class="signal-card-label">🟢 Target</span>
+      <span class="signal-card-value green">25,113.50</span>
+    </div>
+    <div class="signal-card-row">
+      <span class="signal-card-label">Close</span>
+      <span class="signal-card-value" style="color: var(--muted);">End of hour at market</span>
+    </div>
+
+    <hr class="signal-card-divider" />
+
+    <div class="signal-card-risk">
+      <strong>Risk per contract</strong><br>
+      NQ: $280 &nbsp;|&nbsp; MNQ: $28
+    </div>
+    <div class="signal-card-risk" style="margin-top: 6px;">
+      <strong>1st Target</strong><br>
+      NQ: $840 &nbsp;|&nbsp; MNQ: $84
+    </div>
+
+    <div class="signal-result">
+      <div class="result-win">✅ WIN &nbsp;+$855</div>
+      <div style="font-size: 12px; color: var(--dim); margin-top: 4px; font-family: var(--mono);">Trade closed within the hour</div>
+    </div>
+  </div>
+
+  <div class="body-text">
+    <p>Entry. Stop. Target. Micro sizing included so every trader knows their exact dollar risk regardless of account size.</p>
+
+    <p>Your job is execution — open your platform, place the order. It takes under 60 seconds. The signal did the analysis. You decide whether to take it.</p>
+
+    <p>That's the edge — not just the signal itself, but the discipline the signal creates. No debating. No overriding. No staring at a chart trying to convince yourself of something that isn't there.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════ ACCESS -->
+<div class="access-section">
+  <div class="access-eyebrow">Get Early Access</div>
+  <h2 class="access-title">We're Building the Track Record in Public</h2>
+  <p class="access-sub">
+    Signal Boss is in live testing. Signals post directly to a private Telegram channel — entry, stop, and target on every alert, across ES, NQ, YM, RTY, and more. No subscription required right now.
+  </p>
+
+  <form
+    class="access-form"
+    action="https://formspree.io/f/mbdpegbe"
+    method="POST"
+  >
+    <input
+      type="email"
+      name="email"
+      placeholder="your@email.com"
+      required
+    />
+    <input type="hidden" name="_subject" value="Signal Boss — New Lead Magnet Signup" />
+    <input type="hidden" name="_next" value="https://signalboss.net" />
+    <button type="submit">Send Me Access</button>
+  </form>
+
+  <p class="access-note">No spam. Unsubscribe anytime. We'll send access details to your inbox.</p>
+
+  <div class="access-divider">
+    <span>or join directly on Telegram</span>
+  </div>
+
+  <a href="https://t.me/+fJOuVrCRctc0MWEx" class="tg-btn" target="_blank" rel="noopener">
+    <svg class="tg-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.012 9.487c-.148.658-.537.818-1.088.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 14.697l-2.95-.924c-.642-.2-.655-.642.134-.953l11.527-4.443c.535-.194 1.003.13.37.87z"/>
+    </svg>
+    Join Signal Boss Alerts on Telegram
+  </a>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════ RISK -->
+<div class="risk-footer">
+  <p><strong style="color: var(--muted);">Risk Disclosure:</strong> Futures trading involves substantial risk of loss and is not appropriate for all investors. Past performance is not necessarily indicative of future results. Signal Boss provides trade signals for educational and informational purposes only and does not constitute financial advice or a solicitation to buy or sell any financial instrument. The results shown in this document reflect historical performance and do not guarantee future outcomes. You could lose all or more than your initial investment. Only risk capital you can afford to lose. Before trading futures, carefully consider your financial situation, risk tolerance, and trading objectives. Signal Boss LLC is not a registered investment advisor, broker-dealer, or commodity trading advisor.</p>
+</div>
+
+</body>
+</html>
