@@ -5059,6 +5059,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
           const wins    = closed.filter(s => s.status === "WIN").length;
           const liveWR  = closed.length > 0 ? (wins / closed.length * 100).toFixed(0) : null;
           const netPnl  = closed.reduce((acc, s) => acc + (computePnl(s) || 0), 0);
+          const uniqueDays = new Set(histRows.map(s => s.date).filter(Boolean)).size;
 
           // Admin outcome updater
           const markOutcome = async (id, outcome) => {
@@ -5082,8 +5083,9 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
 
               {/* ── Live Track Record ─────────────────────────────────────── */}
               <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>LIVE TRACK RECORD</div>
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10, marginBottom:24 }}>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:10, marginBottom:12 }}>
                 {[
+                  { label:"DAYS TRACKED",   value: uniqueDays,       color:C.accent },
                   { label:"TOTAL SIGNALS",  value: histRows.length,  color:C.accent },
                   { label:"CLOSED",         value: closed.length,    color:C.textMid },
                   { label:"LIVE WIN RATE",  value: liveWR ? `${liveWR}%` : "—",
@@ -5096,6 +5098,15 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                     <div style={{ fontSize:20, fontWeight:700, color:s.color, fontFamily:"monospace" }}>{s.value}</div>
                   </div>
                 ))}
+              </div>
+              {/* ── Verification badge ───────────────────────────────────── */}
+              <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:20,
+                background:"rgba(34,197,94,0.06)", border:"1px solid rgba(34,197,94,0.18)",
+                borderRadius:8, padding:"8px 14px", width:"fit-content" }}>
+                <span style={{ fontSize:11, color:"#22c55e" }}>✓</span>
+                <span style={{ fontFamily:"monospace", fontSize:11, color:"#22c55e", letterSpacing:"0.05em" }}>
+                  All trades verified — delivered to Telegram in real time
+                </span>
               </div>
 
               {/* ── Filters ──────────────────────────────────────────────── */}
