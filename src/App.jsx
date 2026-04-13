@@ -4864,7 +4864,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   }, []);
 
   const fetchHistory = () =>
-    fetch(`/history.json?t=${Date.now()}`)
+    fetch(`${API_URL}/history?t=${Date.now()}`)
       .then(r => r.json())
       .then(data => {
         if (Array.isArray(data)) setHistory(data);
