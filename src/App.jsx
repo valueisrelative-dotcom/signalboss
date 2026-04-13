@@ -5160,6 +5160,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                         <span style={{ display:"flex", alignItems:"center", gap:6 }}>
                           <span style={{ padding:"2px 8px", borderRadius:4, fontSize:10, fontFamily:"monospace", fontWeight:700,
                             background:tm.bg, color:tm.color, whiteSpace:"nowrap" }}>{tm.label}</span>
+                          {s.exit_type && <span style={{ padding:"2px 7px", borderRadius:4, fontSize:9, fontFamily:"monospace", fontWeight:700, background: s.exit_type==="EOH" ? "#f59e0b22" : "#38bdf822", color: s.exit_type==="EOH" ? "#f59e0b" : "#38bdf8", whiteSpace:"nowrap" }}>{s.exit_type==="EOH" ? "EOH" : "3R"}</span>}
                           {s.triggerDetail && isOrb(s) && <span style={{ fontSize:10, color:C.textDim, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{(s.triggerDetail||"").replace(/Volatility Aligned (ORB|Breakout Trade[s]?) ?·? ?/gi,"").replace(/ ?· ?VWAP \+ 1D confirmed/gi,"")}</span>}
                         </span>
                         <span style={{ fontFamily:"monospace", fontWeight:700, fontSize:12 }}>{s.instrument}</span>
