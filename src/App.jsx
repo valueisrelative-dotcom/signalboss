@@ -624,7 +624,6 @@ const SIGNALS_URL     = 'https://gist.githubusercontent.com/valueisrelative-dotc
 const BACKTEST_URL    = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/backtest.json';
 const CYCLE_STATE_URL = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/cycle_state.json';
 const CHART_DATA_URL  = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/chart_data.json';
-const HISTORY_URL     = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/history.json';
 
 const TICKER_ITEMS = [
   { sym: "ES",  price: "5,247.25",  chg: "+8.50",   up: true  },
