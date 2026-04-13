@@ -4794,7 +4794,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   const [filterDir, setFilterDir] = useState("ALL");
   const [filterStr, setFilterStr] = useState("ALL");
   const ALL_INSTS = ['ES','NQ','YM','CL','GC','RTY','ZN','6E'];
-  const INST_FILTER_V = 2; // increment when ALL_INSTS changes to reset stale caches
+  const INST_FILTER_V = 3; // increment when ALL_INSTS changes to reset stale caches
   const [filterInst, setFilterInst] = useState(() => {
     try {
       const raw = JSON.parse(localStorage.getItem("sb_inst_filter"));
