@@ -5100,11 +5100,11 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                 ))}
               </div>
               {/* ── Verification badge ───────────────────────────────────── */}
-              <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:20,
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:20,
                 background:"rgba(34,197,94,0.06)", border:"1px solid rgba(34,197,94,0.18)",
-                borderRadius:8, padding:"8px 14px", width:"fit-content" }}>
-                <span style={{ fontSize:11, color:"#22c55e" }}>✓</span>
-                <span style={{ fontFamily:"monospace", fontSize:11, color:"#22c55e", letterSpacing:"0.05em" }}>
+                borderRadius:8, padding:"12px 20px", width:"fit-content" }}>
+                <span style={{ fontSize:18, color:"#22c55e", fontWeight:700 }}>✓</span>
+                <span style={{ fontFamily:"monospace", fontSize:15, color:"#22c55e", letterSpacing:"0.04em", fontWeight:600 }}>
                   All trades verified — delivered to Telegram in real time
                 </span>
               </div>
