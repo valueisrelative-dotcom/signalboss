@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Signal Boss — Señales de futuros en tiempo real. Entrada. Stop. Objetivo. Listo." />
+  <title>Signal Boss — Sigue la Señal. Toma la Operación.</title>
+
+  <!-- Open Graph / Twitter Card -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://signalboss.net/landing_es.html" />
+  <meta property="og:title"       content="Signal Boss — $10,022 en 3 Días. Todas las Operaciones. Resultados Reales." />
+  <meta property="og:description" content="8 Abr: +$2,365 (5/6 · 83%). 9 Abr: +$1,285 (4/7 · 57%). 10 Abr: +$6,372 (35/56). Entrada. Stop. Objetivo. Listo. 3 días gratis." />
+  <meta property="og:image"       content="https://signalboss.net/og_2day.png" />
+  <meta name="twitter:card"       content="summary_large_image" />
+  <meta name="twitter:title"      content="Signal Boss — $10,022 en 3 Días. Todas las Operaciones. Resultados Reales." />
+  <meta name="twitter:description"content="8 Abr: +$2,365 (5/6 · 83%). 9 Abr: +$1,285 (4/7 · 57%). 10 Abr: +$6,372 (35/56). 3 días gratis." />
+  <meta name="twitter:image"      content="https://signalboss.net/og_2day.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=IBM+Plex+Mono:wght@400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset & Tokens ─────────────────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-deep:     #050810;
+      --bg-base:     #080c14;
+      --bg-card:     #0d1424;
+      --bg-card-alt: #101828;
+      --border:      #1a2540;
+      --border-lit:  #243656;
+      --text-primary: #f2f6fa;
+      --text-muted:   #9ab0c8;
+      --text-dim:     #6a82a0;
+      --gold:         #c9a84c;
+      --gold-light:   #e6c76a;
+      --gold-dim:     #7a6228;
+      --green:        #22c55e;
+      --green-dim:    #166534;
+      --red:          #ef4444;
+      --red-dim:      #7f1d1d;
+      --radius-sm:    6px;
+      --radius-md:    12px;
+      --radius-lg:    18px;
+      --font-ui:      'DM Sans', sans-serif;
+      --font-mono:    'IBM Plex Mono', monospace;
+      --font-display: 'Bebas Neue', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      font-size: 18px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Nav ────────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(5, 8, 16, 0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--gold) 0%, #8a6c2a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #050810;
+      letter-spacing: -0.5px;
+      font-family: var(--font-ui);
+    }
+
+    .logo-text {
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 17px;
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
+    }
+
+    .logo-text span { color: var(--gold); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text-primary); }
+
+    .nav-cta {
+      background: var(--gold);
+      color: #050810 !important;
+      padding: 8px 18px;
+      border-radius: var(--radius-sm);
+      font-weight: 600 !important;
+      font-size: 13px !important;
+      transition: background 0.2s, transform 0.15s !important;
+    }
+
+    .nav-cta:hover {
+      background: var(--gold-light) !important;
+      transform: translateY(-1px);
+    }
+
+    /* ── Hero ───────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 100px 24px 80px;
+      text-align: center;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 600px;
+      background: radial-gradient(ellipse at center, rgba(201, 168, 76, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      border-radius: 999px;
+      padding: 6px 16px;
+      margin-bottom: 32px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--green);
+      letter-spacing: 0.04em;
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-size: clamp(52px, 8vw, 88px);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    .hero-headline .stat { color: var(--gold); }
+    .hero-headline .stat-green { color: var(--green); }
+
+    .hero-subline {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 42px);
+      color: var(--text-muted);
+      letter-spacing: 0.03em;
+      margin-bottom: 28px;
+      line-height: 1.1;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto 44px;
+      line-height: 1.65;
+    }
+
+    .hero-sub strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 52px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gold);
+      color: #050810;
+      text-decoration: none;
+      padding: 16px 32px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.1px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 24px rgba(201, 168, 76, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(201, 168, 76, 0.4);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text-primary);
+      text-decoration: none;
+      padding: 16px 28px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 15px;
+      border: 1px solid var(--border-lit);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--gold-dim);
+      color: var(--gold-light);
+      transform: translateY(-2px);
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .hero-meta-item svg {
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    /* ── Results Ticker ─────────────────────────────────────── */
+    .ticker-wrap {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .ticker-inner {
+      display: flex;
+      align-items: stretch;
+    }
+
+    .ticker-label {
+      flex-shrink: 0;
+      background: var(--gold);
+      color: #050810;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .ticker-scroll {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      padding: 13px 28px;
+      overflow: hidden;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      flex-wrap: wrap;
+    }
+
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+
+    .ticker-symbol { color: var(--text-muted); font-weight: 600; }
+    .ticker-pnl { font-weight: 600; }
+    .ticker-pnl.win { color: var(--green); }
+    .ticker-pnl.loss { color: var(--red); }
+    .ticker-time { color: var(--text-dim); font-size: 11px; }
+
+    /* ── Section Scaffold ───────────────────────────────────── */
+    .section { padding: 88px 24px; }
+
+    .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 56px);
+      line-height: 1.0;
+      color: var(--text-primary);
+      letter-spacing: 0.02em;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 560px;
+      line-height: 1.65;
+    }
+
+    /* ── Proof / Results Table ──────────────────────────────── */
+    .proof-section {
+      background: var(--bg-base);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .proof-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 60px;
+      align-items: start;
+    }
+
+    .proof-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin-top: 36px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 22px 20px;
+    }
+
+    .stat-card:first-child { border-radius: var(--radius-md) 0 0 0; }
+    .stat-card:nth-child(2) { border-radius: 0 var(--radius-md) 0 0; }
+    .stat-card:nth-child(3) { border-radius: 0 0 0 var(--radius-md); }
+    .stat-card:nth-child(4) { border-radius: 0 0 var(--radius-md) 0; }
+
+    .stat-val {
+      font-family: var(--font-mono);
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-val.green { color: var(--green); }
+
+    .stat-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .results-table-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .table-head {
+      background: rgba(201, 168, 76, 0.06);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .table-head-title {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+    }
+
+    .table-head-date {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    th {
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th:last-child { text-align: right; }
+
+    td {
+      padding: 13px 20px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      border-bottom: 1px solid rgba(26, 37, 64, 0.5);
+    }
+
+    td:last-child { text-align: right; }
+    tr:last-child td { border-bottom: none; }
+
+    .symbol-cell { font-weight: 600; color: var(--text-primary); }
+    .price-cell { color: var(--text-muted); }
+    .duration-cell { color: var(--text-dim); }
+
+    .result-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .result-badge.win {
+      background: rgba(34, 197, 94, 0.12);
+      color: var(--green);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+    }
+
+    .result-badge.loss {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--red);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .pnl-pos { color: var(--green); font-weight: 600; }
+    .pnl-neg { color: var(--red); font-weight: 600; }
+
+    .table-footer {
+      background: rgba(34, 197, 94, 0.04);
+      border-top: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .table-footer-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .table-footer-total {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--green);
+    }
+
+    /* ── Audience Grid ──────────────────────────────────────── */
+    .audience-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 48px;
+    }
+
+    .audience-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 36px 28px;
+      position: relative;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+
+    .audience-card:first-child { border-radius: var(--radius-md) 0 0 var(--radius-md); }
+    .audience-card:last-child { border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+
+    .audience-card:hover {
+      border-color: var(--gold-dim);
+      transform: translateY(-3px);
+      z-index: 1;
+    }
+
+    .audience-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .audience-icon { font-size: 28px; margin-bottom: 16px; display: block; }
+
+    .audience-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      color: var(--text-primary);
+      line-height: 1.0;
+      letter-spacing: 0.02em;
+      margin-bottom: 14px;
+    }
+
+    .audience-body {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 20px;
+    }
+
+    .audience-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .audience-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .audience-list li::before {
+      content: '→';
+      color: var(--gold);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── How It Works ───────────────────────────────────────── */
+    .how-section {
+      background: var(--bg-base);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-top: 52px;
+      position: relative;
+    }
+
+    .how-grid::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: calc(16.666% + 20px);
+      right: calc(16.666% + 20px);
+      height: 1px;
+      background: linear-gradient(90deg, var(--gold-dim) 0%, var(--gold-dim) 100%);
+      opacity: 0.4;
+    }
+
+    .how-step {
+      padding: 0 28px;
+      text-align: center;
+      position: relative;
+    }
+
+    .how-step + .how-step { border-left: 1px solid var(--border); }
+
+    .how-num {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 2px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gold);
+      position: relative;
+      z-index: 1;
+    }
+
+    .how-title {
+      font-family: var(--font-display);
+      font-size: 26px;
+      color: var(--text-primary);
+      letter-spacing: 0.03em;
+      margin-bottom: 12px;
+    }
+
+    .how-body { font-size: 15px; color: var(--text-muted); line-height: 1.65; }
+
+    .how-accent {
+      margin-top: 52px;
+      text-align: center;
+      padding: 28px 32px;
+      background: rgba(201, 168, 76, 0.05);
+      border: 1px solid var(--gold-dim);
+      border-radius: var(--radius-md);
+    }
+
+    .how-accent p {
+      font-size: 18px;
+      color: var(--text-primary);
+      font-style: italic;
+      line-height: 1.55;
+    }
+
+    .how-accent p span {
+      color: var(--gold);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    /* ── Trust Signals ──────────────────────────────────────── */
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 48px;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px 22px;
+    }
+
+    .trust-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      background: rgba(201, 168, 76, 0.1);
+      border: 1px solid var(--gold-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 18px;
+    }
+
+    .trust-title {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .trust-body { font-size: 14px; color: var(--text-muted); line-height: 1.55; }
+
+    /* ── Pricing ────────────────────────────────────────────── */
+    .pricing-section {
+      background: var(--bg-base);
+      border-top: 1px solid var(--border);
+    }
+
+    .pricing-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      margin-top: 48px;
+      max-width: 960px;
+    }
+
+    .price-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 44px 32px 36px;
+      position: relative;
+      transition: border-color 0.25s;
+    }
+
+    .price-card.featured {
+      border-color: var(--gold);
+      background: linear-gradient(160deg, #0d1424 0%, #141c30 100%);
+    }
+
+    .price-badge {
+      position: absolute;
+      top: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold);
+      color: #050810;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      padding: 7px 20px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .price-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .price-amount {
+      display: flex;
+      align-items: flex-start;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+
+    .price-dollar {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: 8px;
+    }
+
+    .price-number {
+      font-family: var(--font-display);
+      font-size: 64px;
+      color: var(--text-primary);
+      line-height: 1;
+      letter-spacing: 0.01em;
+    }
+
+    .price-period {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+    }
+
+    .price-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .price-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .price-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .check {
+      color: var(--green);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .price-note {
+      font-size: 12px;
+      color: var(--text-dim);
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    /* ── Final CTA ──────────────────────────────────────────── */
+    .final-cta {
+      padding: 100px 24px;
+      text-align: center;
+      background: var(--bg-deep);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 400px;
+      background: radial-gradient(ellipse at center, rgba(201, 168, 76, 0.06) 0%, transparent 70%);
+    }
+
+    .final-cta-inner {
+      position: relative;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .final-cta-headline {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 7vw, 80px);
+      line-height: 0.95;
+      color: var(--text-primary);
+      letter-spacing: 0.02em;
+      margin-bottom: 28px;
+    }
+
+    .final-cta-headline .gold { color: var(--gold); }
+
+    .final-cta-sub {
+      font-size: 18px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 44px;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── Disclosure ─────────────────────────────────────────── */
+    .disclosure {
+      background: var(--bg-base);
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+    }
+
+    .disclosure-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .disclosure-title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .disclosure-text {
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.65;
+    }
+
+    /* ── Footer ─────────────────────────────────────────────── */
+    footer {
+      background: var(--bg-base);
+      border-top: 1px solid var(--border);
+      padding: 28px 24px;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text-muted); }
+
+    .footer-juanita {
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 8px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+
+    .footer-juanita span { color: var(--gold); }
+
+    /* ── Modal ──────────────────────────────────────────────── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 8, 16, 0.88);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-card {
+      background: #0d1424;
+      border: 1px solid var(--border-lit);
+      border-radius: var(--radius-lg);
+      padding: 44px 40px;
+      max-width: 420px;
+      width: 100%;
+      position: relative;
+      text-align: center;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 22px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-close:hover { color: var(--text-primary); }
+
+    .modal-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 36px;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      letter-spacing: 0.02em;
+    }
+
+    .modal-sub {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .modal-form { display: flex; flex-direction: column; gap: 12px; }
+
+    .modal-form input[type="email"] {
+      padding: 14px 18px;
+      background: #080c14;
+      border: 1px solid #243656;
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+      text-align: center;
+    }
+
+    .modal-form input[type="email"]:focus { border-color: var(--gold); }
+    .modal-form input[type="email"]::placeholder { color: #6a82a0; }
+
+    .modal-form button {
+      padding: 15px;
+      background: var(--gold);
+      color: #050810;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-ui);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .modal-form button:hover { background: var(--gold-light); }
+
+    .modal-note {
+      font-size: 12px;
+      color: #6a82a0;
+      margin-top: 10px;
+    }
+
+    .modal-success { display: none; }
+    .modal-success.show { display: block; }
+    .modal-form-wrap.hide { display: none; }
+
+    .success-icon { font-size: 40px; margin-bottom: 16px; }
+
+    .success-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+
+    .success-sub {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .success-btns { display: flex; flex-direction: column; gap: 10px; }
+
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--gold);
+      color: #050810;
+      text-decoration: none;
+      padding: 14px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      transition: background 0.2s;
+    }
+
+    .btn-download:hover { background: var(--gold-light); }
+
+    .btn-telegram {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #229ed9;
+      color: #fff;
+      text-decoration: none;
+      padding: 14px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      transition: background 0.2s;
+    }
+
+    .btn-telegram:hover { background: #1a8bbf; }
+
+    .text-center { text-align: center; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Email Modal ── -->
+  <div class="modal-overlay" id="accessModal">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal()">×</button>
+
+      <div class="modal-form-wrap" id="modalFormWrap">
+        <div class="modal-eyebrow">Acceso Gratuito por 3 Días</div>
+        <div class="modal-title">Compruébalo Tú Mismo</div>
+        <p class="modal-sub">Ingresa tu correo y te enviaremos 3 días de señales en vivo más <em>La Señal que el 90% de los Traders Ignoran</em> — gratis, sin tarjeta de crédito.</p>
+        <form class="modal-form" onsubmit="handleSubmit(event)">
+          <input type="email" id="modalEmail" placeholder="tucorreo@email.com" required />
+          <button type="submit">Obtener Mis 3 Días Gratis →</button>
+        </form>
+        <p class="modal-note">Sin spam. Cancela cuando quieras.</p>
+      </div>
+
+      <div class="modal-success" id="modalSuccess">
+        <div class="success-icon">✅</div>
+        <div class="success-title">¡Ya Estás Dentro!</div>
+        <p class="success-sub">Revisa tu correo — tu reporte está en camino. Únete al canal de señales en Telegram para empezar a recibirlas ahora.</p>
+        <div class="success-btns">
+          <a href="https://www.signalboss.net/market_driver.html" target="_blank" class="btn-download">
+            ↓ Leer el Reporte Ahora
+          </a>
+          <a href="https://t.me/+fJOuVrCRctc0MWEx" target="_blank" class="btn-telegram">
+            Únete a Signal Boss Alerts en Telegram
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="logo">
+        <div class="logo-mark">SB</div>
+        <span class="logo-text">Signal<span>Boss</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#results">Resultados</a></li>
+        <li><a href="#how">Cómo Funciona</a></li>
+        <li><a href="#pricing">Precios</a></li>
+        <li><a href="#" class="nav-cta" onclick="openModal(); return false;">3 Días Gratis</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── Hero ──────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        RESULTADOS EN VIVO · 8 DE ABRIL, 2026
+      </div>
+
+      <h1 class="hero-headline">
+        <span class="stat">5 DE 6</span> SEÑALES ACERTARON.<br>
+        <span class="stat-green">+$2,365</span> EN UNA SESIÓN.<br>
+        TODO EN SOLO<br>
+        <span class="stat">23 MINUTOS.</span>
+      </h1>
+
+      <p class="hero-subline">No necesitas otro curso.<br>Necesitas señales que funcionen.</p>
+
+      <p class="hero-sub" style="font-size: 22px; max-width: 640px; line-height: 1.6;">
+        Cada alerta incluye una <strong>entrada, un stop loss y un take profit.</strong>
+        Sin gráficas que interpretar. Sin adivinar. Una alerta, una operación, listo.
+      </p>
+
+      <div class="hero-ctas">
+        <a href="#" class="btn-primary" onclick="openModal(); return false;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 5" stroke="#050810" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          3 Días Gratis + el Reporte
+        </a>
+        <a href="#results" class="btn-secondary">
+          Ver Resultados ↓
+        </a>
+      </div>
+
+      <div class="hero-meta">
+        <span class="hero-meta-item">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM7 4v3.25l2 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Señales entregadas en tiempo real
+        </span>
+        <span class="hero-meta-item">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11z" stroke="currentColor" stroke-width="1.5"/><path d="M5 7l1.5 1.5L9 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Stop loss en cada operación
+        </span>
+        <span class="hero-meta-item">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 12l2.5-5 2.5 2.5L9.5 5 12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Cancela cuando quieras, sin contratos
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Ticker ─────────────────────────────────────────────── -->
+  <div class="ticker-wrap">
+    <div class="ticker-inner">
+      <div class="ticker-label">8 ABR · HOY</div>
+      <div class="ticker-scroll">
+        <span class="ticker-item">
+          <span class="ticker-symbol">ES</span>
+          <span class="ticker-pnl win">+$512.50</span>
+          <span class="ticker-time">CORTO</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-symbol">NQ</span>
+          <span class="ticker-pnl win">+$855</span>
+          <span class="ticker-time">CORTO</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-symbol">CL</span>
+          <span class="ticker-pnl win">+$1,090</span>
+          <span class="ticker-time">LARGO</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-symbol">RTY</span>
+          <span class="ticker-pnl win">+$440</span>
+          <span class="ticker-time">CORTO</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-symbol">ZN</span>
+          <span class="ticker-pnl win">+$62.50</span>
+          <span class="ticker-time">CORTO</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-symbol">YM</span>
+          <span class="ticker-pnl loss">−$120</span>
+          <span class="ticker-time">Parado</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Proof / Results Section ───────────────────────────── -->
+  <section class="section proof-section" id="results">
+    <div class="section-inner">
+      <div class="proof-layout">
+        <div>
+          <p class="section-label">Sesión de Hoy — 8 de Abril, 2026</p>
+          <h2 class="section-title">83% de Aciertos.<br>23 Minutos de Trabajo.</h2>
+          <p class="section-sub">
+            Cinco ganadores en ES, NQ, RTY y YM. Un stop. Tiempo promedio en el mercado: 18 minutos por operación.
+            P&amp;L total de la sesión: <strong>+$2,365</strong>.
+          </p>
+
+          <div class="proof-stats">
+            <div class="stat-card">
+              <div class="stat-val">5/6</div>
+              <div class="stat-desc">Señales que alcanzaron<br>el objetivo hoy</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val green">$2,365</div>
+              <div class="stat-desc">P&amp;L neto<br>esta sesión</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val">83%</div>
+              <div class="stat-desc">Tasa de acierto<br>esta sesión</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val">23m</div>
+              <div class="stat-desc">Tiempo total<br>en el mercado</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="results-table-wrap">
+            <div class="table-head">
+              <span class="table-head-title">REGISTRO DE OPERACIONES</span>
+              <span class="table-head-date">8 ABR, 2026 · SESIÓN MATUTINA</span>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Símbolo</th>
+                  <th>Entrada</th>
+                  <th>Salida</th>
+                  <th>Duración</th>
+                  <th>P&amp;L / Contrato</th>
+                  <th>Resultado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="symbol-cell">ES</td>
+                  <td class="price-cell">6,821.25</td>
+                  <td class="price-cell">6,824.75</td>
+                  <td class="duration-cell">5:00</td>
+                  <td class="pnl-neg">−$175.00</td>
+                  <td><span class="result-badge loss">✗ STOP</span></td>
+                </tr>
+                <tr>
+                  <td class="symbol-cell">ES</td>
+                  <td class="price-cell">6,821.25</td>
+                  <td class="price-cell">6,810.75</td>
+                  <td class="duration-cell">22:00</td>
+                  <td class="pnl-pos">+$525.00</td>
+                  <td><span class="result-badge win">✓ OBJETIVO</span></td>
+                </tr>
+                <tr>
+                  <td class="symbol-cell">NQ</td>
+                  <td class="price-cell">25,155.50</td>
+                  <td class="price-cell">25,113.50</td>
+                  <td class="duration-cell">18:00</td>
+                  <td class="pnl-pos">+$855.00</td>
+                  <td><span class="result-badge win">✓ OBJETIVO</span></td>
+                </tr>
+                <tr>
+                  <td class="symbol-cell">RTY</td>
+                  <td class="price-cell">2,641.60</td>
+                  <td class="price-cell">2,632.80</td>
+                  <td class="duration-cell">15:00</td>
+                  <td class="pnl-pos">+$440.00</td>
+                  <td><span class="result-badge win">✓ OBJETIVO</span></td>
+                </tr>
+                <tr>
+                  <td class="symbol-cell">YM</td>
+                  <td class="price-cell">48,109</td>
+                  <td class="price-cell">48,181</td>
+                  <td class="duration-cell">12:00</td>
+                  <td class="pnl-pos">+$360.00</td>
+                  <td><span class="result-badge win">✓ OBJETIVO</span></td>
+                </tr>
+                <tr>
+                  <td class="symbol-cell">YM</td>
+                  <td class="price-cell">47,941</td>
+                  <td class="price-cell">47,869</td>
+                  <td class="duration-cell">20:00</td>
+                  <td class="pnl-pos">+$360.00</td>
+                  <td><span class="result-badge win">✓ OBJETIVO</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="table-footer">
+              <span class="table-footer-label">Total neto de sesión · 1 contrato por instrumento · 8 Abr, 2026</span>
+              <span class="table-footer-total">+$2,365</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Audience Section ───────────────────────────────────── -->
+  <section class="section" id="who">
+    <div class="section-inner">
+      <p class="section-label text-center">Para Quién Es Esto</p>
+      <h2 class="section-title text-center">Diseñado para quienes están listos para tomar el control.</h2>
+
+      <div class="audience-grid">
+        <!-- Independencia Financiera -->
+        <div class="audience-card">
+          <div class="audience-tag">Independencia Financiera</div>
+          <span class="audience-icon">💪</span>
+          <h3 class="audience-title">Toma el Control.</h3>
+          <p class="audience-body">
+            No necesitas un título en finanzas. No necesitas ser experta de Wall Street.
+            Necesitas un sistema que te diga cuándo entrar y cuándo salir. Eso es todo.
+            Signal Boss hace el análisis. Tú ejecutas.
+          </p>
+          <ul class="audience-list">
+            <li>Aprende mientras generas ingresos reales</li>
+            <li>Las señales llegan a tu teléfono vía Telegram</li>
+            <li>No se requiere experiencia previa en trading</li>
+          </ul>
+        </div>
+
+        <!-- Trabajo de Tiempo Completo -->
+        <div class="audience-card">
+          <div class="audience-tag">Traders con Vida Propia</div>
+          <span class="audience-icon">⚡</span>
+          <h3 class="audience-title">Opera en Minutos,<br>No en Horas.</h3>
+          <p class="audience-body">
+            Tienes trabajo, familia, vida. No tienes tiempo para pasar horas frente a una pantalla esperando una señal.
+            Las 6 operaciones de hoy promediaron 18 minutos cada una — tiempo total en el mercado: 23 minutos.
+          </p>
+          <ul class="audience-list">
+            <li>5 de 6 señales alcanzaron el objetivo hoy</li>
+            <li>Opera antes del trabajo, en el almuerzo, cuando llegue la alerta</li>
+            <li>Sin escritorio requerido — solo tu teléfono</li>
+          </ul>
+        </div>
+
+        <!-- Traders Frustrados -->
+        <div class="audience-card">
+          <div class="audience-tag">Cansados de Adivinar</div>
+          <span class="audience-icon">🎯</span>
+          <h3 class="audience-title">Deja de Adivinar.<br>Empieza a Seguir.</h3>
+          <p class="audience-body">
+            Las gráficas te muestran dónde estuvo el precio. No te dicen qué va a pasar.
+            Signal Boss lee las condiciones de volatilidad — lo que el mercado está implicando ahora mismo.
+          </p>
+          <ul class="audience-list">
+            <li>No necesitas entender el motor — solo sigue la señal</li>
+            <li>Entrada, stop y objetivo detallados en cada alerta</li>
+            <li>Si el setup no está, no hay señal — esperas y estás protegido</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How It Works ──────────────────────────────────────── -->
+  <section class="section how-section" id="how">
+    <div class="section-inner">
+      <p class="section-label text-center">Cómo Funciona</p>
+      <h2 class="section-title text-center">Tres pasos.<br>Sin complicaciones.</h2>
+
+      <div class="how-grid">
+        <div class="how-step">
+          <div class="how-num">01</div>
+          <h3 class="how-title">Recibe la Alerta</h3>
+          <p class="how-body">
+            Signal Boss detecta una inflexión de volatilidad — la condición exacta donde estadísticamente ocurren movimientos grandes y sostenidos. Recibes un mensaje en Telegram con el instrumento, dirección, precio de entrada, stop y objetivo.
+          </p>
+        </div>
+        <div class="how-step">
+          <div class="how-num">02</div>
+          <h3 class="how-title">Coloca la Operación</h3>
+          <p class="how-body">
+            Abre tu plataforma de broker. Entra al precio de la alerta. Configura tu stop y objetivo. Eso es todo. La señal hizo el análisis. Tu trabajo es la ejecución — y toma menos de 60 segundos.
+          </p>
+        </div>
+        <div class="how-step">
+          <div class="how-num">03</div>
+          <h3 class="how-title">Cobra tu Ganancia</h3>
+          <p class="how-body">
+            Aléjate. Los cinco ganadores de hoy promediaron 18 minutos desde entrada hasta objetivo. No necesitas gestionar la operación, ajustar stops ni mirar gráficas. La señal ya te dijo a dónde va.
+          </p>
+        </div>
+      </div>
+
+      <div class="how-accent">
+        <p>
+          <span>Una alerta. Un clic.</span> Ese es tu día de trading completo.<br>
+          No necesitas 8 horas frente a gráficas. Necesitas la señal correcta en el momento correcto.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Trust Signals ─────────────────────────────────────── -->
+  <section class="section" id="trust">
+    <div class="section-inner">
+      <p class="section-label text-center">Por Qué los Traders Confían en Esto</p>
+      <h2 class="section-title text-center">El sistema no adivina.<br>El sistema calcula.</h2>
+
+      <div class="trust-grid">
+        <div class="trust-item">
+          <div class="trust-icon">📡</div>
+          <div>
+            <div class="trust-title">Señales por Telegram — En Tiempo Real</div>
+            <div class="trust-body">Las alertas llegan directamente a tu teléfono en el momento en que la señal dispara. Sin iniciar sesión, sin dashboard que revisar. La recibes antes de que ocurra el movimiento.</div>
+          </div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">🛡️</div>
+          <div>
+            <div class="trust-title">Entrada. Stop. Objetivo. Siempre.</div>
+            <div class="trust-body">Cada alerta de Signal Boss es un plan de operación completo. Nunca recibes solo una dirección y tienes que "descubrir el riesgo". El stop está definido antes de entrar.</div>
+          </div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">📊</div>
+          <div>
+            <div class="trust-title">Basado en Volatilidad, No en Gráficas</div>
+            <div class="trust-body">El motor lee la volatilidad implícita de futuros cotizados en bolsa — donde las instituciones muestran su posicionamiento primero. Esto es lo que usan los escritorios de trading profesionales.</div>
+          </div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">🔒</div>
+          <div>
+            <div class="trust-title">Sin Señal = Sin Operación</div>
+            <div class="trust-body">Si las condiciones no son correctas, la señal no dispara. No se te empuja a operar todos los días. La disciplina está integrada en el sistema — protegiendo tu cuenta en días malos.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Pricing ───────────────────────────────────────────── -->
+  <section class="section pricing-section" id="pricing">
+    <div class="section-inner">
+      <p class="section-label text-center">Precios</p>
+      <h2 class="section-title text-center">Cancela Cuando Quieras. Sin Contratos.</h2>
+      <p class="section-sub" style="margin: 0 auto 0; text-align: center;">
+        Sin contratos. Sin compromisos anuales. Si Signal Boss no funciona para ti, no te quedas — así de simple.
+      </p>
+
+      <div class="pricing-layout" style="margin: 48px auto 0;">
+        <!-- Trial -->
+        <div class="price-card featured">
+          <div class="price-badge" style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); color: #22c55e;">ACCESO TEMPRANO</div>
+          <div class="price-label">Acceso Gratuito 3 Días</div>
+          <div class="price-amount">
+            <span class="price-number" style="font-size: 52px;">Gratis</span>
+          </div>
+          <div class="price-period">3 días · sin tarjeta de crédito</div>
+          <div class="price-desc">
+            Obtén 3 días GRATIS de señales en vivo ahora mientras conoces el sistema.
+          </div>
+          <ul class="price-features">
+            <li><span class="check">✓</span> Señales de futuros en vivo (ES, NQ, YM, RTY y más)</li>
+            <li><span class="check">✓</span> Entrada, stop y take profit en cada alerta</li>
+            <li><span class="check">✓</span> Entrega en tiempo real por Telegram</li>
+            <li><span class="check">✓</span> <em>La Señal que el 90% de los Traders Ignoran</em> — reporte gratis</li>
+            <li><span class="check">✓</span> Sin tarjeta de crédito. Sin compromiso.</li>
+          </ul>
+          <a href="#" class="btn-primary" style="width: 100%; justify-content: center;" onclick="openModal(); return false;">
+            Obtener 3 Días Gratis →
+          </a>
+          <p class="price-note">Cupos limitados · Sin spam · Cancela cuando quieras</p>
+        </div>
+
+        <!-- Starter -->
+        <div class="price-card">
+          <div class="price-label">Starter</div>
+          <div class="price-amount">
+            <span class="price-dollar">$</span>
+            <span class="price-number">149</span>
+          </div>
+          <div class="price-period">por mes</div>
+          <div class="price-desc">
+            Acceso completo a señales en vivo en todos los mercados de futuros. Todo lo que necesitas para operar con ventaja.
+          </div>
+          <ul class="price-features">
+            <li><span class="check">✓</span> Todo lo del acceso de 3 días</li>
+            <li><span class="check">✓</span> Señales en vivo — ES, NQ, CL, RTY, ZN</li>
+            <li><span class="check">✓</span> Entrada, stop y take profit en cada alerta</li>
+            <li><span class="check">✓</span> Entrega en tiempo real por Telegram</li>
+            <li><span class="check">✓</span> Cancela cuando quieras — sin costo</li>
+          </ul>
+          <a href="#" class="btn-secondary" style="width: 100%; justify-content: center;" onclick="openModal(); return false;">
+            Prueba 3 Días Gratis Primero →
+          </a>
+          <p class="price-note">Empieza gratis · Planes de pago próximamente</p>
+        </div>
+
+        <!-- Pro -->
+        <div class="price-card">
+          <div class="price-label">Pro</div>
+          <div class="price-amount">
+            <span class="price-dollar">$</span>
+            <span class="price-number">249</span>
+          </div>
+          <div class="price-period">por mes</div>
+          <div class="price-desc">
+            Para traders serios que quieren acceso prioritario y herramientas avanzadas para maximizar cada sesión.
+          </div>
+          <ul class="price-features">
+            <li><span class="check">✓</span> Todo lo de Starter</li>
+            <li><span class="check">✓</span> Acceso prioritario al canal de Telegram</li>
+            <li><span class="check">✓</span> Calculadora de Riesgo para Prop Traders</li>
+            <li><span class="check">✓</span> Acceso anticipado a nuevos conjuntos de señales</li>
+            <li><span class="check">✓</span> Cancela cuando quieras — sin costo</li>
+          </ul>
+          <a href="#" class="btn-secondary" style="width: 100%; justify-content: center;" onclick="openModal(); return false;">
+            Prueba 3 Días Gratis Primero →
+          </a>
+          <p class="price-note">Empieza gratis · Planes de pago próximamente</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Final CTA ─────────────────────────────────────────── -->
+  <section class="final-cta">
+    <div class="final-cta-inner">
+      <h2 class="final-cta-headline">El mercado generó<br><span class="gold">señales hoy.</span><br>¿Las tomaste?</h2>
+      <p class="final-cta-sub">
+        Obtén 3 días de señales en vivo por Telegram — entrada, stop y objetivo en cada alerta. Compruébalo tú mismo.
+        Tu único trabajo es colocar la operación.
+      </p>
+      <div class="hero-ctas">
+        <a href="#" class="btn-primary" onclick="openModal(); return false;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 5" stroke="#050810" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Obtener 3 Días Gratis →
+        </a>
+        <a href="#results" class="btn-secondary">
+          Ver Resultados →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Risk Disclosure ───────────────────────────────────── -->
+  <div class="disclosure">
+    <div class="disclosure-inner">
+      <div class="disclosure-title">Divulgación de Riesgos</div>
+      <p class="disclosure-text">
+        El trading de futuros implica un riesgo sustancial de pérdida y no es apropiado para todos los inversores. El rendimiento pasado no es necesariamente indicativo de resultados futuros. Signal Boss proporciona señales de operación únicamente con fines educativos e informativos y no constituye asesoramiento financiero ni una solicitud de compra o venta de ningún instrumento financiero. Los resultados mostrados en esta página reflejan el rendimiento histórico y no garantizan resultados futuros. Podrías perder todo o más de tu inversión inicial. Solo arriesga capital que puedas permitirte perder. Antes de operar futuros, considera cuidadosamente tu situación financiera, tolerancia al riesgo y objetivos de trading. Signal Boss LLC no es un asesor de inversiones registrado, corredor-agente ni asesor de trading de materias primas.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── Footer ────────────────────────────────────────────── -->
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-copy">© 2026 Signal Boss LLC · signalboss.net</span>
+      <ul class="footer-links">
+        <li><a href="#">Términos de Servicio</a></li>
+        <li><a href="#">Política de Privacidad</a></li>
+        <li><a href="#">Contacto</a></li>
+        <li><a href="#">Divulgación de Riesgos</a></li>
+      </ul>
+      <div class="footer-juanita">
+        Presentado por <span>Juanita Mejia</span> — Vicepresidenta para América Latina, Signal Boss
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function openModal() {
+      document.getElementById('accessModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('accessModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('accessModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('modalEmail').value;
+      const btn = e.target.querySelector('button');
+      btn.textContent = 'Enviando...';
+      btn.disabled = true;
+
+      try {
+        await fetch('https://formspree.io/f/mbdpegbe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            email,
+            ref: 'jmm',
+            lang: 'es',
+            _subject: 'Signal Boss — Nueva Suscripción (América Latina · jmm)'
+          }),
+        });
+      } catch(err) {}
+
+      document.getElementById('modalFormWrap').classList.add('hide');
+      document.getElementById('modalSuccess').classList.add('show');
+    }
+  </script>
+</body>
+</html>
