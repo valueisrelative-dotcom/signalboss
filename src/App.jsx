@@ -51,7 +51,7 @@ const T = {
     heroSub: "Millions of people are done waiting for a real opportunity — one that isn't a scheme, a course, or another indicator that goes nowhere. Signal Boss delivers institutional-grade trade signals with a clear entry, a defined stop, and a profit target. Built on the same frameworks professional trading desks use, but for those of us who don't have a Wall Street address.\n\nYou don't need another idea. You just need something that actually works.\n\nFollow the signal. Take the trade.",
     engineTagline: "Institutional-Grade Signal Engine · Live",
     chooserTitle1: "Your kitchen table is a fine place", chooserTitle2: "", chooserTitle3: "to change your financial picture.",
-    chooserSub: "People today are looking for a real opportunity — not some expensive course or indicator, no 'get rich' promise that goes nowhere.\n\nIf you can commit to following a proven trade blueprint, the Signal Boss Platform will help you create additional monthly income - or grow your funds for that vacation, day care expenses or supplement your retirement income.\n\nWe provide more than just signals; we provide a clear path forward. Our Members learn a simple, straightforward way to profit by using a professional, institutional-grade investment method that works in all economic conditions.\n\nTake your time to explore the site and feel free to Contact us to learn more.",
+    chooserSub: "People today are looking for a real opportunity — not some expensive course or indicator, or a 'get rich' promise that goes nowhere.\n\nIf you can commit to following a proven trade blueprint, the Signal Boss Platform will help you create additional monthly income - or grow your funds for that vacation, day care expenses or supplement your retirement income.\n\nWe provide more than just signals; we provide a clear path forward. Our Members learn a simple, straightforward way to profit by using a professional, institutional-grade investment method that works in all economic conditions.\n\nTake your time to explore the site and feel free to Contact us to learn more.",
     whyBuilt: "WHY WE BUILT SIGNAL BOSS",
     whyP1: "Imagine joining a gym where 98% of members get weaker and fatter following the same workout plan. You'd find a different gym.",
     whyP2: "Chart-based trading is that workout plan. And the numbers prove it — financial regulators in Europe tracked retail traders across thousands of accounts and found that between 74% and 89% lose money consistently. In some markets, that number approaches 98%.",
@@ -624,6 +624,7 @@ const SIGNALS_URL     = 'https://gist.githubusercontent.com/valueisrelative-dotc
 const BACKTEST_URL    = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/backtest.json';
 const CYCLE_STATE_URL = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/cycle_state.json';
 const CHART_DATA_URL  = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/chart_data.json';
+const HISTORY_URL     = 'https://gist.githubusercontent.com/valueisrelative-dotcom/336ce62861f67be83d1fdbd34576f4c5/raw/history.json';
 
 const TICKER_ITEMS = [
   { sym: "ES",  price: "5,247.25",  chg: "+8.50",   up: true  },
@@ -894,9 +895,9 @@ function ChartFullPage({ onClose }) {
                   {bars.length > 0 ? `${bars[0].t} → ${bars[bars.length-1].t}` : "waiting…"}
                 </span>
               </div>
-              <OscillatorPanel bars={bars} pnlKey="a" resetKey="r1" label="PULSE — 1-Day"  height={120} />
-              <OscillatorPanel bars={bars} pnlKey="b" resetKey="r3" label="WAVE — 3-Day"   height={120} />
-              <OscillatorPanel bars={bars} pnlKey="c" resetKey="r6" label="FORCE — 6-Day"  height={120} />
+              <OscillatorPanel bars={bars} pnlKey="a" resetKey="r1" label="Volatility 1"  height={120} />
+              <OscillatorPanel bars={bars} pnlKey="b" resetKey="r3" label="Volatility 2"   height={120} />
+              <OscillatorPanel bars={bars} pnlKey="c" resetKey="r6" label="Volatility 3"  height={120} />
             </div>
           );
         })}
@@ -943,9 +944,9 @@ function AdminCharts() {
           {bars.length} bars · {bars.length > 0 ? `${bars[0].t} → ${bars[bars.length-1].t}` : "—"}
         </div>
 
-        <OscillatorPanel bars={bars} pnlKey="a" resetKey="r1" label="PULSE — 1-Day"  height={160} />
-        <OscillatorPanel bars={bars} pnlKey="b" resetKey="r3" label="WAVE — 3-Day"   height={160} />
-        <OscillatorPanel bars={bars} pnlKey="c" resetKey="r6" label="FORCE — 6-Day"  height={160} />
+        <OscillatorPanel bars={bars} pnlKey="a" resetKey="r1" label="Volatility 1"  height={160} />
+        <OscillatorPanel bars={bars} pnlKey="b" resetKey="r3" label="Volatility 2"   height={160} />
+        <OscillatorPanel bars={bars} pnlKey="c" resetKey="r6" label="Volatility 3"  height={160} />
       </div>
     </>
   );
@@ -4861,7 +4862,10 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   const fetchHistory = () =>
     fetch(`${API_URL}/history?t=${Date.now()}`)
       .then(r => r.json())
-      .then(data => { if (Array.isArray(data)) setHistory(data); })
+      .then(data => {
+        if (Array.isArray(data)) setHistory(data);
+        else if (data.history && Array.isArray(data.history)) setHistory(data.history);
+      })
       .catch(() => {});
 
   useEffect(() => {
