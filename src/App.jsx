@@ -4794,7 +4794,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   const [filterDir, setFilterDir] = useState("ALL");
   const [filterStr, setFilterStr] = useState("ALL");
   const ALL_INSTS = ['ES','NQ','YM','CL','GC','RTY','ZN','6E'];
-  const INST_FILTER_V = 2; // increment when ALL_INSTS changes to reset stale caches
+  const INST_FILTER_V = 3; // increment when ALL_INSTS changes to reset stale caches
   const [filterInst, setFilterInst] = useState(() => {
     try {
       const raw = JSON.parse(localStorage.getItem("sb_inst_filter"));
@@ -4864,7 +4864,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   }, []);
 
   const fetchHistory = () =>
-    fetch(`/history.json?t=${Date.now()}`)
+    fetch(`${API_URL}/history?t=${Date.now()}`)
       .then(r => r.json())
       .then(data => {
         if (Array.isArray(data)) setHistory(data);
@@ -5059,6 +5059,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
           const wins    = closed.filter(s => s.status === "WIN").length;
           const liveWR  = closed.length > 0 ? (wins / closed.length * 100).toFixed(0) : null;
           const netPnl  = closed.reduce((acc, s) => acc + (computePnl(s) || 0), 0);
+          const uniqueDays = new Set(histRows.map(s => s.date).filter(Boolean)).size;
 
           // Admin outcome updater
           const markOutcome = async (id, outcome) => {
@@ -5082,8 +5083,9 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
 
               {/* ── Live Track Record ─────────────────────────────────────── */}
               <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>LIVE TRACK RECORD</div>
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10, marginBottom:24 }}>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:10, marginBottom:12 }}>
                 {[
+                  { label:"DAYS TRACKED",   value: uniqueDays,       color:C.accent },
                   { label:"TOTAL SIGNALS",  value: histRows.length,  color:C.accent },
                   { label:"CLOSED",         value: closed.length,    color:C.textMid },
                   { label:"LIVE WIN RATE",  value: liveWR ? `${liveWR}%` : "—",
@@ -5096,6 +5098,15 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                     <div style={{ fontSize:20, fontWeight:700, color:s.color, fontFamily:"monospace" }}>{s.value}</div>
                   </div>
                 ))}
+              </div>
+              {/* ── Verification badge ───────────────────────────────────── */}
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:20,
+                background:"rgba(34,197,94,0.06)", border:"1px solid rgba(34,197,94,0.18)",
+                borderRadius:8, padding:"12px 20px", width:"fit-content" }}>
+                <span style={{ fontSize:18, color:"#22c55e", fontWeight:700 }}>✓</span>
+                <span style={{ fontFamily:"monospace", fontSize:15, color:"#22c55e", letterSpacing:"0.04em", fontWeight:600 }}>
+                  All trades verified — delivered to Telegram in real time
+                </span>
               </div>
 
               {/* ── Filters ──────────────────────────────────────────────── */}
@@ -5160,6 +5171,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                         <span style={{ display:"flex", alignItems:"center", gap:6 }}>
                           <span style={{ padding:"2px 8px", borderRadius:4, fontSize:10, fontFamily:"monospace", fontWeight:700,
                             background:tm.bg, color:tm.color, whiteSpace:"nowrap" }}>{tm.label}</span>
+                          {s.exit_type && <span style={{ padding:"2px 7px", borderRadius:4, fontSize:9, fontFamily:"monospace", fontWeight:700, background: s.exit_type==="EOH" ? "#f59e0b22" : "#38bdf822", color: s.exit_type==="EOH" ? "#f59e0b" : "#38bdf8", whiteSpace:"nowrap" }}>{s.exit_type==="EOH" ? "EOH" : "3R"}</span>}
                           {s.triggerDetail && isOrb(s) && <span style={{ fontSize:10, color:C.textDim, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{(s.triggerDetail||"").replace(/Volatility Aligned (ORB|Breakout Trade[s]?) ?·? ?/gi,"").replace(/ ?· ?VWAP \+ 1D confirmed/gi,"")}</span>}
                         </span>
                         <span style={{ fontFamily:"monospace", fontWeight:700, fontSize:12 }}>{s.instrument}</span>
