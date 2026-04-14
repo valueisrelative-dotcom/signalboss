@@ -5045,7 +5045,24 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
             return null;
           };
 
+          // Convert VPS time string to display format (handles GMT dates ≤ 2026-04-10)
+          const fmtTime = (s) => {
+            const raw = s.time;
+            if (!raw || typeof raw !== "string") return "—";
+            // If already formatted with AM/PM, return as-is
+            if (/[ap]m/i.test(raw)) return raw;
+            const match = raw.match(/^(\d{1,2}):(\d{2})$/);
+            if (!match) return raw;
+            let h = parseInt(match[1], 10), m = match[2];
+            // Dates on or before Apr 10 were stored in GMT; convert to ET (−4h)
+            if (s.date && s.date <= "2026-04-10") h = (h - 4 + 24) % 24;
+            const ampm = h < 12 ? "AM" : "PM";
+            const h12  = h === 0 ? 12 : h > 12 ? h - 12 : h;
+            return `${h12}:${m} ${ampm} ET`;
+          };
+
           const histRows = history
+            .filter(s => s.status === "WIN" || s.status === "LOSS")  // exclude ACTIVE/pending
             .filter(s => filterInst.has(s.instrument))
             .filter(s => {
               if (histTypeFilter === "ALL")            return true;
@@ -5167,7 +5184,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                           padding:"10px 16px", borderBottom: i < histRows.length-1 ? `1px solid ${C.border}` : "none",
                           fontSize:13, alignItems:"center", background: i%2===0?"transparent":C.bg+"44" }}>
                         <span style={{ fontFamily:"monospace", fontSize:11, color:C.textMid }}>{s.date ? s.date.slice(5) : "—"}</span>
-                        <span style={{ fontFamily:"monospace", fontSize:11, color:C.textDim }}>{s.time || "—"}</span>
+                        <span style={{ fontFamily:"monospace", fontSize:11, color:C.textDim }}>{fmtTime(s)}</span>
                         <span style={{ display:"flex", alignItems:"center", gap:6 }}>
                           <span style={{ padding:"2px 8px", borderRadius:4, fontSize:10, fontFamily:"monospace", fontWeight:700,
                             background:tm.bg, color:tm.color, whiteSpace:"nowrap" }}>{tm.label}</span>
