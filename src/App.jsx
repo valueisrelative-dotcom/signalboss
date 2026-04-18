@@ -1115,21 +1115,72 @@ function PropCalc({ t }) {
   return (
     <div style={{ padding:24, maxWidth:800 }}>
       <h2 style={{ fontSize:18, fontWeight:600, marginBottom:4 }}>{t.propTitle}</h2>
-      <p style={{ color:C.textMid, fontSize:13, marginBottom:24 }}>{t.propSub}</p>
-      <div style={{ background:C.propDim, border:`1px solid ${C.prop}33`, borderRadius:10, padding:"12px 16px", marginBottom:24, display:"flex", gap:10, alignItems:"flex-start" }}>
-        <span style={{ fontSize:16 }}>⚠️</span>
-        <div>
-          <div style={{ fontSize:13, fontWeight:600, color:C.prop, marginBottom:4 }}>Account Reality Check</div>
-          <div style={{ fontSize:12, color:C.textMid, lineHeight:1.6 }}>
-            A "$50,000 funded account" gives you roughly <strong style={{ color:C.text }}>$2,500–$3,000 before you breach drawdown and lose the account.</strong> That's your true trading capital — whether it's a prop challenge or your own money. Size accordingly.
+      <p style={{ color:C.textMid, fontSize:13, marginBottom:20 }}>{t.propSub}</p>
+
+      {/* ── TOP BANNER — Profit Goal · Current P&L · Needed to Pass ── */}
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:0, background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, marginBottom:12, overflow:"hidden" }}>
+        {/* Profit Goal */}
+        <div style={{ padding:"14px 20px", borderRight:`1px solid ${C.border}` }}>
+          <div style={{ fontSize:10, color:C.textMid, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:8 }}>Profit Goal</div>
+          <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+            <span style={{ fontSize:12, color:C.textMid }}>$</span>
+            <input
+              type="text" inputMode="decimal"
+              value={profitGoal}
+              onChange={e => setProfitGoal(e.target.value)}
+              style={{ background:"transparent", border:"none", outline:"none", color:C.text, fontSize:18, fontWeight:700, fontFamily:"monospace", width:"100%" }}
+            />
+          </div>
+        </div>
+        {/* Current P&L */}
+        <div style={{ padding:"14px 20px", borderRight:`1px solid ${C.border}` }}>
+          <div style={{ fontSize:10, color:C.textMid, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:8 }}>Current P&amp;L</div>
+          <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+            <span style={{ fontSize:12, color:C.textMid }}>$</span>
+            <input
+              type="text" inputMode="decimal"
+              value={currentBal}
+              onChange={e => setCurrentBal(e.target.value)}
+              style={{ background:"transparent", border:"none", outline:"none", color:C.text, fontSize:18, fontWeight:700, fontFamily:"monospace", width:"100%" }}
+            />
+          </div>
+        </div>
+        {/* Needed to Pass */}
+        <div style={{ padding:"14px 20px" }}>
+          <div style={{ fontSize:10, color:C.textMid, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:8 }}>Needed to Pass</div>
+          <div style={{ fontSize:22, fontWeight:800, fontFamily:"monospace", color: neededToPass > 0 ? C.warn : C.long }}>
+            {`$${neededToPass.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:2 })}`}
           </div>
         </div>
       </div>
+
+      {/* ── SECOND ROW — Daily Avg · Est. Days · Avg Trades Per Day ── */}
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:0, background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, marginBottom:20, overflow:"hidden" }}>
+        <div style={{ padding:"12px 20px", borderRight:`1px solid ${C.border}` }}>
+          <div style={{ fontSize:10, color:C.textMid, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:6 }}>Daily Avg (EV × trades/day)</div>
+          <div style={{ fontSize:16, fontWeight:700, fontFamily:"monospace", color:C.accent }}>${dailyAvg.toFixed(2)}</div>
+        </div>
+        <div style={{ padding:"12px 20px", borderRight:`1px solid ${C.border}` }}>
+          <div style={{ fontSize:10, color:C.textMid, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:6 }}>Est. Days to Goal</div>
+          <div style={{ fontSize:16, fontWeight:700, fontFamily:"monospace", color:C.long }}>{daysToPass}</div>
+        </div>
+        <div style={{ padding:"12px 20px" }}>
+          <div style={{ fontSize:10, color:C.textMid, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:6 }}>Avg Trades Per Day</div>
+          <input
+            type="text" inputMode="numeric"
+            value={dailyTrades}
+            onChange={e => setDailyTrades(e.target.value)}
+            style={{ background:"transparent", border:"none", outline:"none", color:C.text, fontSize:16, fontWeight:700, fontFamily:"monospace", width:"100%" }}
+          />
+        </div>
+      </div>
+
+      {/* ── MAIN 2-COLUMN GRID ── */}
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20 }}>
 
-        {/* Row 1 Left — Trade Parameters */}
+        {/* LEFT — Inputs */}
         <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
-          <div style={{ fontWeight:600, fontSize:14, marginBottom:16 }}>Trade Parameters</div>
+          <div style={{ fontWeight:700, fontSize:13, letterSpacing:"0.08em", textTransform:"uppercase", color:C.textMid, marginBottom:16 }}>Inputs</div>
           <CalcRow label="Contracts / Qty"     value={qty}         onChange={setQty}         mode="numeric" />
           <CalcRow label="Tick / Pip Value"    value={tickVal}     onChange={setTickVal}     prefix="$"
             hint="ES=12.50 · NQ=5.00 · CL=10.00 · GC=10.00 · /6E=6.25" />
@@ -1137,79 +1188,98 @@ function PropCalc({ t }) {
           <CalcRow label="Profit Target"       value={tgtTicks}    onChange={setTgt}         suffix="ticks" mode="numeric" />
           <CalcRow label="Commissions / trade" value={commissions} onChange={setComm}        prefix="$"
             hint="Round-trip commissions per contract" />
-        </div>
-
-        {/* Row 1 Right — Funded Trader Goal Tracker */}
-        <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
-          <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>Funded Trader Goal Tracker</div>
-          <CalcRow label="Profit Goal"    value={profitGoal}  onChange={setProfitGoal} prefix="$" />
-          <CalcRow label="Current P&L"   value={currentBal}  onChange={setCurrentBal} prefix="$" />
-          <CalcResultRow label="Needed to Pass"               value={`$${neededToPass.toFixed(2)}`}  color={neededToPass>0?C.warn:C.long} big />
-          <CalcRow label="Avg Trades Per Day" value={dailyTrades} onChange={setDailyTrades} mode="numeric" />
-          <CalcResultRow label="Daily Avg (EV × trades/day)" value={`$${dailyAvg.toFixed(2)}`}       color={C.accent} />
-          <CalcResultRow label="Trades to Goal"              value={tradesNeeded}                     color={C.accent} />
-          <CalcResultRow label="Est. Days to Goal"           value={daysToPass}                       color={C.long} />
-        </div>
-
-        {/* Row 2 Left — Win / Loss Record */}
-        <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
-          <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>Win / Loss Record</div>
-          <CalcRow label="Winning Trades" value={wins}   onChange={setWins}   mode="numeric" />
-          <CalcRow label="Losing Trades"  value={losses} onChange={setLosses} mode="numeric" />
-          <div style={{ display:"flex", justifyContent:"space-between", padding:"8px 0", borderBottom:`1px solid ${C.border}` }}>
-            <span style={{ fontSize:12, color:C.textMid }}># of Trades</span>
-            <span style={{ fontSize:13, fontWeight:600, color:C.text, fontFamily:"monospace" }}>{totalTrades}</span>
-          </div>
-          <div style={{ display:"flex", justifyContent:"space-between", padding:"8px 0", borderBottom:`1px solid ${C.border}` }}>
-            <span style={{ fontSize:12, color:C.textMid }}>Win Rate</span>
-            <span style={{ fontSize:13, fontWeight:700, color:C.accent, fontFamily:"monospace" }}>{winRatePct}%</span>
-          </div>
-        </div>
-
-        {/* Row 2 Right — Account Settings */}
-        <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
-          <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>Account Settings</div>
-          <CalcRow label="Max Drawdown / Loss to Ruin" value={maxDD}      onChange={setMaxDD}      prefix="$"
-            hint="Prop challenge breach limit or total account loss" />
-          <CalcRow label="Daily Loss Limit"            value={dailyLimit} onChange={setDailyLimit} prefix="$" />
-        </div>
-
-        {/* Row 3 Left — Risk Limits */}
-        <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
-          <div style={{ fontWeight:600, fontSize:14, marginBottom:6 }}>⚠ Risk Limits</div>
-          <div style={{ fontSize:12, color:C.textMid, marginBottom:14 }}>Max consecutive losses before hitting limit</div>
-          <CalcResultRow label="Trades until ruin"        value={maxTradesToDD}    color={dangerColor(maxTradesToDD, 3)} big />
-          <CalcResultRow label="Trades until daily limit" value={maxTradesToDaily} color={dangerColor(maxTradesToDaily, 2)} />
-          <div style={{ marginTop:14 }}>
-            <div style={{ fontSize:10, color:C.textMid, marginBottom:6, fontFamily:"monospace" }}>DRAWDOWN BUFFER</div>
-            <div style={{ height:8, background:C.border, borderRadius:4, overflow:"hidden" }}>
-              <div style={{
-                height:"100%", borderRadius:4, transition:"width 0.5s",
-                width:`${Math.min((cb/md)*100,100)}%`,
-                background: cb/md > 0.5 ? C.long : cb/md > 0.25 ? C.warn : C.short,
-              }} />
-            </div>
-            <div style={{ display:"flex", justifyContent:"space-between", fontSize:10, color:C.textDim, marginTop:4, fontFamily:"monospace" }}>
-              <span>$0</span><span>${md.toLocaleString()} limit</span>
+          <div style={{ borderTop:`1px solid ${C.border}`, marginTop:16, paddingTop:16 }}>
+            <CalcRow label="Winning Trades" value={wins}   onChange={setWins}   mode="numeric" />
+            <CalcRow label="Losing Trades"  value={losses} onChange={setLosses} mode="numeric" />
+            <div style={{ display:"flex", justifyContent:"space-between", padding:"8px 0", borderBottom:`1px solid ${C.border}` }}>
+              <span style={{ fontSize:12, color:C.textMid }}># of Trades</span>
+              <span style={{ fontSize:13, fontWeight:600, color:C.text, fontFamily:"monospace" }}>{totalTrades}</span>
             </div>
           </div>
         </div>
 
-        {/* Row 3 Right — Summary */}
+        {/* RIGHT — Results */}
         <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
-          <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>Summary</div>
-          <CalcResultRow label="Loss per trade"     value={`$${lossPerTrade.toFixed(2)}`}   color={C.short} />
-          <CalcResultRow label="Profit per trade"   value={`$${profitPerTrade.toFixed(2)}`} color={C.long} />
-          <CalcResultRow label="Risk : Reward"      value={`${rr.toFixed(2)} : 1`}          color={C.accent} />
-          <CalcResultRow label="Win Rate"           value={`${winRatePct}%`}                color={C.accent} />
+          <div style={{ fontWeight:700, fontSize:13, letterSpacing:"0.08em", textTransform:"uppercase", color:C.textMid, marginBottom:16 }}>Results</div>
+
+          {/* Loss / Profit per trade — large and prominent */}
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:16 }}>
+            <div style={{ background:C.propDim, border:`1px solid ${C.short}33`, borderRadius:8, padding:"12px 14px" }}>
+              <div style={{ fontSize:10, color:C.textMid, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:6 }}>Loss / Trade</div>
+              <div style={{ fontSize:24, fontWeight:800, fontFamily:"monospace", color:C.short }}>${lossPerTrade.toFixed(2)}</div>
+            </div>
+            <div style={{ background:"#061a0e", border:`1px solid ${C.long}33`, borderRadius:8, padding:"12px 14px" }}>
+              <div style={{ fontSize:10, color:C.textMid, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:6 }}>Profit / Trade</div>
+              <div style={{ fontSize:24, fontWeight:800, fontFamily:"monospace", color:C.long }}>${profitPerTrade.toFixed(2)}</div>
+            </div>
+          </div>
+
+          {/* Win Rate + R:R */}
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:16 }}>
+            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:8, padding:"10px 14px" }}>
+              <div style={{ fontSize:10, color:C.textMid, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:4 }}>Win Rate</div>
+              <div style={{ fontSize:20, fontWeight:700, fontFamily:"monospace", color:C.accent }}>{winRatePct}%</div>
+            </div>
+            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:8, padding:"10px 14px" }}>
+              <div style={{ fontSize:10, color:C.textMid, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:4 }}>Risk : Reward</div>
+              <div style={{ fontSize:20, fontWeight:700, fontFamily:"monospace", color:C.accent }}>{rr.toFixed(2)} : 1</div>
+            </div>
+          </div>
+
+          {/* Gross Wins / Losses */}
           <CalcResultRow label="Gross Wins"         value={`$${grossWins.toFixed(2)}`}      color={C.long} />
           <CalcResultRow label="Gross Losses"       value={`-$${grossLosses.toFixed(2)}`}   color={C.short} />
           {totalComm > 0 && <CalcResultRow label="Commissions" value={`-$${totalComm.toFixed(2)}`} color={C.textMid} />}
-          <CalcResultRow label="Net P&L"            value={`$${netPnL.toFixed(2)}`}         color={netPnL>=0?C.long:C.short} big />
-          <CalcResultRow label="Exp. Value / trade" value={`$${expectedVal.toFixed(2)}`}    color={expectedVal>=0?C.long:C.short} />
+
+          {/* Net P&L — hero number */}
+          <div style={{ marginTop:12, padding:"12px 14px", background: netPnL >= 0 ? "#061a0e" : C.propDim, border:`1px solid ${netPnL>=0?C.long:C.short}44`, borderRadius:8 }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+              <span style={{ fontSize:12, color:C.textMid, textTransform:"uppercase", letterSpacing:"0.07em" }}>Net P&amp;L</span>
+              <span style={{ fontSize:26, fontWeight:800, fontFamily:"monospace", color: netPnL>=0?C.long:C.short }}>{netPnL>=0?"+":"-"}${Math.abs(netPnL).toFixed(2)}</span>
+            </div>
+          </div>
+
+          <div style={{ marginTop:8 }}>
+            <CalcResultRow label="Exp. Value / trade" value={`$${expectedVal.toFixed(2)}`} color={expectedVal>=0?C.long:C.short} />
+          </div>
         </div>
 
       </div>
+
+      {/* ── RISK LIMITS — full width ── */}
+      <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22, marginTop:20 }}>
+        <div style={{ display:"flex", alignItems:"baseline", gap:10, marginBottom:4 }}>
+          <span style={{ fontWeight:700, fontSize:13, letterSpacing:"0.08em", textTransform:"uppercase", color:C.textMid }}>⚠ Risk Limits</span>
+          <span style={{ fontSize:11, color:C.textDim }}>Max consecutive losses before hitting limit</span>
+        </div>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:20, marginTop:16 }}>
+          <CalcRow label="Max Drawdown / Loss to Ruin" value={maxDD}      onChange={setMaxDD}      prefix="$"
+            hint="Prop challenge breach limit or total account loss" />
+          <CalcRow label="Daily Loss Limit"            value={dailyLimit} onChange={setDailyLimit} prefix="$" />
+          <div>
+            <div style={{ fontSize:11, color:C.textMid, marginBottom:6 }}>Trades until ruin</div>
+            <div style={{ fontSize:28, fontWeight:800, fontFamily:"monospace", color:dangerColor(maxTradesToDD, 3) }}>{maxTradesToDD}</div>
+          </div>
+          <div>
+            <div style={{ fontSize:11, color:C.textMid, marginBottom:6 }}>Trades until daily limit</div>
+            <div style={{ fontSize:28, fontWeight:800, fontFamily:"monospace", color:dangerColor(maxTradesToDaily, 2) }}>{maxTradesToDaily}</div>
+          </div>
+        </div>
+        <div style={{ marginTop:16 }}>
+          <div style={{ fontSize:10, color:C.textMid, marginBottom:6, fontFamily:"monospace" }}>DRAWDOWN BUFFER</div>
+          <div style={{ height:8, background:C.border, borderRadius:4, overflow:"hidden" }}>
+            <div style={{
+              height:"100%", borderRadius:4, transition:"width 0.5s",
+              width:`${Math.min((cb/md)*100,100)}%`,
+              background: cb/md > 0.5 ? C.long : cb/md > 0.25 ? C.warn : C.short,
+            }} />
+          </div>
+          <div style={{ display:"flex", justifyContent:"space-between", fontSize:10, color:C.textDim, marginTop:4, fontFamily:"monospace" }}>
+            <span>$0</span><span>${md.toLocaleString()} limit</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }
