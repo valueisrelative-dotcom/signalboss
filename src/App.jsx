@@ -1034,32 +1034,32 @@ function SignalCounter({ count }) {
 
 // Defined outside PropCalc so component identity is stable across re-renders
 const CalcRow = ({ label, value, onChange, prefix, suffix, hint, mode = "decimal" }) => (
-  <div style={{ padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
+  <div style={{ padding:"11px 0", borderBottom:`1px solid ${C.border}` }}>
     <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-      <span style={{ fontSize:12, color:C.textMid }}>{label}</span>
+      <span style={{ fontSize:16, color:C.textMid }}>{label}</span>
       <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-        {prefix && <span style={{ fontSize:12, color:C.textDim, fontFamily:"monospace" }}>{prefix}</span>}
+        {prefix && <span style={{ fontSize:16, color:C.textDim, fontFamily:"monospace" }}>{prefix}</span>}
         <input
           type="text"
           inputMode={mode}
           value={value}
           onChange={e => onChange(e.target.value)}
-          style={{ width:90, textAlign:"right", padding:"5px 8px",
+          style={{ width:110, textAlign:"right", padding:"6px 10px",
             background:C.bg, border:`1px solid ${C.border}`, borderRadius:6,
-            color:C.text, fontFamily:"monospace", fontSize:13,
+            color:C.text, fontFamily:"monospace", fontSize:20,
             outline:"none", WebkitAppearance:"none", MozAppearance:"textfield" }}
         />
-        {suffix && <span style={{ fontSize:12, color:C.textDim, fontFamily:"monospace" }}>{suffix}</span>}
+        {suffix && <span style={{ fontSize:15, color:C.textDim, fontFamily:"monospace" }}>{suffix}</span>}
       </div>
     </div>
-    {hint && <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginTop:4 }}>{hint}</div>}
+    {hint && <div style={{ fontSize:13, color:C.textDim, fontFamily:"monospace", marginTop:4 }}>{hint}</div>}
   </div>
 );
 
 const CalcResultRow = ({ label, value, color, big }) => (
   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
-    <span style={{ fontSize:12, color:C.textMid }}>{label}</span>
-    <span style={{ fontSize:big?18:14, fontWeight:big?700:600, color:color||C.text, fontFamily:"monospace" }}>{value}</span>
+    <span style={{ fontSize:14, color:C.textMid }}>{label}</span>
+    <span style={{ fontSize:big?18:15, fontWeight:big?700:600, color:color||C.text, fontFamily:"monospace" }}>{value}</span>
   </div>
 );
 
@@ -1074,6 +1074,7 @@ function PropCalc({ t }) {
   const [commissions, setComm]      = useState("0");
   const [profitGoal, setProfitGoal] = useState("2500");
   const [currentBal, setCurrentBal] = useState("300");
+  const [neededRaw, setNeededRaw]   = useState("");
   const [maxDD, setMaxDD]           = useState("2000");
   const [dailyLimit, setDailyLimit] = useState("1000");
   const [dailyTrades, setDailyTrades] = useState("3");
@@ -1122,8 +1123,8 @@ function PropCalc({ t }) {
         {/* Profit Goal */}
         <div style={{ padding:"14px 20px", borderRight:`1px solid ${C.border}` }}>
           <div style={{ fontSize:10, color:C.textMid, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:8 }}>Profit Goal</div>
-          <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-            <span style={{ fontSize:12, color:C.textMid }}>$</span>
+          <div style={{ display:"flex", alignItems:"center", gap:6, background:C.bg, border:`1px solid ${C.border}`, borderRadius:6, padding:"6px 10px" }}>
+            <span style={{ fontSize:13, color:C.textMid }}>$</span>
             <input
               type="text" inputMode="decimal"
               value={profitGoal}
@@ -1135,8 +1136,8 @@ function PropCalc({ t }) {
         {/* Current P&L */}
         <div style={{ padding:"14px 20px", borderRight:`1px solid ${C.border}` }}>
           <div style={{ fontSize:10, color:C.textMid, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:8 }}>Current P&amp;L</div>
-          <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-            <span style={{ fontSize:12, color:C.textMid }}>$</span>
+          <div style={{ display:"flex", alignItems:"center", gap:6, background:C.bg, border:`1px solid ${C.border}`, borderRadius:6, padding:"6px 10px" }}>
+            <span style={{ fontSize:13, color:C.textMid }}>$</span>
             <input
               type="text" inputMode="decimal"
               value={currentBal}
@@ -1192,8 +1193,8 @@ function PropCalc({ t }) {
             <CalcRow label="Winning Trades" value={wins}   onChange={setWins}   mode="numeric" />
             <CalcRow label="Losing Trades"  value={losses} onChange={setLosses} mode="numeric" />
             <div style={{ display:"flex", justifyContent:"space-between", padding:"8px 0", borderBottom:`1px solid ${C.border}` }}>
-              <span style={{ fontSize:12, color:C.textMid }}># of Trades</span>
-              <span style={{ fontSize:13, fontWeight:600, color:C.text, fontFamily:"monospace" }}>{totalTrades}</span>
+              <span style={{ fontSize:15, color:C.textMid }}># of Trades</span>
+              <span style={{ fontSize:16, fontWeight:600, color:C.text, fontFamily:"monospace" }}>{totalTrades}</span>
             </div>
           </div>
         </div>
@@ -1257,16 +1258,16 @@ function PropCalc({ t }) {
             hint="Prop challenge breach limit or total account loss" />
           <CalcRow label="Daily Loss Limit"            value={dailyLimit} onChange={setDailyLimit} prefix="$" />
           <div>
-            <div style={{ fontSize:11, color:C.textMid, marginBottom:6 }}>Trades until ruin</div>
-            <div style={{ fontSize:28, fontWeight:800, fontFamily:"monospace", color:dangerColor(maxTradesToDD, 3) }}>{maxTradesToDD}</div>
+            <div style={{ fontSize:16, color:C.textMid, marginBottom:8 }}>Trades until ruin</div>
+            <div style={{ fontSize:36, fontWeight:800, fontFamily:"monospace", color:dangerColor(maxTradesToDD, 3) }}>{maxTradesToDD}</div>
           </div>
           <div>
-            <div style={{ fontSize:11, color:C.textMid, marginBottom:6 }}>Trades until daily limit</div>
-            <div style={{ fontSize:28, fontWeight:800, fontFamily:"monospace", color:dangerColor(maxTradesToDaily, 2) }}>{maxTradesToDaily}</div>
+            <div style={{ fontSize:16, color:C.textMid, marginBottom:8 }}>Trades until daily limit</div>
+            <div style={{ fontSize:36, fontWeight:800, fontFamily:"monospace", color:dangerColor(maxTradesToDaily, 2) }}>{maxTradesToDaily}</div>
           </div>
         </div>
         <div style={{ marginTop:16 }}>
-          <div style={{ fontSize:10, color:C.textMid, marginBottom:6, fontFamily:"monospace" }}>DRAWDOWN BUFFER</div>
+          <div style={{ fontSize:14, color:C.textMid, marginBottom:6, fontFamily:"monospace" }}>DRAWDOWN BUFFER</div>
           <div style={{ height:8, background:C.border, borderRadius:4, overflow:"hidden" }}>
             <div style={{
               height:"100%", borderRadius:4, transition:"width 0.5s",
@@ -1274,7 +1275,7 @@ function PropCalc({ t }) {
               background: cb/md > 0.5 ? C.long : cb/md > 0.25 ? C.warn : C.short,
             }} />
           </div>
-          <div style={{ display:"flex", justifyContent:"space-between", fontSize:10, color:C.textDim, marginTop:4, fontFamily:"monospace" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:C.textDim, marginTop:4, fontFamily:"monospace" }}>
             <span>$0</span><span>${md.toLocaleString()} limit</span>
           </div>
         </div>
@@ -5115,17 +5116,15 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
             return null;
           };
 
-          // Convert VPS time string to display format (handles GMT dates ≤ 2026-04-10)
+          // Times are stored in ET by the engine — just format HH:MM → 12h AM/PM
           const fmtTime = (s) => {
             const raw = s.time;
             if (!raw || typeof raw !== "string") return "—";
-            // If already formatted with AM/PM, return as-is
             if (/[ap]m/i.test(raw)) return raw;
             const match = raw.match(/^(\d{1,2}):(\d{2})$/);
             if (!match) return raw;
-            let h = parseInt(match[1], 10), m = match[2];
-            // Dates on or before Apr 10 were stored in GMT; convert to ET (−4h)
-            if (s.date && s.date <= "2026-04-10") h = (h - 4 + 24) % 24;
+            let h = parseInt(match[1], 10);
+            const m = match[2];
             const ampm = h < 12 ? "AM" : "PM";
             const h12  = h === 0 ? 12 : h > 12 ? h - 12 : h;
             return `${h12}:${m} ${ampm} ET`;
