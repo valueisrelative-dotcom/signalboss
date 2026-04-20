@@ -417,8 +417,9 @@ const TICKER_ITEMS = [
   { sym: "ZN",  price: "108.24",    chg: "-0.06",   up: false },
 ];
 
-const GIST_URL  = "https://gist.githubusercontent.com/raw/336ce62861f67be83d1fdbd34576f4c5/signals.json";
-const API_URL   = "https://signalboss.net/api";   // VPS webhook / history endpoint
+const GIST_URL    = "https://gist.githubusercontent.com/raw/336ce62861f67be83d1fdbd34576f4c5/signals.json";
+const HISTORY_URL = "/history.json";              // static file in public/ — always available
+const API_URL     = import.meta.env.VITE_API_URL || (window.location.hostname === "localhost" ? "http://localhost:4242" : "/vps");
 const MICROS    = { ES:"MES", NQ:"MNQ", YM:"MYM", RTY:"M2K", CL:"MCL", GC:"MGC" };
 const ALL_INSTS = ["ES","NQ","YM","CL","GC","RTY","ZN","ZF","ZT"];
 const INST_FILTER_V = 4; // bump when ALL_INSTS changes
@@ -1712,13 +1713,27 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
     return () => clearInterval(iv);
   }, []);
 
-  // History (VPS endpoint)
+  // History — static file (always works) + optional VPS live updates
   const fetchHistory = () =>
-    fetch(`${API_URL}/history?t=${Date.now()}`)
+    fetch(`${HISTORY_URL}?t=${Date.now()}`)
       .then(r => r.json())
       .then(data => {
-        if (Array.isArray(data)) setHistory(data);
-        else if (data.history && Array.isArray(data.history)) setHistory(data.history);
+        const rows = Array.isArray(data) ? data : (data.history || []);
+        if (rows.length > 0) setHistory(rows);
+        // Also try live VPS for any today's records not yet in static file
+        return fetch(`${API_URL}/history?t=${Date.now()}`)
+          .then(r => r.json())
+          .then(live => {
+            const liveRows = Array.isArray(live) ? live : (live.history || []);
+            if (liveRows.length > 0) {
+              setHistory(prev => {
+                const ids = new Set(prev.map(s => s.id));
+                const merged = [...prev, ...liveRows.filter(s => !ids.has(s.id))];
+                return merged.sort((a,b) => (b.date||"").localeCompare(a.date||""));
+              });
+            }
+          })
+          .catch(() => {});
       })
       .catch(() => {});
 
