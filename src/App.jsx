@@ -1672,7 +1672,7 @@ function PositionTracker() {
 }
 
 function Dashboard({ user, onNavigate, t, lang, setLang }) {
-  const isAdmin  = user?.publicMetadata?.role === "admin";
+  const isAdmin  = !!user; // Admin tab visible to any logged-in user
 
   const [signals,      setSignals]      = useState([]);
   const [lastUpdated,  setLastUpdated]  = useState(null);
@@ -2136,23 +2136,47 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
 
         {activeTab==="config" && (
           <div style={{ padding:22, maxWidth:580 }}>
-            <h2 style={{ fontSize:18, fontWeight:600, marginBottom:4 }}>Signal Boss — ORB Engine</h2>
-            <p style={{ color:C.textMid, fontSize:13, marginBottom:22 }}>This engine is fully automated. No user configuration required.</p>
-            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:24 }}>
-              <div style={{ fontSize:11, color:C.textDim, letterSpacing:"0.12em", textTransform:"uppercase", marginBottom:18, fontFamily:"monospace" }}>Methodology</div>
+            <h2 style={{ fontSize:18, fontWeight:600, marginBottom:4 }}>Configuration</h2>
+            <p style={{ color:C.textMid, fontSize:13, marginBottom:24 }}>Engine status and alert delivery settings</p>
+
+            {/* Engine status */}
+            <div style={{ background:C.surface, border:`1px solid ${C.long}33`, borderRadius:12, padding:20, marginBottom:14 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16 }}>
+                <LiveDot color={C.long} size={7} />
+                <span style={{ fontFamily:"monospace", fontSize:13, fontWeight:700, color:C.long, letterSpacing:"0.08em" }}>ENGINE ACTIVE</span>
+                <span style={{ marginLeft:"auto", fontFamily:"monospace", fontSize:11, color:C.textDim }}>Polling every 60s</span>
+              </div>
               {[
-                ["Range Window",  "8:00 – 9:00 AM ET"],
-                ["Signals Active","9:00 AM – 4:00 PM ET"],
-                ["Entry",         "2 ticks inside OR boundary (BUY STOP LIMIT / SELL STOP LIMIT)"],
-                ["Stop",          "14% of opening range width"],
-                ["1st Target",    "3× stop distance (optional exit)"],
-                ["Exit",          "End of hour at market"],
+                ["Session",        "8:00 AM – 4:00 PM ET, Mon–Fri"],
+                ["Instruments",    "ES · NQ · YM · RTY · CL · GC · ZN · ZF · ZT"],
+                ["Signal Windows", "W1: 8–9 AM range  ·  W2: 9–10 AM range"],
+                ["IV Boss Filter", "Active — blocks counter-trend signals"],
               ].map(([label, value]) => (
-                <div key={label} style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
-                  <span style={{ fontSize:12, color:C.textMid, fontFamily:"monospace", minWidth:120 }}>{label}</span>
+                <div key={label} style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", padding:"9px 0", borderBottom:`1px solid ${C.border}` }}>
+                  <span style={{ fontSize:12, color:C.textMid, fontFamily:"monospace", minWidth:130, flexShrink:0 }}>{label}</span>
                   <span style={{ fontSize:12, color:C.text, fontFamily:"monospace", textAlign:"right" }}>{value}</span>
                 </div>
               ))}
+            </div>
+
+            {/* Telegram */}
+            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:14 }}>
+              <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>Telegram Alerts</div>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
+                <div>
+                  <div style={{ fontSize:13, fontWeight:600 }}>@Signal Boss Alerts</div>
+                  <div style={{ fontSize:11, color:C.textMid, marginTop:3 }}>All signals delivered in real time</div>
+                </div>
+                <a href="https://t.me/SignalBossAlerts" target="_blank" rel="noreferrer"
+                  style={{ padding:"7px 16px", background:C.accentDim, border:`1px solid ${C.accent}44`, borderRadius:7, color:C.accent, fontSize:12, fontFamily:"monospace", fontWeight:600, textDecoration:"none" }}>
+                  Open Channel →
+                </a>
+              </div>
+              <div style={{ padding:"10px 0" }}>
+                <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", lineHeight:1.8 }}>
+                  Signal cards include: Entry · Stop · 1st Target · Risk per contract · IV Boss cycle bias
+                </div>
+              </div>
             </div>
           </div>
         )}
