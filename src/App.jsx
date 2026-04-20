@@ -1920,6 +1920,7 @@ function StandaloneCalc({ onNavigate, t }) {
 
 function SignalFiresPlayer({ onNavigate }) {
   const videos = [
+    { src: "/videos/02_backtest_reveal.html", label: "BACKTEST", duration: 18000 },
     { src: "/videos/01_signal_fires.html", label: "LONG · ES", duration: 7000 },
     { src: "/videos/02_signal_fires.html", label: "SHORT · GC", duration: 9000 },
     { src: "/videos/03_signal_fires.html", label: "MULTI · 4 MARKETS", duration: 9000 },
