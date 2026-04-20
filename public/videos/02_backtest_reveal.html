@@ -93,7 +93,7 @@ function Header(){
 
 function Chart(){
   const t=useTime();
-  const start=5.8, end=10.5;
+  const start=5.8, end=9.3;
   const p=clamp((t-start)/(end-start),0,1);
   const opacity=clamp((t-start)/0.4,0,1);
   const len=1800;
@@ -139,17 +139,17 @@ function Chart(){
 function Stats(){
   const t=useTime();
   const stats=[
-    {label:'AVG RISK : REWARD',val:'4 – 5 : 1',color:GOLD,start:11.0,wide:true},
-    {label:'WIN RATE (conservative)',val:'45%',color:'#fff',start:11.5},
-    {label:'BREAK-EVEN WIN RATE',val:'~17%',color:GREEN,start:12.0},
-    {label:'MAX PORTFOLIO DRAWDOWN',val:'< 1%',color:'#fff',start:12.5},
+    {label:'AVG RISK : REWARD',val:'4 – 5 : 1',color:GOLD,start:9.5},
+    {label:'WIN RATE (conservative)',val:'45%',color:'#fff',start:9.8},
+    {label:'BREAK-EVEN WIN RATE',val:'~17%',color:GREEN,start:10.1},
+    {label:'MAX PORTFOLIO DRAWDOWN',val:'< 1%',color:'#fff',start:10.4},
   ];
   return(<div style={{
     position:'absolute',left:72,right:72,bottom:52,
     display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:18,
   }}>
     {stats.map(s=>{
-      const p=clamp((t-s.start)/0.55,0,1);
+      const p=clamp((t-s.start)/0.4,0,1);
       const ease=Easing.easeOutBack(p);
       if(t<s.start-0.1) return <div key={s.label}/>;
       return(<div key={s.label} style={{
@@ -169,9 +169,9 @@ function Stats(){
 
 function CTA(){
   const t=useTime();
-  const p=clamp((t-15.5)/0.6,0,1);
+  const p=clamp((t-13.5)/0.7,0,1);
   const ease=Easing.easeOutCubic(p);
-  if(t<15) return null;
+  if(t<13) return null;
   return(<div style={{
     position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',
     pointerEvents:'none',opacity:ease,
@@ -192,8 +192,8 @@ function CTA(){
 
 function Disclaimer(){
   const t=useTime();
-  const p=clamp((t-16.5)/0.5,0,1);
-  if(t<16) return null;
+  const p=clamp((t-14.5)/0.5,0,1);
+  if(t<14) return null;
   return(<div style={{
     position:'absolute',bottom:14,left:0,right:0,textAlign:'center',
     opacity:p*0.65,fontFamily:MONO,fontSize:11,color:MID,
