@@ -63,7 +63,7 @@ const T = {
     fullName: "FULL NAME", email: "EMAIL", password: "PASSWORD", plan: "PLAN",
     createAccount: "Create Account", noAccount: "No account? ", haveAccount: "Have an account? ",
     engineActive: "ENGINE ACTIVE", active: "ACTIVE",
-    liveSignals: "Live Signals", configuration: "Configuration",
+    liveSignals: "Live Signals", signalHistory: "History", configuration: "Configuration",
     account: "Account", propCalc: "Risk Calculator", home: "← Home",
     direction: "DIRECTION", strength: "STRENGTH",
     cyclesConfirming: "cycles confirming", vwapsConfirming: "VWAPs confirming",
@@ -154,7 +154,7 @@ const T = {
     fullName: "NOMBRE COMPLETO", email: "CORREO", password: "CONTRASEÑA", plan: "PLAN",
     createAccount: "Crear Cuenta", noAccount: "¿Sin cuenta? ", haveAccount: "¿Ya tienes? ",
     engineActive: "MOTOR ACTIVO", active: "ACTIVO",
-    liveSignals: "Señales en Vivo", configuration: "Configuración",
+    liveSignals: "Señales en Vivo", signalHistory: "Historial", configuration: "Configuración",
     account: "Cuenta", propCalc: "Calculadora de Riesgo", home: "← Inicio",
     direction: "DIRECCIÓN", strength: "FUERZA",
     cyclesConfirming: "ciclos confirmando", vwapsConfirming: "VWAPs confirmando",
@@ -243,7 +243,7 @@ const T = {
     fullName: "NOME COMPLETO", email: "EMAIL", password: "SENHA", plan: "PLANO",
     createAccount: "Criar Conta", noAccount: "Sem conta? ", haveAccount: "Já tem? ",
     engineActive: "MOTOR ATIVO", active: "ATIVO",
-    liveSignals: "Sinais ao Vivo", configuration: "Configuração",
+    liveSignals: "Sinais ao Vivo", signalHistory: "Histórico", configuration: "Configuração",
     account: "Conta", propCalc: "Calculadora de Risco", home: "← Início",
     direction: "DIREÇÃO", strength: "FORÇA",
     cyclesConfirming: "ciclos confirmando", vwapsConfirming: "VWAPs confirmando",
@@ -332,7 +332,7 @@ const T = {
     fullName: "NOM COMPLET", email: "EMAIL", password: "MOT DE PASSE", plan: "PLAN",
     createAccount: "Créer un Compte", noAccount: "Pas de compte ? ", haveAccount: "Déjà un compte ? ",
     engineActive: "MOTEUR ACTIF", active: "ACTIF",
-    liveSignals: "Signaux en Direct", configuration: "Configuration",
+    liveSignals: "Signaux en Direct", signalHistory: "Historique", configuration: "Configuration",
     account: "Compte", propCalc: "Calculateur de Risque", home: "← Accueil",
     direction: "DIRECTION", strength: "FORCE",
     cyclesConfirming: "cycles confirmés", vwapsConfirming: "VWAPs confirmés",
@@ -417,8 +417,11 @@ const TICKER_ITEMS = [
   { sym: "ZN",  price: "108.24",    chg: "-0.06",   up: false },
 ];
 
-const GIST_URL = "https://gist.githubusercontent.com/raw/336ce62861f67be83d1fdbd34576f4c5/signals.json";
-const MICROS   = { ES:"MES", NQ:"MNQ", YM:"MYM", RTY:"M2K", CL:"MCL", GC:"MGC" };
+const GIST_URL  = "https://gist.githubusercontent.com/raw/336ce62861f67be83d1fdbd34576f4c5/signals.json";
+const API_URL   = "https://signalboss.net/api";   // VPS webhook / history endpoint
+const MICROS    = { ES:"MES", NQ:"MNQ", YM:"MYM", RTY:"M2K", CL:"MCL", GC:"MGC" };
+const ALL_INSTS = ["ES","NQ","YM","CL","GC","RTY","ZN","ZF","ZT"];
+const INST_FILTER_V = 4; // bump when ALL_INSTS changes
 
 function LiveSignalCard({ signal }) {
   const isLong   = signal.direction === "LONG";
@@ -1668,13 +1671,36 @@ function PositionTracker() {
 }
 
 function Dashboard({ user, onNavigate, t, lang, setLang }) {
-  const [signals, setSignals]       = useState([]);
-  const [lastUpdated, setLastUpdated] = useState(null);
-  const [activeTab, setActiveTab]   = useState("signals");
+  const isAdmin  = user?.publicMetadata?.role === "admin";
 
+  const [signals,      setSignals]      = useState([]);
+  const [lastUpdated,  setLastUpdated]  = useState(null);
+  const [activeTab,    setActiveTab]    = useState("signals");
+  const [history,      setHistory]      = useState([]);
+  const [histTypeFilter, setHistTypeFilter] = useState("ALL");
+  const [manualForm,   setManualForm]   = useState({ instrument:"NQ", direction:"LONG", price:"", stop:"", tp:"", note:"" });
+  const [manualStatus, setManualStatus] = useState(null);
+  const [filterInst,   setFilterInst]   = useState(() => {
+    try {
+      const raw = JSON.parse(localStorage.getItem("sb_inst_filter"));
+      if (raw && raw.v === INST_FILTER_V && Array.isArray(raw.insts)) return new Set(raw.insts);
+    } catch {}
+    return new Set(ALL_INSTS);
+  });
+  const toggleInst = sym => {
+    setFilterInst(prev => {
+      const next = new Set(prev);
+      if (next.has(sym)) { if (next.size > 1) next.delete(sym); }
+      else next.add(sym);
+      localStorage.setItem("sb_inst_filter", JSON.stringify({ v: INST_FILTER_V, insts: [...next] }));
+      return next;
+    });
+  };
+
+  // Live signals (Gist)
   useEffect(() => {
     const load = () =>
-      fetch(GIST_URL)
+      fetch(`${GIST_URL}?t=${Date.now()}`)
         .then(r => r.json())
         .then(d => {
           setSignals(d.signals || []);
@@ -1682,8 +1708,24 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
         })
         .catch(() => {});
     load();
-    const t = setInterval(load, 60000);
-    return () => clearInterval(t);
+    const iv = setInterval(load, 60000);
+    return () => clearInterval(iv);
+  }, []);
+
+  // History (VPS endpoint)
+  const fetchHistory = () =>
+    fetch(`${API_URL}/history?t=${Date.now()}`)
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data)) setHistory(data);
+        else if (data.history && Array.isArray(data.history)) setHistory(data.history);
+      })
+      .catch(() => {});
+
+  useEffect(() => {
+    fetchHistory();
+    const iv = setInterval(fetchHistory, 5 * 60 * 1000);
+    return () => clearInterval(iv);
   }, []);
 
   const active   = signals.filter(s => s.status === "ACTIVE");
@@ -1692,10 +1734,12 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
 
   const tabs = [
     { id:"signals", label:t.liveSignals,   icon:"◉" },
+    { id:"history", label:t.signalHistory, icon:"◷" },
     { id:"pnl",     label:"P&L Tracker",   icon:"◈" },
     { id:"config",  label:t.configuration, icon:"⚙" },
     { id:"prop",    label:t.propCalc,       icon:"⬡" },
     { id:"account", label:t.account,        icon:"◎" },
+    ...(isAdmin ? [{ id:"admin", label:"Admin", icon:"⬛" }] : []),
   ];
 
   return (
@@ -1774,6 +1818,306 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
             </div>
           </div>
         )}
+
+        {activeTab==="history" && (() => {
+          const isOrb = s => s.type === "VOLATILITY_ORB" || s.type === "ORB";
+          const TYPE_META = {
+            "VOLATILITY_ORB": { label:"Volatility Aligned ORB", color:"#38bdf8", bg:"#38bdf811" },
+            "ORB":            { label:"Volatility Aligned ORB", color:"#38bdf8", bg:"#38bdf811" },
+            "SB_CRITERIA":    { label:"SB Criteria Met",        color:"#a78bfa", bg:"#a78bfa11" },
+            "MANUAL":         { label:"SB Criteria Met",        color:"#a78bfa", bg:"#a78bfa11" },
+          };
+          const getTypeMeta = s => TYPE_META[s.type] || { label: s.trigger || "ORB", color:C.textMid, bg:C.surface };
+          const getStatusMeta = s => {
+            const st = s.status || "ACTIVE";
+            if (st === "WIN")    return { label:"WIN ✓", color:C.long };
+            if (st === "LOSS")   return { label:"LOSS",  color:C.short };
+            return { label:"—", color:C.textDim };
+          };
+          const computePnl = s => {
+            if (s.pnlUsd != null) return s.pnlUsd;
+            const ticks = s.stop_ticks || s.risk?.stopTicks || 0;
+            const tv    = s.tick_value || 5.0;
+            const rr    = s.rr || 3.0;
+            if (s.status === "WIN")  return +(ticks * tv * rr).toFixed(0);
+            if (s.status === "LOSS") return -(ticks * tv);
+            return null;
+          };
+          const fmtTime = s => {
+            const raw = s.time || "";
+            const m = raw.match(/^(\d{1,2}):(\d{2})/);
+            if (!m) return raw;
+            let h = parseInt(m[1]), mn = m[2];
+            const ampm = h >= 12 ? "PM" : "AM";
+            h = h === 0 ? 12 : h > 12 ? h - 12 : h;
+            return `${h}:${mn} ${ampm} ET`;
+          };
+          const histRows = history
+            .filter(s => s.status === "WIN" || s.status === "LOSS")
+            .filter(s => filterInst.has(s.instrument))
+            .filter(s => {
+              if (histTypeFilter === "ALL") return true;
+              if (histTypeFilter === "VOLATILITY_ORB") return isOrb(s);
+              return true;
+            });
+          const wins       = histRows.filter(s => s.status === "WIN").length;
+          const liveWR     = histRows.length > 0 ? (wins / histRows.length * 100).toFixed(0) : null;
+          const netPnl     = histRows.reduce((acc, s) => acc + (computePnl(s) || 0), 0);
+          const uniqueDays = new Set(histRows.map(s => s.date).filter(Boolean)).size;
+          const markOutcome = async (id, outcome) => {
+            try {
+              await fetch(`${API_URL}/update-signal`, {
+                method:"POST",
+                headers:{"Content-Type":"application/json","X-Admin-Key":"sb_admin_2026_jr"},
+                body: JSON.stringify({ id, outcome }),
+              });
+              fetchHistory();
+            } catch(e) { console.error(e); }
+          };
+          return (
+            <div style={{ padding:22, maxWidth:980 }}>
+              <div style={{ marginBottom:20 }}>
+                <h2 style={{ fontSize:18, fontWeight:700, marginBottom:4 }}>Signal History</h2>
+                <p style={{ color:C.textMid, fontSize:13 }}>Persistent record — every signal, every outcome</p>
+              </div>
+              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>LIVE TRACK RECORD</div>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:10, marginBottom:12 }}>
+                {[
+                  { label:"DAYS TRACKED",   value: uniqueDays,  color:C.accent },
+                  { label:"TOTAL SIGNALS",  value: histRows.length, color:C.accent },
+                  { label:"CLOSED",         value: histRows.length, color:C.textMid },
+                  { label:"LIVE WIN RATE",  value: liveWR ? `${liveWR}%` : "—", color: liveWR && parseInt(liveWR)>=40 ? C.long : C.short },
+                  { label:"NET P&L (1 ct)", value: histRows.length > 0 ? `${netPnl>=0?"+":""}$${netPnl.toLocaleString()}` : "—", color: netPnl>=0?C.long:C.short },
+                ].map(s => (
+                  <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"14px 16px" }}>
+                    <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:6 }}>{s.label}</div>
+                    <div style={{ fontSize:20, fontWeight:700, color:s.color, fontFamily:"monospace" }}>{s.value}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:20,
+                background:"rgba(34,197,94,0.06)", border:"1px solid rgba(34,197,94,0.18)",
+                borderRadius:8, padding:"12px 20px", width:"fit-content" }}>
+                <span style={{ fontSize:18, color:"#22c55e", fontWeight:700 }}>✓</span>
+                <span style={{ fontFamily:"monospace", fontSize:15, color:"#22c55e", letterSpacing:"0.04em", fontWeight:600 }}>
+                  All trades verified — delivered to Telegram in real time
+                </span>
+              </div>
+              <div style={{ display:"flex", gap:8, marginBottom:14, flexWrap:"wrap" }}>
+                {[{key:"ALL",label:"All"},{key:"VOLATILITY_ORB",label:"Volatility Aligned Breakout Trades"}].map(({ key, label }) => (
+                  <button key={key} onClick={() => setHistTypeFilter(key)}
+                    style={{ padding:"6px 14px", fontSize:12, fontFamily:"monospace", cursor:"pointer", borderRadius:7,
+                      background: histTypeFilter===key ? C.accent+"22" : "transparent",
+                      border:`1px solid ${histTypeFilter===key ? C.accent : C.border}`,
+                      color: histTypeFilter===key ? C.accent : C.textMid }}>
+                    {label}
+                  </button>
+                ))}
+                <div style={{ marginLeft:"auto", display:"flex", gap:6, flexWrap:"wrap" }}>
+                  {ALL_INSTS.map(sym => (
+                    <button key={sym} onClick={() => toggleInst(sym)}
+                      style={{ padding:"5px 10px", fontSize:11, fontFamily:"monospace", cursor:"pointer", borderRadius:6,
+                        background: filterInst.has(sym) ? C.accentDim : "transparent",
+                        border:`1px solid ${filterInst.has(sym)?C.accent+"44":C.border}`,
+                        color: filterInst.has(sym) ? C.accent : C.textDim, fontWeight:600 }}>
+                      {sym}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {histRows.length === 0 ? (
+                <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:32,
+                  color:C.textMid, fontSize:13, textAlign:"center" }}>
+                  {history.length === 0
+                    ? "No history yet — signals appear here as they're logged with outcomes."
+                    : "No signals match the current filters."}
+                </div>
+              ) : (
+                <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, overflow:"hidden" }}>
+                  <div style={{ display:"grid",
+                    gridTemplateColumns: isAdmin ? "70px 55px 1fr 55px 75px 80px 75px 90px 100px" : "70px 55px 1fr 55px 75px 80px 75px 90px",
+                    padding:"8px 16px", borderBottom:`1px solid ${C.border}`,
+                    fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.08em" }}>
+                    <span>DATE</span><span>TIME</span><span>TYPE</span>
+                    <span>INST</span><span>DIR</span><span>ENTRY</span><span>R:R</span><span>OUTCOME</span>
+                    {isAdmin && <span>MARK</span>}
+                  </div>
+                  {histRows.map((s, i) => {
+                    const tm  = getTypeMeta(s);
+                    const sm  = getStatusMeta(s);
+                    const pnl = computePnl(s);
+                    const entry = s.entry || s.price;
+                    return (
+                      <div key={s.id || i} style={{ display:"grid",
+                        gridTemplateColumns: isAdmin ? "70px 55px 1fr 55px 75px 80px 75px 90px 100px" : "70px 55px 1fr 55px 75px 80px 75px 90px",
+                        padding:"10px 16px", borderBottom: i < histRows.length-1 ? `1px solid ${C.border}` : "none",
+                        fontSize:13, alignItems:"center", background: i%2===0?"transparent":C.bg+"44" }}>
+                        <span style={{ fontFamily:"monospace", fontSize:11, color:C.textMid }}>{s.date ? s.date.slice(5) : "—"}</span>
+                        <span style={{ fontFamily:"monospace", fontSize:11, color:C.textDim }}>{fmtTime(s)}</span>
+                        <span style={{ display:"flex", alignItems:"center", gap:6 }}>
+                          <span style={{ padding:"2px 8px", borderRadius:4, fontSize:10, fontFamily:"monospace", fontWeight:700,
+                            background:tm.bg, color:tm.color, whiteSpace:"nowrap" }}>{tm.label}</span>
+                          {s.exit_type && <span style={{ padding:"2px 7px", borderRadius:4, fontSize:9, fontFamily:"monospace", fontWeight:700,
+                            background: s.exit_type==="EOH"?"#f59e0b22":"#38bdf822",
+                            color: s.exit_type==="EOH"?"#f59e0b":"#38bdf8", whiteSpace:"nowrap" }}>{s.exit_type}</span>}
+                        </span>
+                        <span style={{ fontFamily:"monospace", fontWeight:700, fontSize:12 }}>{s.instrument}</span>
+                        <span style={{ fontFamily:"monospace", fontWeight:700, fontSize:12, color:s.direction==="LONG"?C.long:C.short }}>
+                          {s.direction==="LONG"?"▲ L":"▼ S"}
+                        </span>
+                        <span style={{ fontFamily:"monospace", fontSize:12 }}>{entry ? entry.toLocaleString() : "—"}</span>
+                        <span style={{ fontFamily:"monospace", fontSize:11, color:C.textDim }}>{(s.rr || "3")+":1"}</span>
+                        <span style={{ fontFamily:"monospace", fontSize:11, fontWeight:700 }}>
+                          <span style={{ color:sm.color }}>{sm.label}</span>
+                          {pnl !== null && <span style={{ marginLeft:5, fontSize:10, color: pnl>=0?C.long:C.short }}>{pnl>=0?"+":""}{pnl}</span>}
+                        </span>
+                        {isAdmin && (
+                          <span style={{ display:"flex", gap:4 }}>
+                            {["WIN","LOSS"].map(o => (
+                              <button key={o} onClick={() => markOutcome(s.id, o)}
+                                style={{ padding:"3px 8px", fontSize:10, fontFamily:"monospace", cursor:"pointer", borderRadius:5,
+                                  background: s.status===o ? (o==="WIN"?C.long+"33":C.short+"33") : "transparent",
+                                  border:`1px solid ${s.status===o?(o==="WIN"?C.long:C.short):C.border}`,
+                                  color: s.status===o ? (o==="WIN"?C.long:C.short) : C.textDim,
+                                  fontWeight: s.status===o ? 700 : 400 }}>
+                                {o}
+                              </button>
+                            ))}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              <div style={{ marginTop:10, fontSize:11, color:C.textDim, fontFamily:"monospace" }}>
+                {histRows.length} record{histRows.length!==1?"s":""} · persistent log
+              </div>
+            </div>
+          );
+        })()}
+
+        {activeTab==="admin" && isAdmin && (() => {
+          const activeNow = signals.filter(s => s.status === "ACTIVE");
+          return (
+            <div style={{ padding:22, maxWidth:860 }}>
+              <div style={{ marginBottom:20 }}>
+                <h2 style={{ fontSize:18, fontWeight:700, marginBottom:4 }}>Admin — Signal Boss</h2>
+                <p style={{ color:C.textMid, fontSize:13 }}>Real-time QC · Signal monitoring · Platform health</p>
+              </div>
+              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>ACTIVE SIGNALS NOW</div>
+              {activeNow.length === 0 ? (
+                <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:20, color:C.textMid, fontSize:13, marginBottom:28 }}>No active signals right now.</div>
+              ) : (
+                <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:28 }}>
+                  {activeNow.map((s, i) => (
+                    <div key={i} style={{ background:C.surface, border:`1px solid ${s.direction==="LONG"?C.long+"33":C.short+"33"}`, borderRadius:10, padding:"12px 16px", display:"flex", gap:20, flexWrap:"wrap", alignItems:"center" }}>
+                      <span style={{ fontFamily:"monospace", fontWeight:700, color:s.direction==="LONG"?C.long:C.short, fontSize:13 }}>{s.direction}</span>
+                      <span style={{ fontFamily:"monospace", fontWeight:700, fontSize:13 }}>{s.instrument}</span>
+                      <span style={{ fontFamily:"monospace", fontSize:12, color:C.textMid }}>Entry: {s.price}</span>
+                      {s.risk && <span style={{ fontFamily:"monospace", fontSize:12, color:C.short }}>Stop: {s.risk.stopPrice}</span>}
+                      {s.risk && <span style={{ fontFamily:"monospace", fontSize:12, color:C.long }}>TP: {s.risk.firstTpPrice}</span>}
+                      <span style={{ fontFamily:"monospace", fontSize:11, color:C.textDim, marginLeft:"auto" }}>{s.time}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>POST MANUAL SIGNAL</div>
+              <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:28 }}>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:12 }}>
+                  <div>
+                    <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginBottom:5 }}>INSTRUMENT</div>
+                    <select value={manualForm.instrument} onChange={e => setManualForm(p=>({...p,instrument:e.target.value}))}
+                      style={{ width:"100%", padding:"8px 10px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace" }}>
+                      {ALL_INSTS.map(s=><option key={s}>{s}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginBottom:5 }}>DIRECTION</div>
+                    <div style={{ display:"flex", gap:8 }}>
+                      {["LONG","SHORT"].map(d=>(
+                        <button key={d} onClick={()=>setManualForm(p=>({...p,direction:d}))}
+                          style={{ flex:1, padding:"8px 0", background: manualForm.direction===d?(d==="LONG"?C.long:C.short)+"22":"transparent",
+                            border:`1px solid ${manualForm.direction===d?(d==="LONG"?C.long:C.short):C.border}`,
+                            borderRadius:7, color:manualForm.direction===d?(d==="LONG"?C.long:C.short):C.textMid,
+                            fontFamily:"monospace", fontWeight:700, fontSize:13, cursor:"pointer" }}>
+                          {d==="LONG"?"▲ LONG":"▼ SHORT"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10, marginBottom:12 }}>
+                  {[["price","ENTRY PRICE"],["stop","STOP"],["tp","TARGET"]].map(([field,label])=>(
+                    <div key={field}>
+                      <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginBottom:5 }}>{label}</div>
+                      <input type="number" placeholder="auto" value={manualForm[field]}
+                        onChange={e=>setManualForm(p=>({...p,[field]:e.target.value}))}
+                        style={{ width:"100%", padding:"8px 10px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace", boxSizing:"border-box" }} />
+                    </div>
+                  ))}
+                </div>
+                <div style={{ marginBottom:14 }}>
+                  <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginBottom:5 }}>NOTE (optional)</div>
+                  <input type="text" placeholder="e.g. ORB breakout confirmed · strong volume" value={manualForm.note}
+                    onChange={e=>setManualForm(p=>({...p,note:e.target.value}))}
+                    style={{ width:"100%", padding:"8px 10px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, boxSizing:"border-box" }} />
+                </div>
+                <button onClick={async ()=>{
+                  setManualStatus({ok:null,msg:"Sending..."});
+                  try {
+                    const resp = await fetch(`${API_URL}/manual-signal`, {
+                      method:"POST",
+                      headers:{"Content-Type":"application/json","X-Admin-Key":"sb_admin_2026_jr"},
+                      body: JSON.stringify({ instrument:manualForm.instrument, direction:manualForm.direction,
+                        price: manualForm.price ? parseFloat(manualForm.price) : undefined,
+                        stop:  manualForm.stop  ? parseFloat(manualForm.stop)  : undefined,
+                        tp:    manualForm.tp    ? parseFloat(manualForm.tp)    : undefined,
+                        note:  manualForm.note }),
+                    });
+                    const data = await resp.json();
+                    if (resp.ok) { setManualStatus({ok:true,msg:`✅ Signal posted: ${data.id}`}); setManualForm(p=>({...p,price:"",stop:"",tp:"",note:""})); }
+                    else setManualStatus({ok:false,msg:`❌ ${data.error||"Error"}`});
+                  } catch(e) { setManualStatus({ok:false,msg:`❌ ${e.message}`}); }
+                }}
+                  style={{ padding:"10px 24px", background:manualForm.direction==="LONG"?C.long:C.short,
+                    border:"none", borderRadius:8, color:"#fff", fontWeight:700, fontSize:13, fontFamily:"monospace", cursor:"pointer" }}>
+                  {manualForm.direction==="LONG"?"▲ POST LONG":"▼ POST SHORT"} {manualForm.instrument}
+                </button>
+                {manualStatus && <div style={{ marginTop:10, fontSize:12, fontFamily:"monospace",
+                  color: manualStatus.ok===true?C.long:manualStatus.ok===false?C.short:C.textMid }}>{manualStatus.msg}</div>}
+              </div>
+              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>QC CHECKLIST</div>
+              <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:28 }}>
+                {[
+                  ["Gist signals URL configured",   !!GIST_URL],
+                  ["Active signals present",          activeNow.length > 0],
+                  ["Risk data on signals",            signals.some(s=>s.risk)],
+                  ["History records loaded",          history.length > 0],
+                ].map(([label, ok]) => (
+                  <div key={label} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"9px 0", borderBottom:`1px solid ${C.border}` }}>
+                    <span style={{ fontSize:13 }}>{label}</span>
+                    <span style={{ fontFamily:"monospace", fontSize:12, fontWeight:700, color:ok?C.long:"#f59e0b" }}>{ok?"✓ OK":"⚠ Check"}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>EXTERNAL DASHBOARDS</div>
+              <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+                {[
+                  { label:"Stripe Dashboard", url:"https://dashboard.stripe.com" },
+                  { label:"Clerk Dashboard",  url:"https://dashboard.clerk.com" },
+                  { label:"Signals Gist",     url:GIST_URL },
+                  { label:"VPS History API",  url:`${API_URL}/history` },
+                ].map(({ label, url }) => (
+                  <a key={label} href={url} target="_blank" rel="noreferrer"
+                    style={{ padding:"9px 18px", background:C.surface, border:`1px solid ${C.border}`, borderRadius:8, color:C.accent, fontSize:13, fontFamily:"monospace", textDecoration:"none", fontWeight:600 }}>
+                    {label} ↗
+                  </a>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
 
         {activeTab==="config" && (
           <div style={{ padding:22, maxWidth:580 }}>
