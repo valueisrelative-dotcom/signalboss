@@ -2118,17 +2118,10 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
               </div>
               <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>EXTERNAL DASHBOARDS</div>
               <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
-                {[
-                  { label:"Stripe Dashboard", url:"https://dashboard.stripe.com" },
-                  { label:"Clerk Dashboard",  url:"https://dashboard.clerk.com" },
-                  { label:"Signals Gist",     url:GIST_URL },
-                  { label:"VPS History API",  url:`${API_URL}/history` },
-                ].map(({ label, url }) => (
-                  <a key={label} href={url} target="_blank" rel="noreferrer"
-                    style={{ padding:"9px 18px", background:C.surface, border:`1px solid ${C.border}`, borderRadius:8, color:C.accent, fontSize:13, fontFamily:"monospace", textDecoration:"none", fontWeight:600 }}>
-                    {label} ↗
-                  </a>
-                ))}
+                <a href={GIST_URL} target="_blank" rel="noreferrer"
+                  style={{ padding:"9px 18px", background:C.surface, border:`1px solid ${C.border}`, borderRadius:8, color:C.accent, fontSize:13, fontFamily:"monospace", textDecoration:"none", fontWeight:600 }}>
+                  Signals Gist ↗
+                </a>
               </div>
             </div>
           );
@@ -2538,8 +2531,15 @@ function ContactPage({ onNavigate }) {
 }
 
 export default function App() {
-  const [page, setPage] = useState("landing");
-  const [user, setUser] = useState(null);
+  const [page, _setPage] = useState(() => {
+    const saved = sessionStorage.getItem("sb_page");
+    return saved === "dashboard" ? "dashboard" : "landing";
+  });
+  const [user, _setUser] = useState(() => {
+    try { return JSON.parse(sessionStorage.getItem("sb_user") || "null"); } catch { return null; }
+  });
+  const setPage = (p) => { _setPage(p); sessionStorage.setItem("sb_page", p); };
+  const setUser = (u) => { _setUser(u); sessionStorage.setItem("sb_user", JSON.stringify(u)); };
   const [lang, setLang] = useState("en");
   const [track, setTrack] = useState(null); // "futures" | "forex" | null
   const t = T[lang];
