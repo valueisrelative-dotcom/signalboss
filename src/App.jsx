@@ -1872,8 +1872,8 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                     <tr style={{ background:C.surface, borderBottom:`1px solid ${C.border}` }}>
                       <th style={{ ...COL_HDR, textAlign:"left"   }}>SYMBOL</th>
                       <th style={{ ...COL_HDR, textAlign:"right"  }}>RANGE PTS</th>
-                      <th style={{ ...COL_HDR, textAlign:"center" }}>DIRECTION</th>
-                      <th style={{ ...COL_HDR, textAlign:"right"  }}>SL PRICE</th>
+                      <th style={{ ...COL_HDR, textAlign:"right"  }}>🟢 LONG ENTRY</th>
+                      <th style={{ ...COL_HDR, textAlign:"right"  }}>🔴 SHORT ENTRY</th>
                       <th style={{ ...COL_HDR, textAlign:"right"  }}>SL $</th>
                       <th style={{ ...COL_HDR, textAlign:"right"  }}>TARGET 3:1 $</th>
                       <th style={{ ...COL_HDR, textAlign:"right"  }}>TARGET 5:1 $</th>
@@ -1881,16 +1881,18 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                   </thead>
                   <tbody>
                     {ALL_INSTS.map((sym, i) => {
-                      const sig     = byInst[sym];
-                      const micro   = MICROS[sym];
-                      const isLong  = sig?.direction === "LONG";
-                      const dirClr  = isLong ? C.long : C.short;
-                      const range   = sig ? Math.abs((sig.price ?? 0) - (sig.risk?.stopPrice ?? 0)) : null;
-                      const slUsd   = sig?.risk?.stopUsd ?? null;
-                      const t31     = slUsd != null ? slUsd * 3 : null;
-                      const t51     = slUsd != null ? slUsd * 5 : null;
-                      const slp     = sig?.risk?.stopPrice ?? null;
-                      const rowBg   = i % 2 === 1 ? `${C.surface}66` : "transparent";
+                      const sig      = byInst[sym];
+                      const micro    = MICROS[sym];
+                      const isLong   = sig?.direction === "LONG";
+                      const range    = sig ? Math.abs((sig.price ?? 0) - (sig.risk?.stopPrice ?? 0)) : null;
+                      const slUsd    = sig?.risk?.stopUsd ?? null;
+                      const t31      = slUsd != null ? slUsd * 3 : null;
+                      const t51      = slUsd != null ? slUsd * 5 : null;
+                      // OR high = LONG entry, OR low = SHORT entry — derivable from either signal direction
+                      const orHigh   = sig ? (isLong ? sig.price : sig.risk?.stopPrice) : null;
+                      const orLow    = sig ? (isLong ? sig.risk?.stopPrice : sig.price) : null;
+                      const fmtPx    = v => v == null ? null : v.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:6 });
+                      const rowBg    = i % 2 === 1 ? `${C.surface}66` : "transparent";
 
                       return (
                         <tr key={sym} style={{ background:rowBg, borderBottom:`1px solid ${C.border}22` }}>
@@ -1905,24 +1907,18 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                             {range != null ? fmtRange(sym, range) : dash}
                           </td>
 
-                          {/* Direction */}
-                          <td style={{ ...CELL(), textAlign:"center" }}>
-                            {sig ? (
-                              <span style={{ color:dirClr, fontWeight:700, fontSize:11, padding:"3px 12px", borderRadius:4, background:`${dirClr}18`, letterSpacing:"0.06em" }}>
-                                {sig.direction}
-                              </span>
-                            ) : dash}
+                          {/* LONG Entry = OR high */}
+                          <td style={{ ...CELL(), textAlign:"right", color:C.long, fontWeight:600 }}>
+                            {fmtPx(orHigh) ?? dash}
                           </td>
 
-                          {/* SL Price */}
-                          <td style={{ ...CELL(), textAlign:"right", color:C.short }}>
-                            {slp != null
-                              ? slp.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:6 })
-                              : dash}
+                          {/* SHORT Entry = OR low */}
+                          <td style={{ ...CELL(), textAlign:"right", color:C.short, fontWeight:600 }}>
+                            {fmtPx(orLow) ?? dash}
                           </td>
 
                           {/* SL $ */}
-                          <td style={{ ...CELL(), textAlign:"right", color:C.short, fontWeight:600 }}>
+                          <td style={{ ...CELL(), textAlign:"right", color:C.textMid, fontWeight:600 }}>
                             {fmtUsd(slUsd) ?? dash}
                           </td>
 
