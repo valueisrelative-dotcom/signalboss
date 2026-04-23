@@ -1749,6 +1749,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
 
   const tabs = [
     { id:"signals", label:t.liveSignals,   icon:"◉" },
+    { id:"levels",  label:"ORB Levels",    icon:"▤" },
     { id:"history", label:t.signalHistory, icon:"◷" },
     { id:"pnl",     label:"P&L Tracker",   icon:"◈" },
     { id:"config",  label:t.configuration, icon:"⚙" },
@@ -1833,6 +1834,121 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
             </div>
           </div>
         )}
+
+        {activeTab==="levels" && (() => {
+          // Build per-instrument map from today's active signals
+          const byInst = {};
+          signals.forEach(sig => {
+            if (!byInst[sig.instrument]) byInst[sig.instrument] = sig;
+          });
+
+          const fmtRange = (sym, val) => {
+            if (val == null) return null;
+            // Pick decimal places based on price magnitude
+            if (val >= 10)   return val.toFixed(2);
+            if (val >= 1)    return val.toFixed(3);
+            if (val >= 0.1)  return val.toFixed(4);
+            return val.toFixed(6);
+          };
+          const fmtUsd = v => v == null ? null : `$${Math.round(v).toLocaleString()}`;
+          const dash = <span style={{ color:C.textDim }}>—</span>;
+
+          const COL_HDR = { padding:"10px 16px", fontSize:10, fontWeight:600, color:C.textDim, letterSpacing:"0.12em", whiteSpace:"nowrap", fontFamily:"'IBM Plex Mono','Courier New',monospace" };
+          const CELL    = (extra={}) => ({ padding:"13px 16px", fontFamily:"'IBM Plex Mono','Courier New',monospace", fontSize:13, ...extra });
+
+          return (
+            <div style={{ padding:"22px 22px 32px" }}>
+              <div style={{ display:"flex", alignItems:"baseline", gap:14, marginBottom:6 }}>
+                <h2 style={{ fontSize:18, fontWeight:600, margin:0 }}>ORB Levels</h2>
+                <span style={{ fontSize:11, color:C.textDim, fontFamily:"monospace" }}>Opening range · populates as signals fire</span>
+              </div>
+              <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", marginBottom:20 }}>
+                W1 = 8–9 AM range&nbsp;&nbsp;·&nbsp;&nbsp;W2 = 9–10 AM range&nbsp;&nbsp;·&nbsp;&nbsp;SL = full contract&nbsp;&nbsp;·&nbsp;&nbsp;Targets at 3:1 and 5:1 RR
+              </div>
+
+              <div style={{ overflowX:"auto", borderRadius:10, border:`1px solid ${C.border}` }}>
+                <table style={{ width:"100%", borderCollapse:"collapse" }}>
+                  <thead>
+                    <tr style={{ background:C.surface, borderBottom:`1px solid ${C.border}` }}>
+                      <th style={{ ...COL_HDR, textAlign:"left"   }}>SYMBOL</th>
+                      <th style={{ ...COL_HDR, textAlign:"right"  }}>RANGE PTS</th>
+                      <th style={{ ...COL_HDR, textAlign:"center" }}>DIRECTION</th>
+                      <th style={{ ...COL_HDR, textAlign:"right"  }}>SL PRICE</th>
+                      <th style={{ ...COL_HDR, textAlign:"right"  }}>SL $</th>
+                      <th style={{ ...COL_HDR, textAlign:"right"  }}>TARGET 3:1 $</th>
+                      <th style={{ ...COL_HDR, textAlign:"right"  }}>TARGET 5:1 $</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ALL_INSTS.map((sym, i) => {
+                      const sig     = byInst[sym];
+                      const micro   = MICROS[sym];
+                      const isLong  = sig?.direction === "LONG";
+                      const dirClr  = isLong ? C.long : C.short;
+                      const range   = sig ? Math.abs((sig.price ?? 0) - (sig.risk?.stopPrice ?? 0)) : null;
+                      const slUsd   = sig?.risk?.stopUsd ?? null;
+                      const t31     = slUsd != null ? slUsd * 3 : null;
+                      const t51     = slUsd != null ? slUsd * 5 : null;
+                      const slp     = sig?.risk?.stopPrice ?? null;
+                      const rowBg   = i % 2 === 1 ? `${C.surface}66` : "transparent";
+
+                      return (
+                        <tr key={sym} style={{ background:rowBg, borderBottom:`1px solid ${C.border}22` }}>
+                          {/* Symbol */}
+                          <td style={{ ...CELL(), textAlign:"left" }}>
+                            <span style={{ fontWeight:700, color:C.text }}>{sym}</span>
+                            {micro && <span style={{ fontSize:10, color:C.textDim, marginLeft:8 }}>{micro}</span>}
+                          </td>
+
+                          {/* Range Pts */}
+                          <td style={{ ...CELL(), textAlign:"right", color:C.accent, fontWeight:600 }}>
+                            {range != null ? fmtRange(sym, range) : dash}
+                          </td>
+
+                          {/* Direction */}
+                          <td style={{ ...CELL(), textAlign:"center" }}>
+                            {sig ? (
+                              <span style={{ color:dirClr, fontWeight:700, fontSize:11, padding:"3px 12px", borderRadius:4, background:`${dirClr}18`, letterSpacing:"0.06em" }}>
+                                {sig.direction}
+                              </span>
+                            ) : dash}
+                          </td>
+
+                          {/* SL Price */}
+                          <td style={{ ...CELL(), textAlign:"right", color:C.short }}>
+                            {slp != null
+                              ? slp.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:6 })
+                              : dash}
+                          </td>
+
+                          {/* SL $ */}
+                          <td style={{ ...CELL(), textAlign:"right", color:C.short, fontWeight:600 }}>
+                            {fmtUsd(slUsd) ?? dash}
+                          </td>
+
+                          {/* Target 3:1 $ */}
+                          <td style={{ ...CELL(), textAlign:"right", color:C.long, fontWeight:600 }}>
+                            {fmtUsd(t31) ?? dash}
+                          </td>
+
+                          {/* Target 5:1 $ */}
+                          <td style={{ ...CELL(), textAlign:"right", color:C.long, fontWeight:600 }}>
+                            {fmtUsd(t51) ?? dash}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              <div style={{ marginTop:14, fontSize:11, color:C.textDim, fontFamily:"monospace" }}>
+                Rows show <span style={{ color:C.long }}>—</span> until the signal fires for that instrument.&nbsp;
+                Micro contract targets = divide $ values by 10.
+              </div>
+            </div>
+          );
+        })()}
 
         {activeTab==="history" && (() => {
           const isOrb = s => s.type === "VOLATILITY_ORB" || s.type === "ORB";
@@ -2115,13 +2231,6 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                     <span style={{ fontFamily:"monospace", fontSize:12, fontWeight:700, color:ok?C.long:"#f59e0b" }}>{ok?"✓ OK":"⚠ Check"}</span>
                   </div>
                 ))}
-              </div>
-              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>EXTERNAL DASHBOARDS</div>
-              <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
-                <a href={GIST_URL} target="_blank" rel="noreferrer"
-                  style={{ padding:"9px 18px", background:C.surface, border:`1px solid ${C.border}`, borderRadius:8, color:C.accent, fontSize:13, fontFamily:"monospace", textDecoration:"none", fontWeight:600 }}>
-                  Signals Gist ↗
-                </a>
               </div>
             </div>
           );
