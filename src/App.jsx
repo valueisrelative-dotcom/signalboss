@@ -2032,7 +2032,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                 borderRadius:8, padding:"12px 20px", width:"fit-content" }}>
                 <span style={{ fontSize:18, color:"#22c55e", fontWeight:700 }}>✓</span>
                 <span style={{ fontFamily:"monospace", fontSize:15, color:"#22c55e", letterSpacing:"0.04em", fontWeight:600 }}>
-                  All trades verified — delivered to Telegram in real time
+                  All trades verified — delivered to Website Signal History, e-mail and WhatsApp in real time
                 </span>
               </div>
               <div style={{ display:"flex", gap:8, marginBottom:14, flexWrap:"wrap" }}>
@@ -2304,7 +2304,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
             </div>
             <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:14 }}>
               <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>{t.alertDelivery}</div>
-              {[["Dashboard (real-time)",true],["Email notifications",true],["Telegram bot",true],["Webhook",false]].map(([label,on]) => (
+              {[["Website (real-time)",true],["Email notifications",true],["WhatsApp",true],["Webhook",false]].map(([label,on]) => (
                 <div key={label} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
                   <span style={{ fontSize:13 }}>{label}</span>
                   <div style={{ width:40, height:22, borderRadius:11, background:on?C.accent:C.border, position:"relative" }}>
@@ -2316,7 +2316,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
             <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20 }}>
               <div style={{ fontWeight:600, fontSize:14, marginBottom:12 }}>{t.instruments}</div>
               <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-                {INSTRUMENTS.map(inst => (
+                {ALL_INSTS.map(inst => (
                   <span key={inst} style={{ padding:"5px 14px", background:C.accentDim, border:`1px solid ${C.accent}33`, borderRadius:6, fontSize:12, color:C.accent, fontFamily:"monospace", fontWeight:600 }}>{inst}</span>
                 ))}
               </div>
