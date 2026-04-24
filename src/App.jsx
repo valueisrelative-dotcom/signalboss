@@ -51,13 +51,12 @@ const T = {
     forexHeroTitle1: "No charts. No noise.", forexHeroTitle2: "The Inflection Point.",
     forexHeroSub: "Currency futures are where institutions show their hand. Signal Boss reads IV inflection points on /6E, /6B, /6J and more — giving forex traders institutional-grade intelligence on every major pair and cross.",
     methodologyLabel: "THE METHODOLOGY",
-    methodologyTitle: "The market tells you where price is going.",
-    methodologyAccent: "We just listen.",
+    methodologyTitle: "Zero charts.",
+    methodologyAccent: "Volatility tells you where price is expected to go — charts and indicators only tell you where it's been.",
     methodologyQuote: "Not just when to enter. Where to stop. When to take profit. All from the same source — what the market is actually implying about its own expected range.",
     methodology: [
       { icon:"◈", color:"long",  label:"Implied Volatility", title:"The Market's Own Forecast", body:"IV isn't noise — it's the market's consensus estimate of expected movement. When short-term IV reaches an inflection point on a close, the market is telling you something has changed. That's your signal." },
-      { icon:"◎", color:"accent", label:"VWAP",             title:"Where Institutions Operate", body:"Every institutional desk benchmarks execution against VWAP. Price above VWAP means buyers are in control at institutional prices. Below means sellers. Simple. Powerful. Proven." },
-      { icon:"◉", color:"prop",   label:"Mean Reversion",   title:"IV Always Comes Back", body:"Implied volatility mean reverts. Always. When IV reaches extremes, the question isn't if price will revert — it's when. That timing is where the edge lives, and where Smart Stop and Target levels are derived." },
+      { icon:"◉", color:"prop",  label:"Volatility Expression", title:"Pure Logic.", body:"Volatility presents 2 conditions that produce real-time trade opportunities: Convergence or Divergence at inflection points. When realized volatility reaches extremes, the question isn't if price will revert — it's when. When they find equilibrium, a breakout is on its way. These 2 conditions represent the dance between the speculator and the hedger. That timing is where the edge lives, and where Entry, Smart Stop and Target levels are derived.", body2:"Put simply, these are points where buyers say \"I'm not paying that — price is too high\", and sellers say \"I'm not selling for that — price is too low\". That's where our signals wake up." },
     ],
     startTrial: "Get Access", viewDemo: "See Signals Fire →",
     exampleSignal: "EXAMPLE SIGNAL", howItWorks: "How Signal Boss works",
@@ -985,6 +984,7 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
                   <div style={{ fontSize:10, color:col, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:8 }}>{m.icon} {m.label.toUpperCase()}</div>
                   <div style={{ fontSize:14, fontWeight:700, marginBottom:8, color:C.text }}>{m.title}</div>
                   <div style={{ fontSize:13, color:C.textMid, lineHeight:1.75 }}>{m.body}</div>
+                  {m.body2 && <div style={{ fontSize:13, color:C.textMid, lineHeight:1.75, marginTop:10 }}>{m.body2}</div>}
                 </div>
               );
             })}
