@@ -1900,7 +1900,7 @@ function PositionTracker() {
 }
 
 function Dashboard({ user, onNavigate, t, lang, setLang }) {
-  const ADMIN_IDS = ["user_2xQZFhQW5rYVz8kP1mNdTjLcE9o"]; // JR only — add Clerk user ID here
+  const ADMIN_IDS = ["user_3B9DnLqgR28TYIQ98Qe3qD7w0f0"]; // JR — info@signalboss.net
   const isAdmin  = ADMIN_IDS.includes(user?.id);
 
   const [signals,      setSignals]      = useState([]);
