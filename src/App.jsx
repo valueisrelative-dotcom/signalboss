@@ -969,7 +969,7 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
       </div>
 
       {/* Methodology */}
-      <div style={{ maxWidth:880, margin:"0 auto", padding:"0 24px 80px" }}>
+      <div id="methodology" style={{ maxWidth:880, margin:"0 auto", padding:"0 24px 80px" }}>
         <div style={{ background:`linear-gradient(135deg, #0c0e10, #0a0e0c)`, border:`1px solid ${C.long}22`, borderRadius:16, padding:40 }}>
           <div style={{ fontSize:10, color:C.long, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:16 }}>{t.methodologyLabel}</div>
           <h2 style={{ fontSize:26, fontWeight:700, letterSpacing:"-0.03em", marginBottom:20, maxWidth:600 }}>
@@ -3068,6 +3068,8 @@ function AppInner() {
             </div>
             {page === "landing" && (
               <div style={{ display:"flex", gap:20, alignItems:"center" }}>
+                <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("methodology")?.scrollIntoView({behavior:"smooth"})}}>Methodology</a>
+                <span style={{ color:C.border }}>·</span>
                 <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("how-it-works")?.scrollIntoView({behavior:"smooth"})}}>How It Works</a>
                 <span style={{ color:C.border }}>·</span>
                 <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("pricing")?.scrollIntoView({behavior:"smooth"})}}>Pricing</a>
