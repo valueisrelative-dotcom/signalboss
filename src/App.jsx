@@ -45,7 +45,7 @@ const T = {
     forexLabel: "FOREX TRADERS", forexHeadline: "Trade the intelligence.",
     forexDesc: "EUR/USD, GBP/USD, USD/JPY and all major pairs including crosses. Same IV signal intelligence derived from currency futures — where price discovery actually begins.",
     forexFeatures: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "EUR/JPY · EUR/GBP · EUR/CHF + more", "Account Risk Calculator included", "Smart Stop & Take Profit on every signal"],
-    trialNote: "14-day free trial · No credit card required · Cancel anytime",
+    trialNote: "No commitment · Cancel anytime",
     exploreFutures: "Explore Futures →", exploreForex: "Explore Forex →",
     forexTagline: "Forex Signal Intelligence · Live",
     forexHeroTitle1: "No charts. No noise.", forexHeroTitle2: "The Inflection Point.",
@@ -59,12 +59,12 @@ const T = {
       { icon:"◎", color:"accent", label:"VWAP",             title:"Where Institutions Operate", body:"Every institutional desk benchmarks execution against VWAP. Price above VWAP means buyers are in control at institutional prices. Below means sellers. Simple. Powerful. Proven." },
       { icon:"◉", color:"prop",   label:"Mean Reversion",   title:"IV Always Comes Back", body:"Implied volatility mean reverts. Always. When IV reaches extremes, the question isn't if price will revert — it's when. That timing is where the edge lives, and where Smart Stop and Target levels are derived." },
     ],
-    startTrial: "Start Free Trial", viewDemo: "See Signals Fire →",
+    startTrial: "Get Access", viewDemo: "See Signals Fire →",
     exampleSignal: "EXAMPLE SIGNAL", howItWorks: "How Signal Boss works",
-    pricing: "Pricing", pricingNote: "14-day free trial. No credit card required.",
+    pricing: "Pricing", pricingNote: "No commitment. Cancel anytime.",
     getStarted: "Get Started", signIn: "Sign In", signUp: "Sign Up",
     signInTitle: "Sign in", signUpTitle: "Create account",
-    signInSub: "Welcome back to Signal Boss", signUpSub: "Start your 14-day free trial",
+    signInSub: "Welcome back to Signal Boss", signUpSub: "Get access to live signals",
     fullName: "FULL NAME", email: "EMAIL", password: "PASSWORD", plan: "PLAN",
     createAccount: "Create Account", noAccount: "No account? ", haveAccount: "Have an account? ",
     engineActive: "ENGINE ACTIVE", active: "ACTIVE",
@@ -800,7 +800,7 @@ function ForexDemo({ onNavigate, t }) {
         </nav>
         <div style={{ padding:"10px 18px", borderTop:`1px solid ${C.border}` }}>
           <div onClick={() => onNavigate("landing")} style={{ fontSize:11, color:C.textDim, cursor:"pointer", marginBottom:6, fontFamily:"monospace" }}>← Home</div>
-          <button onClick={() => onNavigate("signup")} style={{ width:"100%", padding:"9px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:700, fontSize:12, cursor:"pointer" }}>Start Free Trial →</button>
+          <button onClick={() => onNavigate("signup")} style={{ width:"100%", padding:"9px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:700, fontSize:12, cursor:"pointer" }}>Get Access →</button>
         </div>
       </div>
 
@@ -834,7 +834,7 @@ function ForexDemo({ onNavigate, t }) {
               <div style={{ fontSize:13, color:C.textMid, lineHeight:1.8 }}>
                 Full configuration options — timeframe selection, pair filtering, VWAP rules, and alert preferences — are available with a live subscription.
               </div>
-              <button onClick={() => onNavigate("signup")} style={{ marginTop:16, padding:"10px 24px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:600, fontSize:13, cursor:"pointer" }}>Start Free Trial →</button>
+              <button onClick={() => onNavigate("signup")} style={{ marginTop:16, padding:"10px 24px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:600, fontSize:13, cursor:"pointer" }}>Get Access →</button>
             </div>
           </div>
         )}
@@ -845,7 +845,7 @@ function ForexDemo({ onNavigate, t }) {
             <p style={{ color:C.textMid, fontSize:13, marginBottom:22 }}>Manage your Signal Boss subscription and preferences.</p>
             <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20 }}>
               <div style={{ fontSize:13, color:C.textMid, lineHeight:1.8 }}>Account management is available once you have an active subscription.</div>
-              <button onClick={() => onNavigate("signup")} style={{ marginTop:16, padding:"10px 24px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:600, fontSize:13, cursor:"pointer" }}>Start Free Trial →</button>
+              <button onClick={() => onNavigate("signup")} style={{ marginTop:16, padding:"10px 24px", background:C.accent, color:"#080909", border:"none", borderRadius:7, fontWeight:600, fontSize:13, cursor:"pointer" }}>Get Access →</button>
             </div>
           </div>
         )}
@@ -1385,7 +1385,7 @@ function ClerkAuthPage({ mode, onNavigate, initialEmail }) {
       }
       <div style={{ position:"absolute", bottom:32, fontSize:13, color:C.textMid }}>
         {mode === "sign-in"
-          ? <span>No account? <span onClick={() => onNavigate("signup")} style={{ color:C.accent, cursor:"pointer" }}>Start free trial →</span></span>
+          ? <span>No account? <span onClick={() => onNavigate("signup")} style={{ color:C.accent, cursor:"pointer" }}>Get access →</span></span>
           : <span>Already subscribed? <span onClick={() => onNavigate("login")} style={{ color:C.accent, cursor:"pointer" }}>Sign in →</span></span>
         }
       </div>
