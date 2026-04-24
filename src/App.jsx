@@ -998,20 +998,68 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
       </div>
 
       {/* How It Works */}
-      <div id="how-it-works" style={{ maxWidth:880, margin:"0 auto", padding:"0 24px 80px" }}>
-        <div style={{ textAlign:"center", marginBottom:40 }}>
-          <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:14 }}>THE METHODOLOGY</div>
-          <h2 style={{ fontSize:32, fontWeight:700, letterSpacing:"-0.03em", marginBottom:0 }}>How Signal Boss Works</h2>
+      <div id="how-it-works" style={{ maxWidth:860, margin:"0 auto", padding:"0 24px 80px" }}>
+        <div style={{ textAlign:"center", marginBottom:48 }}>
+          <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:14 }}>HOW IT WORKS</div>
+          <h2 style={{ fontSize:32, fontWeight:700, letterSpacing:"-0.03em", marginBottom:16 }}>3 Numbers. Every Morning.</h2>
+          <p style={{ color:C.textMid, fontSize:16, lineHeight:1.8, maxWidth:620, margin:"0 auto" }}>
+            Every morning between 8:00 AM and 9:00 AM, members receive the 3 Key Numbers for every instrument:
+          </p>
         </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(220px,1fr))", gap:16 }}>
-          {["01","02","03","04"].map(n => (
-            <div key={n} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
-              <div style={{ fontSize:11, color:C.accent, fontFamily:"monospace", marginBottom:10 }}>{n}</div>
-              <div style={{ fontWeight:600, fontSize:14, marginBottom:8 }}>{t.features[n].title}</div>
-              <div style={{ color:C.textMid, fontSize:13, lineHeight:1.7 }}>{t.features[n].desc}</div>
+
+        {/* Three numbers */}
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(240px,1fr))", gap:16, marginBottom:56 }}>
+          {[
+            { num:"1", color:C.long,   icon:"🔵", label:"Entry Price", sub:"LONG and SHORT", desc:"Two prices — one for each direction. When the market hits either level, your trade begins." },
+            { num:"2", color:C.short,  icon:"🔴", label:"Stop Loss",   sub:"Where to exit if wrong", desc:"Your maximum risk is defined before the trade starts. No guessing. No emotional decisions." },
+            { num:"3", color:C.accent, icon:"🟢", label:"Take Profit", sub:"Where to exit at a gain", desc:"The 1st target is a suggested exit at 3× the stop loss distance. Simple, objective, repeatable." },
+          ].map(item => (
+            <div key={item.num} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:14, padding:24 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:14 }}>
+                <span style={{ fontSize:20 }}>{item.icon}</span>
+                <div>
+                  <div style={{ fontWeight:700, fontSize:15, color:item.color }}>{item.label}</div>
+                  <div style={{ fontSize:11, color:C.textDim, marginTop:1 }}>{item.sub}</div>
+                </div>
+              </div>
+              <div style={{ color:C.textMid, fontSize:13, lineHeight:1.75 }}>{item.desc}</div>
             </div>
           ))}
         </div>
+
+        {/* Example signal card */}
+        <div style={{ maxWidth:420, margin:"0 auto 20px", background:C.surface, border:`1px solid ${C.border}`, borderRadius:16, overflow:"hidden" }}>
+          <div style={{ background:"#1a1d1f", padding:"12px 20px", borderBottom:`1px solid ${C.border}`, display:"flex", alignItems:"center", gap:8 }}>
+            <span style={{ fontSize:11, fontWeight:800, fontFamily:"monospace", color:C.accent, letterSpacing:"0.1em" }}>🟢 SIGNAL BOSS</span>
+          </div>
+          <div style={{ padding:"20px 22px" }}>
+            <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.12em", marginBottom:4 }}>EXAMPLE SIGNAL</div>
+            <div style={{ fontWeight:700, fontSize:16, marginBottom:14 }}>ES / MES &nbsp;·&nbsp; <span style={{ color:C.long }}>LONG</span></div>
+            <div style={{ borderTop:`1px solid ${C.border}`, paddingTop:14, display:"flex", flexDirection:"column", gap:8 }}>
+              {[
+                { icon:"🔵", label:"ENTRY", value:"6,470.25", color:C.long },
+                { icon:"🔴", label:"STOP", value:"6,466.00", color:C.short },
+                { icon:"🟢", label:"1ST TARGET", value:"6,485.75", note:"optional exit", color:C.accent },
+              ].map(row => (
+                <div key={row.label} style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                  <span style={{ fontSize:12, color:C.textMid, fontFamily:"monospace" }}>{row.icon} {row.label}</span>
+                  <div style={{ textAlign:"right" }}>
+                    <span style={{ fontSize:14, fontWeight:700, fontFamily:"monospace", color:row.color }}>{row.value}</span>
+                    {row.note && <span style={{ fontSize:10, color:C.textDim, marginLeft:6 }}>({row.note})</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ borderTop:`1px solid ${C.border}`, marginTop:14, paddingTop:12, fontSize:11, color:C.textDim, fontFamily:"monospace" }}>
+              ⏱ 9:05 AM ET &nbsp;·&nbsp; Exit: End of hour at market
+            </div>
+          </div>
+        </div>
+
+        <p style={{ textAlign:"center", color:C.textMid, fontSize:14, lineHeight:1.8, maxWidth:560, margin:"0 auto" }}>
+          Simple. Straightforward. No guesswork.<br />
+          <span style={{ color:C.text, fontWeight:600 }}>Traders focus on execution — not staring at charts.</span>
+        </p>
       </div>
 
       {/* Founder Section */}
