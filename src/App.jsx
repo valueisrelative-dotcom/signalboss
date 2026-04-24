@@ -59,7 +59,7 @@ const T = {
     pricing: "Pricing", pricingNote: "14-day free trial. No credit card required.",
     getStarted: "Get Started", signIn: "Sign In", signUp: "Sign Up",
     signInTitle: "Sign in", signUpTitle: "Create account",
-    signInSub: "Enter your email to access your dashboard", signUpSub: "Start your 14-day free trial",
+    signInSub: "Welcome back to Signal Boss", signUpSub: "Start your 14-day free trial",
     fullName: "FULL NAME", email: "EMAIL", password: "PASSWORD", plan: "PLAN",
     createAccount: "Create Account", noAccount: "No account? ", haveAccount: "Have an account? ",
     engineActive: "ENGINE ACTIVE", active: "ACTIVE",
@@ -1389,6 +1389,7 @@ function AuthPage({ mode, onNavigate, onAuth, t, track }) {
         <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
           {!isLogin && <div><label style={labelStyle}>{t.fullName}</label><input style={inputStyle} value={name} onChange={e=>setName(e.target.value)} placeholder="John Smith" /></div>}
           <div><label style={labelStyle}>{t.email}</label><input style={inputStyle} value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com" type="email" /></div>
+          <div><label style={labelStyle}>{t.password}</label><input style={inputStyle} value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••" type="password" /></div>
           {!isLogin && (
             <>
               <div>
