@@ -15,10 +15,10 @@ const LANGS = {
 const T = {
   en: {
     tagline: "Multi-Cycle Signal Engine · Live",
-    heroTitle1: "No charts. No noise.", heroTitle2: "The Inflection Point.",
-    heroSub: "Just what matters — IV inflection signals built on multi-cycle momentum confluence and VWAP confirmation. No noise. Just the signal.",
+    heroTitle1: "Be the Only One Not Guessing at the Open.", heroTitle2: "Entry. Stop. Target. Every Morning. Done.",
+    heroSub: "Every morning before the open, Signal Boss delivers the three numbers that define your trade — entry, stop, and target. No charts. No guesswork. Just clarity.",
     engineTagline: "Institutional-Grade Signal Engine · Live",
-    chooserTitle1: "No charts. No noise.", chooserTitle2: "Just what matters...", chooserTitle3: "The Inflection Point.",
+    chooserTitle1: "Be the Only One Not Guessing at the Open.", chooserTitle2: "", chooserTitle3: "Entry. Stop. Target. Every Morning. Done.",
     chooserSub: "Volatility leads. Price follows. Signal Boss reads the state the market is actually in — so your decisions are based on what really moves it.",
     whyBuilt: "WHY WE BUILT SIGNAL BOSS",
     whyP1: "98% of traders lose money. Nearly 100% of them use charts to make decisions.",
@@ -873,7 +873,7 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
             ? <>{t.forexHeroTitle1}<br /><span style={{ color:C.accent }}>{t.forexHeroTitle2}</span></>
             : track==="futures"
             ? <>{t.heroTitle1}<br /><span style={{ color:C.accent }}>{t.heroTitle2}</span></>
-            : <>{t.chooserTitle1}<br />{t.chooserTitle2}<br /><span style={{ color:C.accent }}>{t.chooserTitle3}</span></>}
+            : <>{t.chooserTitle1}<br /><span style={{ color:C.accent }}>{t.chooserTitle3}</span></>}
         </h1>
         <p style={{ fontSize:18, color:"#b8cccc", maxWidth:560, lineHeight:1.8, marginBottom:52 }}>
           {track==="forex" ? t.forexHeroSub : t.chooserSub}
