@@ -1900,7 +1900,8 @@ function PositionTracker() {
 }
 
 function Dashboard({ user, onNavigate, t, lang, setLang }) {
-  const isAdmin  = !!user; // Admin tab visible to any logged-in user
+  const ADMIN_IDS = ["user_2xQZFhQW5rYVz8kP1mNdTjLcE9o"]; // JR only — add Clerk user ID here
+  const isAdmin  = ADMIN_IDS.includes(user?.id);
 
   const [signals,      setSignals]      = useState([]);
   const [levels,       setLevels]       = useState({});
@@ -1992,8 +1993,6 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
     { id:"signals", label:t.liveSignals,   icon:"◉" },
     { id:"levels",  label:"VRB Levels",    icon:"▤" },
     { id:"history", label:t.signalHistory, icon:"◷" },
-    { id:"pnl",     label:"P&L Tracker",   icon:"◈" },
-    { id:"config",  label:t.configuration, icon:"⚙" },
     { id:"prop",    label:t.propCalc,       icon:"⬡" },
     { id:"account", label:t.account,        icon:"◎" },
     ...(isAdmin ? [{ id:"admin", label:"Admin", icon:"⬛" }] : []),
@@ -2095,10 +2094,10 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
             <div style={{ padding:"22px 22px 32px" }}>
               <div style={{ display:"flex", alignItems:"baseline", gap:14, marginBottom:6 }}>
                 <h2 style={{ fontSize:18, fontWeight:600, margin:0 }}>VRB Levels</h2>
-                <span style={{ fontSize:11, color:C.textDim, fontFamily:"monospace" }}>Volatility range · levels post at 9:00 AM</span>
+                <span style={{ fontSize:11, color:C.textDim, fontFamily:"monospace" }}>Key levels post between 7:15am and 9:05am&nbsp;&nbsp;·&nbsp;&nbsp;SB Criteria Trades post throughout the day</span>
               </div>
               <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", marginBottom:20 }}>
-                W1 = 8–9 AM range&nbsp;&nbsp;·&nbsp;&nbsp;W2 = 9–10 AM range&nbsp;&nbsp;·&nbsp;&nbsp;SL = full contract&nbsp;&nbsp;·&nbsp;&nbsp;Targets at 3:1 and 5:1 RR
+                SL = full contract&nbsp;&nbsp;·&nbsp;&nbsp;Targets at 3:1 and 5:1 RR
               </div>
 
               <div style={{ overflowX:"auto", borderRadius:10, border:`1px solid ${C.border}` }}>
@@ -2464,96 +2463,49 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
           );
         })()}
 
-        {activeTab==="config" && (
-          <div style={{ padding:22, maxWidth:580 }}>
-            <h2 style={{ fontSize:18, fontWeight:600, marginBottom:4 }}>Configuration</h2>
-            <p style={{ color:C.textMid, fontSize:13, marginBottom:24 }}>Engine status and alert delivery settings</p>
-
-            {/* Engine status */}
-            <div style={{ background:C.surface, border:`1px solid ${C.long}33`, borderRadius:12, padding:20, marginBottom:14 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16 }}>
-                <LiveDot color={C.long} size={7} />
-                <span style={{ fontFamily:"monospace", fontSize:13, fontWeight:700, color:C.long, letterSpacing:"0.08em" }}>ENGINE ACTIVE</span>
-                <span style={{ marginLeft:"auto", fontFamily:"monospace", fontSize:11, color:C.textDim }}>Polling every 60s</span>
-              </div>
-              {[
-                ["Session",        "8:00 AM – 4:00 PM ET, Mon–Fri"],
-                ["Instruments",    "ES · NQ · YM · RTY · CL · GC · ZN · ZF · ZT"],
-                ["Signal Windows", "W1: 8–9 AM range  ·  W2: 9–10 AM range"],
-                ["IV Boss Filter", "Active — blocks counter-trend signals"],
-              ].map(([label, value]) => (
-                <div key={label} style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", padding:"9px 0", borderBottom:`1px solid ${C.border}` }}>
-                  <span style={{ fontSize:12, color:C.textMid, fontFamily:"monospace", minWidth:130, flexShrink:0 }}>{label}</span>
-                  <span style={{ fontSize:12, color:C.text, fontFamily:"monospace", textAlign:"right" }}>{value}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Telegram */}
-            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:14 }}>
-              <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>Telegram Alerts</div>
-              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
-                <div>
-                  <div style={{ fontSize:13, fontWeight:600 }}>@Signal Boss Alerts</div>
-                  <div style={{ fontSize:11, color:C.textMid, marginTop:3 }}>All signals delivered in real time</div>
-                </div>
-                <a href="https://t.me/SignalBossAlerts" target="_blank" rel="noreferrer"
-                  style={{ padding:"7px 16px", background:C.accentDim, border:`1px solid ${C.accent}44`, borderRadius:7, color:C.accent, fontSize:12, fontFamily:"monospace", fontWeight:600, textDecoration:"none" }}>
-                  Open Channel →
-                </a>
-              </div>
-              <div style={{ padding:"10px 0" }}>
-                <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", lineHeight:1.8 }}>
-                  Signal cards include: Entry · Stop · 1st Target · Risk per contract · IV Boss cycle bias
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab==="pnl"  && <PositionTracker />}
-
         {activeTab==="prop" && <PropCalc t={t} />}
 
         {activeTab==="account" && (
           <div style={{ padding:22, maxWidth:520 }}>
             <h2 style={{ fontSize:18, fontWeight:600, marginBottom:4 }}>{t.account}</h2>
-            <p style={{ color:C.textMid, fontSize:13, marginBottom:22 }}>{t.accountSub}</p>
-            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:14 }}>
-              <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>{t.subscription}</div>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                <div>
-                  <div style={{ fontSize:18, fontWeight:700, color:C.accent, fontFamily:"monospace" }}>PRO PLAN</div>
-                  <div style={{ color:C.textMid, fontSize:13, marginTop:4 }}>$249/month · Renews Mar 18, 2026</div>
-                </div>
-                <button style={{ padding:"8px 16px", background:"transparent", border:`1px solid ${C.border}`, borderRadius:7, color:C.textMid, cursor:"pointer", fontSize:13 }}>{t.manage}</button>
+            <p style={{ color:C.textMid, fontSize:13, marginBottom:22 }}>Your subscription details.</p>
+
+            {/* Plan info */}
+            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:24, marginBottom:14 }}>
+              <div style={{ fontWeight:600, fontSize:14, marginBottom:16, color:C.textMid, letterSpacing:"0.08em", fontFamily:"monospace", fontSize:11 }}>SUBSCRIPTION</div>
+              <div style={{ fontSize:22, fontWeight:700, color:C.accent, fontFamily:"monospace", marginBottom:6 }}>
+                {user?.publicMetadata?.plan ? user.publicMetadata.plan.toUpperCase() + " PLAN" : "PRO PLAN"}
+              </div>
+              <div style={{ color:C.textMid, fontSize:13, marginBottom:4 }}>
+                {user?.publicMetadata?.plan === "starter" ? "$149" : user?.publicMetadata?.plan === "elite" ? "$449" : "$249"}/month
+              </div>
+              <div style={{ color:C.textDim, fontSize:12, fontFamily:"monospace" }}>
+                Renews automatically · Cancel anytime
               </div>
             </div>
-            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:14 }}>
-              <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>{t.alertDelivery}</div>
-              {[["Website (real-time)",true],["Email notifications",true],["WhatsApp",true],["Webhook",false]].map(([label,on]) => (
-                <div key={label} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
-                  <span style={{ fontSize:13 }}>{label}</span>
-                  <div style={{ width:40, height:22, borderRadius:11, background:on?C.accent:C.border, position:"relative" }}>
-                    <div style={{ position:"absolute", top:3, left:on?21:3, width:16, height:16, borderRadius:"50%", background:"#fff" }} />
+
+            {/* Alert delivery — read-only info */}
+            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:24, marginBottom:14 }}>
+              <div style={{ fontWeight:600, fontSize:11, marginBottom:16, color:C.textMid, letterSpacing:"0.08em", fontFamily:"monospace" }}>ALERT DELIVERY</div>
+              {[["Website", "Real-time dashboard"], ["Email", "Every signal, every trade"], ["WhatsApp", "Live signal cards"]].map(([ch, desc]) => (
+                <div key={ch} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
+                  <div>
+                    <div style={{ fontSize:13, fontWeight:600 }}>{ch}</div>
+                    <div style={{ fontSize:11, color:C.textDim, marginTop:2 }}>{desc}</div>
                   </div>
+                  <span style={{ fontSize:11, color:C.long, fontFamily:"monospace", fontWeight:700 }}>● ACTIVE</span>
                 </div>
               ))}
             </div>
-            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20 }}>
-              <div style={{ fontWeight:600, fontSize:14, marginBottom:12 }}>{t.instruments}</div>
+
+            {/* Instruments */}
+            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:24 }}>
+              <div style={{ fontWeight:600, fontSize:11, marginBottom:14, color:C.textMid, letterSpacing:"0.08em", fontFamily:"monospace" }}>INSTRUMENTS</div>
               <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                 {ALL_INSTS.map(inst => (
                   <span key={inst} style={{ padding:"5px 14px", background:C.accentDim, border:`1px solid ${C.accent}33`, borderRadius:6, fontSize:12, color:C.accent, fontFamily:"monospace", fontWeight:600 }}>{inst}</span>
                 ))}
               </div>
-            </div>
-            <div style={{ background:C.surface, border:`1px solid ${C.prop}33`, borderRadius:12, padding:20, display:"flex", alignItems:"center", justifyContent:"space-between", gap:16 }}>
-              <div>
-                <div style={{ fontWeight:600, fontSize:14, marginBottom:4, color:C.prop }}>Earn with Signal Boss</div>
-                <div style={{ fontSize:12, color:C.textMid, lineHeight:1.6 }}>Refer traders and earn recurring commission on every active subscription.</div>
-              </div>
-              <button style={{ padding:"9px 20px", background:"transparent", border:`1px solid ${C.prop}`, borderRadius:7, color:C.prop, cursor:"pointer", fontSize:13, fontWeight:600, whiteSpace:"nowrap" }}>Learn More →</button>
             </div>
           </div>
         )}
