@@ -868,7 +868,7 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
           {track==="forex" ? t.forexTagline : track==="futures" ? t.tagline : t.engineTagline}
         </div>
         <div style={{ marginBottom:24 }}><SignalCounter count={signalCount} /></div>
-        <h1 style={{ fontSize:"clamp(44px,6.5vw,86px)", fontWeight:700, lineHeight:1.08, marginBottom:24, letterSpacing:"-0.04em", maxWidth:800 }}>
+        <h1 style={{ fontSize:"clamp(26px,3.2vw,48px)", fontWeight:700, lineHeight:1.15, marginBottom:24, letterSpacing:"-0.03em", maxWidth:800 }}>
           {track==="forex"
             ? <>{t.forexHeroTitle1}<br /><span style={{ color:C.accent }}>{t.forexHeroTitle2}</span></>
             : track==="futures"
