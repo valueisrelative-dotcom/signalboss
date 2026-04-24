@@ -2821,6 +2821,7 @@ function AppInner() {
   const [track, setTrack] = useState(null);
   const [postAuthDest, setPostAuthDest] = useState(null);
   const [showPricingModal, setShowPricingModal] = useState(false);
+  const modalAutoShown = useRef(false);
   const t = T[lang];
 
   const isSubscribed = clerkUser?.publicMetadata?.subscribed === true;
@@ -2828,20 +2829,25 @@ function AppInner() {
 
   useEffect(() => {
     if (!isLoaded) return;
-    if (isSignedIn && (page === "login" || page === "signup")) {
-      if (isSubscribed) {
-        setPage("dashboard");
-      } else {
-        setPage("landing");
-        setShowPricingModal(true);
-      }
+    // After Stripe payment success
+    if (isSignedIn && window.location.search.includes("payment=success")) {
+      window.history.replaceState({}, "", "/");
+      setPage("dashboard");
+      return;
+    }
+    // Signed in but not subscribed — auto-show pricing modal once per session
+    if (isSignedIn && !isSubscribed && !modalAutoShown.current) {
+      modalAutoShown.current = true;
+      setPage("landing");
+      setShowPricingModal(true);
+      return;
+    }
+    // Signed in and subscribed — go to dashboard
+    if (isSignedIn && isSubscribed && (page === "login" || page === "signup")) {
+      setPage("dashboard");
     }
     if (!isSignedIn && page === "dashboard") {
       setPage("landing");
-    }
-    if (isSignedIn && window.location.search.includes("subscribed=true")) {
-      window.history.replaceState({}, "", "/");
-      setPage("dashboard");
     }
   }, [isLoaded, isSignedIn, isSubscribed]);
 
