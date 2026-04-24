@@ -1749,7 +1749,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
 
   const tabs = [
     { id:"signals", label:t.liveSignals,   icon:"◉" },
-    { id:"levels",  label:"ORB Levels",    icon:"▤" },
+    { id:"levels",  label:"VRB Levels",    icon:"▤" },
     { id:"history", label:t.signalHistory, icon:"◷" },
     { id:"pnl",     label:"P&L Tracker",   icon:"◈" },
     { id:"config",  label:t.configuration, icon:"⚙" },
@@ -1859,7 +1859,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
           return (
             <div style={{ padding:"22px 22px 32px" }}>
               <div style={{ display:"flex", alignItems:"baseline", gap:14, marginBottom:6 }}>
-                <h2 style={{ fontSize:18, fontWeight:600, margin:0 }}>ORB Levels</h2>
+                <h2 style={{ fontSize:18, fontWeight:600, margin:0 }}>VRB Levels</h2>
                 <span style={{ fontSize:11, color:C.textDim, fontFamily:"monospace" }}>Opening range · populates as signals fire</span>
               </div>
               <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", marginBottom:20 }}>
@@ -1949,12 +1949,12 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
         {activeTab==="history" && (() => {
           const isOrb = s => s.type === "VOLATILITY_ORB" || s.type === "ORB";
           const TYPE_META = {
-            "VOLATILITY_ORB": { label:"Volatility Aligned ORB", color:"#38bdf8", bg:"#38bdf811" },
-            "ORB":            { label:"Volatility Aligned ORB", color:"#38bdf8", bg:"#38bdf811" },
+            "VOLATILITY_ORB": { label:"Volatility Aligned VRB", color:"#38bdf8", bg:"#38bdf811" },
+            "ORB":            { label:"Volatility Aligned VRB", color:"#38bdf8", bg:"#38bdf811" },
             "SB_CRITERIA":    { label:"SB Criteria Met",        color:"#a78bfa", bg:"#a78bfa11" },
             "MANUAL":         { label:"SB Criteria Met",        color:"#a78bfa", bg:"#a78bfa11" },
           };
-          const getTypeMeta = s => TYPE_META[s.type] || { label: s.trigger || "ORB", color:C.textMid, bg:C.surface };
+          const getTypeMeta = s => TYPE_META[s.type] || { label: s.trigger || "VRB", color:C.textMid, bg:C.surface };
           const getStatusMeta = s => {
             const st = s.status || "ACTIVE";
             if (st === "WIN")    return { label:"WIN ✓", color:C.long };
