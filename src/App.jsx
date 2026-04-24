@@ -1037,15 +1037,21 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
             <div style={{ fontWeight:700, fontSize:16, marginBottom:14 }}>ES / MES &nbsp;·&nbsp; <span style={{ color:C.long }}>LONG</span></div>
             <div style={{ borderTop:`1px solid ${C.border}`, paddingTop:14, display:"flex", flexDirection:"column", gap:8 }}>
               {[
-                { icon:"🔵", label:"ENTRY", value:"6,470.25", color:C.long },
-                { icon:"🔴", label:"STOP", value:"6,466.00", color:C.short },
-                { icon:"🟢", label:"1ST TARGET", value:"6,485.75", note:"optional exit", color:C.accent },
+                { icon:"🔵", label:"ENTRY",      value:"6,470.25", color:C.long },
+                { icon:"🔴", label:"STOP",       value:"6,466.00", color:C.short,  usd:"-$212",  micro:"-$21" },
+                { icon:"🟢", label:"1ST TARGET", value:"6,483.00", color:C.accent, usd:"+$637", micro:"+$64", note:"optional exit" },
               ].map(row => (
                 <div key={row.label} style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                   <span style={{ fontSize:12, color:C.textMid, fontFamily:"monospace" }}>{row.icon} {row.label}</span>
                   <div style={{ textAlign:"right" }}>
                     <span style={{ fontSize:14, fontWeight:700, fontFamily:"monospace", color:row.color }}>{row.value}</span>
-                    {row.note && <span style={{ fontSize:10, color:C.textDim, marginLeft:6 }}>({row.note})</span>}
+                    {row.usd && (
+                      <div style={{ fontSize:11, color:C.textDim, marginTop:1 }}>
+                        <span style={{ color:row.color, fontWeight:600 }}>{row.usd}</span>
+                        <span style={{ marginLeft:6, opacity:0.6 }}>ES &nbsp;·&nbsp; {row.micro} MES</span>
+                      </div>
+                    )}
+                    {row.note && <div style={{ fontSize:10, color:C.textDim, marginTop:1 }}>({row.note})</div>}
                   </div>
                 </div>
               ))}
