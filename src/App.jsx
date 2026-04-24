@@ -1860,7 +1860,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
             <div style={{ padding:"22px 22px 32px" }}>
               <div style={{ display:"flex", alignItems:"baseline", gap:14, marginBottom:6 }}>
                 <h2 style={{ fontSize:18, fontWeight:600, margin:0 }}>VRB Levels</h2>
-                <span style={{ fontSize:11, color:C.textDim, fontFamily:"monospace" }}>Opening range · populates as signals fire</span>
+                <span style={{ fontSize:11, color:C.textDim, fontFamily:"monospace" }}>Volatility range · populates as signals fire</span>
               </div>
               <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", marginBottom:20 }}>
                 W1 = 8–9 AM range&nbsp;&nbsp;·&nbsp;&nbsp;W2 = 9–10 AM range&nbsp;&nbsp;·&nbsp;&nbsp;SL = full contract&nbsp;&nbsp;·&nbsp;&nbsp;Targets at 3:1 and 5:1 RR
@@ -2186,7 +2186,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                 </div>
                 <div style={{ marginBottom:14 }}>
                   <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginBottom:5 }}>NOTE (optional)</div>
-                  <input type="text" placeholder="e.g. ORB breakout confirmed · strong volume" value={manualForm.note}
+                  <input type="text" placeholder="e.g. VRB breakout confirmed · strong volume" value={manualForm.note}
                     onChange={e=>setManualForm(p=>({...p,note:e.target.value}))}
                     style={{ width:"100%", padding:"8px 10px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, boxSizing:"border-box" }} />
                 </div>
