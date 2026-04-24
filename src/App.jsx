@@ -1911,6 +1911,23 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   const [histTypeFilter, setHistTypeFilter] = useState("ALL");
   const [manualForm,   setManualForm]   = useState({ instrument:"NQ", direction:"LONG", price:"", stop:"", tp:"", note:"" });
   const [manualStatus, setManualStatus] = useState(null);
+
+  // Admin — Manual History Entry form
+  const today = new Date().toISOString().slice(0, 10);
+  const [histForm, setHistForm] = useState({
+    instrument:"NQ", date:today, time:"10:00 AM ET", direction:"LONG",
+    entry:"", stop:"", exitPrice:"", status:"WIN", pnlUsd:"", notes:""
+  });
+  const [histStatus, setHistStatus] = useState(null);
+
+  // Admin — Broadcast Message
+  const [broadcastMsg,    setBroadcastMsg]    = useState("");
+  const [broadcastStatus, setBroadcastStatus] = useState(null);
+  const [broadcastActive, setBroadcastActive] = useState(null); // current active message from Gist
+
+  // Broadcast banner
+  const [broadcastData,      setBroadcastData]      = useState(null);
+  const [broadcastDismissed, setBroadcastDismissed] = useState(false);
   const [filterInst,   setFilterInst]   = useState(() => {
     try {
       const raw = JSON.parse(localStorage.getItem("sb_inst_filter"));
@@ -1985,6 +2002,21 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
     return () => clearInterval(iv);
   }, []);
 
+  // Broadcast banner — fetch every 5 minutes
+  useEffect(() => {
+    const loadBroadcast = () =>
+      fetch(`https://gist.githubusercontent.com/raw/336ce62861f67be83d1fdbd34576f4c5/broadcast.json?t=${Date.now()}`)
+        .then(r => r.json())
+        .then(d => {
+          setBroadcastData(d);
+          setBroadcastActive(d?.active ? d.message : null);
+        })
+        .catch(() => {});
+    loadBroadcast();
+    const iv = setInterval(loadBroadcast, 5 * 60 * 1000);
+    return () => clearInterval(iv);
+  }, []);
+
   const active   = signals.filter(s => s.status === "ACTIVE");
   const longs    = active.filter(s => s.direction === "LONG").length;
   const shorts   = active.filter(s => s.direction === "SHORT").length;
@@ -1999,7 +2031,16 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   ];
 
   return (
-    <div style={{ display:"flex", minHeight:"100vh" }}>
+    <div style={{ display:"flex", flexDirection:"column", minHeight:"100vh" }}>
+      {/* Broadcast Banner */}
+      {broadcastData?.active && broadcastData?.message && !broadcastDismissed && (
+        <div style={{ background:"#2a2000", borderBottom:"1px solid #a06800", color:"#ffd666", fontSize:13, padding:"10px 24px", display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
+          <span>⚠ {broadcastData.message}</span>
+          <button onClick={() => setBroadcastDismissed(true)}
+            style={{ background:"none", border:"none", color:"#ffd666", cursor:"pointer", fontSize:16, padding:"0 4px", lineHeight:1 }}>×</button>
+        </div>
+      )}
+      <div style={{ display:"flex", flex:1 }}>
       {/* Sidebar */}
       <div style={{ width:215, background:C.surface, borderRight:`1px solid ${C.border}`, display:"flex", flexDirection:"column", flexShrink:0 }}>
         <div style={{ padding:"20px 18px 16px", borderBottom:`1px solid ${C.border}` }}>
@@ -2111,19 +2152,21 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                       <th style={{ ...COL_HDR, textAlign:"right"  }}>SL $</th>
                       <th style={{ ...COL_HDR, textAlign:"right"  }}>TARGET 3:1 $</th>
                       <th style={{ ...COL_HDR, textAlign:"right"  }}>TARGET 5:1 $</th>
+                      <th style={{ ...COL_HDR, textAlign:"center" }}>VOL MOMENTUM</th>
                     </tr>
                   </thead>
                   <tbody>
                     {ALL_INSTS.map((sym, i) => {
-                      const lv     = levels[sym];   // from levels.json — available at 9:00 AM
-                      const micro  = MICROS[sym];
-                      const orHigh = lv?.orHigh   ?? null;
-                      const orLow  = lv?.orLow    ?? null;
-                      const range  = lv?.rangePts ?? null;
-                      const slUsd  = lv?.slUsd    ?? null;
-                      const t31    = lv?.t31Usd   ?? null;
-                      const t51    = lv?.t51Usd   ?? null;
-                      const rowBg  = i % 2 === 1 ? `${C.surface}66` : "transparent";
+                      const lv       = levels[sym];   // from levels.json — available at 9:00 AM
+                      const micro    = MICROS[sym];
+                      const orHigh   = lv?.orHigh   ?? null;
+                      const orLow    = lv?.orLow    ?? null;
+                      const range    = lv?.rangePts ?? null;
+                      const slUsd    = lv?.slUsd    ?? null;
+                      const t31      = lv?.t31Usd   ?? null;
+                      const t51      = lv?.t51Usd   ?? null;
+                      const momentum = lv?.momentum ?? null;
+                      const rowBg    = i % 2 === 1 ? `${C.surface}66` : "transparent";
 
                       return (
                         <tr key={sym} style={{ background:rowBg, borderBottom:`1px solid ${C.border}22` }}>
@@ -2161,6 +2204,17 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                           {/* Target 5:1 $ */}
                           <td style={{ ...CELL(), textAlign:"right", color:C.long, fontWeight:600 }}>
                             {fmtUsd(t51) ?? dash}
+                          </td>
+
+                          {/* Vol Momentum */}
+                          <td style={{ ...CELL(), textAlign:"center", fontWeight:700 }}>
+                            {momentum === "BULLISH" ? (
+                              <span style={{ color:C.long }}>BULLISH</span>
+                            ) : momentum === "BEARISH" ? (
+                              <span style={{ color:C.short }}>BEARISH</span>
+                            ) : (
+                              <span style={{ color:C.textDim }}>{dash}</span>
+                            )}
                           </td>
                         </tr>
                       );
@@ -2459,6 +2513,147 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                   </div>
                 ))}
               </div>
+
+              {/* ── Manual History Entry ── */}
+              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>MANUAL HISTORY ENTRY</div>
+              <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:28 }}>
+                {(() => {
+                  const HIST_INSTS = ["ES","NQ","YM","RTY","CL","GC","ZN","ZF","ZT"];
+                  const iStyle = { width:"100%", padding:"8px 10px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace", boxSizing:"border-box" };
+                  const lStyle = { fontSize:10, color:C.textDim, fontFamily:"monospace", marginBottom:5 };
+                  return (
+                    <>
+                      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10, marginBottom:10 }}>
+                        <div>
+                          <div style={lStyle}>INSTRUMENT</div>
+                          <select value={histForm.instrument} onChange={e => setHistForm(p=>({...p,instrument:e.target.value}))} style={iStyle}>
+                            {HIST_INSTS.map(s=><option key={s}>{s}</option>)}
+                          </select>
+                        </div>
+                        <div>
+                          <div style={lStyle}>DATE</div>
+                          <input type="date" value={histForm.date} onChange={e => setHistForm(p=>({...p,date:e.target.value}))} style={iStyle} />
+                        </div>
+                        <div>
+                          <div style={lStyle}>TIME</div>
+                          <input type="text" placeholder="10:00 AM ET" value={histForm.time} onChange={e => setHistForm(p=>({...p,time:e.target.value}))} style={iStyle} />
+                        </div>
+                      </div>
+                      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:10 }}>
+                        <div>
+                          <div style={lStyle}>DIRECTION</div>
+                          <select value={histForm.direction} onChange={e => setHistForm(p=>({...p,direction:e.target.value}))} style={iStyle}>
+                            <option>LONG</option><option>SHORT</option>
+                          </select>
+                        </div>
+                        <div>
+                          <div style={lStyle}>STATUS</div>
+                          <select value={histForm.status} onChange={e => setHistForm(p=>({...p,status:e.target.value}))} style={iStyle}>
+                            <option>WIN</option><option>LOSS</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:10, marginBottom:10 }}>
+                        {[["entry","ENTRY PRICE"],["stop","STOP PRICE"],["exitPrice","EXIT PRICE"],["pnlUsd","P&L $"]].map(([field,label])=>(
+                          <div key={field}>
+                            <div style={lStyle}>{label}</div>
+                            <input type="number" placeholder={field==="pnlUsd"?"auto":"0.00"} value={histForm[field]}
+                              onChange={e => {
+                                const val = e.target.value;
+                                setHistForm(p => {
+                                  const next = {...p, [field]:val};
+                                  // auto-calc pnl from exit - entry when both are set
+                                  if (field !== "pnlUsd" && next.exitPrice && next.entry) {
+                                    const diff = parseFloat(next.exitPrice) - parseFloat(next.entry);
+                                    next.pnlUsd = next.direction === "LONG" ? String(diff.toFixed(2)) : String((-diff).toFixed(2));
+                                  }
+                                  return next;
+                                });
+                              }}
+                              style={iStyle} />
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ marginBottom:12 }}>
+                        <div style={lStyle}>NOTES (optional)</div>
+                        <input type="text" placeholder="Optional notes" value={histForm.notes} onChange={e => setHistForm(p=>({...p,notes:e.target.value}))} style={iStyle} />
+                      </div>
+                      <button onClick={async () => {
+                        setHistStatus({ok:null,msg:"Saving..."});
+                        try {
+                          const resp = await fetch("/api/admin-history", {
+                            method:"POST",
+                            headers:{"Content-Type":"application/json"},
+                            body: JSON.stringify({
+                              ...histForm,
+                              entry:     parseFloat(histForm.entry)    || 0,
+                              stop:      parseFloat(histForm.stop)     || 0,
+                              exitPrice: parseFloat(histForm.exitPrice)|| 0,
+                              pnlUsd:    parseFloat(histForm.pnlUsd)   || 0,
+                              token:     "sb_admin_token_placeholder",
+                            }),
+                          });
+                          const data = await resp.json();
+                          if (resp.ok) { setHistStatus({ok:true,msg:"Saved to Gist history."}); }
+                          else setHistStatus({ok:false,msg:`Error: ${data.error||"Unknown"}`});
+                        } catch(e) { setHistStatus({ok:false,msg:`Error: ${e.message}`}); }
+                      }} style={{ padding:"10px 24px", background:C.accent, border:"none", borderRadius:8, color:"#080909", fontWeight:700, fontSize:13, fontFamily:"monospace", cursor:"pointer" }}>
+                        Save to History
+                      </button>
+                      {histStatus && <div style={{ marginTop:8, fontSize:12, fontFamily:"monospace", color:histStatus.ok===true?C.long:histStatus.ok===false?C.short:C.textMid }}>{histStatus.msg}</div>}
+                    </>
+                  );
+                })()}
+              </div>
+
+              {/* ── Broadcast Message ── */}
+              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>BROADCAST MESSAGE</div>
+              <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:28 }}>
+                {broadcastActive && (
+                  <div style={{ marginBottom:12, padding:"10px 14px", background:"#2a2000", border:"1px solid #a06800", borderRadius:8, fontSize:12, color:"#ffd666", fontFamily:"monospace" }}>
+                    Active: {broadcastActive}
+                  </div>
+                )}
+                <div style={{ marginBottom:10 }}>
+                  <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginBottom:5 }}>MESSAGE</div>
+                  <textarea value={broadcastMsg} onChange={e => setBroadcastMsg(e.target.value)}
+                    rows={3} placeholder="Broadcast message to all dashboard users..."
+                    style={{ width:"100%", padding:"8px 10px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace", resize:"vertical", boxSizing:"border-box" }} />
+                </div>
+                <div style={{ display:"flex", gap:10 }}>
+                  <button onClick={async () => {
+                    setBroadcastStatus({ok:null,msg:"Sending..."});
+                    try {
+                      const resp = await fetch("/api/admin-broadcast", {
+                        method:"POST",
+                        headers:{"Content-Type":"application/json"},
+                        body: JSON.stringify({ message: broadcastMsg, token: "sb_admin_token_placeholder" }),
+                      });
+                      const data = await resp.json();
+                      if (resp.ok) { setBroadcastStatus({ok:true,msg:"Broadcast sent."}); setBroadcastActive(broadcastMsg); }
+                      else setBroadcastStatus({ok:false,msg:`Error: ${data.error||"Unknown"}`});
+                    } catch(e) { setBroadcastStatus({ok:false,msg:`Error: ${e.message}`}); }
+                  }} style={{ padding:"10px 20px", background:C.accent, border:"none", borderRadius:8, color:"#080909", fontWeight:700, fontSize:13, cursor:"pointer" }}>
+                    Send Broadcast
+                  </button>
+                  <button onClick={async () => {
+                    setBroadcastStatus({ok:null,msg:"Clearing..."});
+                    try {
+                      const resp = await fetch("/api/admin-broadcast", {
+                        method:"POST",
+                        headers:{"Content-Type":"application/json"},
+                        body: JSON.stringify({ clear: true, token: "sb_admin_token_placeholder" }),
+                      });
+                      const data = await resp.json();
+                      if (resp.ok) { setBroadcastStatus({ok:true,msg:"Broadcast cleared."}); setBroadcastActive(null); setBroadcastDismissed(false); }
+                      else setBroadcastStatus({ok:false,msg:`Error: ${data.error||"Unknown"}`});
+                    } catch(e) { setBroadcastStatus({ok:false,msg:`Error: ${e.message}`}); }
+                  }} style={{ padding:"10px 20px", background:"transparent", border:`1px solid ${C.border}`, borderRadius:8, color:C.textMid, fontWeight:700, fontSize:13, cursor:"pointer" }}>
+                    Clear
+                  </button>
+                </div>
+                {broadcastStatus && <div style={{ marginTop:8, fontSize:12, fontFamily:"monospace", color:broadcastStatus.ok===true?C.long:broadcastStatus.ok===false?C.short:C.textMid }}>{broadcastStatus.msg}</div>}
+              </div>
             </div>
           );
         })()}
@@ -2509,6 +2704,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
             </div>
           </div>
         )}
+      </div>
       </div>
     </div>
   );
