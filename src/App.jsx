@@ -15,10 +15,10 @@ const LANGS = {
 const T = {
   en: {
     tagline: "Multi-Cycle Signal Engine · Live",
-    heroTitle1: "Be the Only One Not Guessing at the Open.", heroTitle2: "Entry. Stop. Target. Every Morning. Done.",
+    heroTitle1: "Be the Only One Not Guessing When The Market Opens.", heroTitle2: "No Candles. 1 Signal & The Only 3 Numbers That Matter.",
     heroSub: "Every morning before the open, Signal Boss delivers the three numbers that define your trade — entry, stop, and target. No charts. No guesswork. Just clarity.",
     engineTagline: "Institutional-Grade Signal Engine · Live",
-    chooserTitle1: "Be the Only One Not Guessing at the Open.", chooserTitle2: "", chooserTitle3: "Entry. Stop. Target. Every Morning. Done.",
+    chooserTitle1: "Be the Only One Not Guessing When The Market Opens.", chooserTitle2: "", chooserTitle3: "No Candles. 1 Signal & The Only 3 Numbers That Matter.",
     chooserSub: "Volatility leads. Price follows. Signal Boss reads the state the market is actually in — so your decisions are based on what really moves it.",
     whyBuilt: "WHY WE BUILT SIGNAL BOSS",
     whyP1: "98% of traders lose money. Nearly 100% of them use charts to make decisions.",
