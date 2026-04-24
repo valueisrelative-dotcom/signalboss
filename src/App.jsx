@@ -1393,6 +1393,107 @@ function ClerkAuthPage({ mode, onNavigate, initialEmail }) {
   );
 }
 
+function PricingModal({ user, track, onClose }) {
+  const [selectedPlan, setSelectedPlan] = useState(track === "forex" ? "major" : "pro");
+  const [loading, setLoading]           = useState(false);
+  const [error, setError]               = useState(null);
+
+  const futurePlans = [
+    { id:"starter", name:"Starter", price:149, desc:"Equity index, Treasury, Energy & Metals · Smart Stop & Take Profit · Risk Calculator", color:C.textMid },
+    { id:"pro",     name:"Pro",     price:249, desc:"Everything in Starter + Currency Futures · WhatsApp alerts · Intraday IV levels", color:C.accent, popular:true },
+    { id:"elite",   name:"Elite",   price:449, desc:"Everything in Pro · 1 & 2 SD of Intraday IV · Compression/Expansion · Bond spread analysis", color:C.long },
+  ];
+  const forexPlans = [
+    { id:"major", name:"Major Pairs",   price:129, desc:"Forex Trade Signals · Smart Stop & Take Profit · Risk Calculator", color:C.accent, popular:true },
+    { id:"full",  name:"Full Coverage", price:249, desc:"All Major Pairs · WhatsApp alerts · Additional indicator signals", color:C.long },
+  ];
+  const plans = track === "forex" ? forexPlans : futurePlans;
+
+  const handleCheckout = async () => {
+    if (!user) { onClose(); return; }
+    setLoading(true); setError(null);
+    try {
+      const resp = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, email: user.primaryEmailAddress?.emailAddress || "", plan: selectedPlan }),
+      });
+      const data = await resp.json();
+      if (data.url) { window.location.href = data.url; }
+      else { setError(data.error || "Something went wrong. Please try again."); }
+    } catch(e) { setError("Could not connect to payment server. Please try again."); }
+    setLoading(false);
+  };
+
+  return (
+    <div style={{ position:"fixed", inset:0, zIndex:2000, display:"flex", alignItems:"center", justifyContent:"center", padding:24,
+      background:"rgba(8,9,9,0.82)", backdropFilter:"blur(10px)" }}
+      onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+      <div style={{ background:"#111214", border:`1px solid ${C.border}`, borderRadius:18, width:"100%", maxWidth:500, padding:"32px 28px", position:"relative", boxShadow:"0 24px 80px #000a" }}>
+
+        {/* Close */}
+        <button onClick={onClose} style={{ position:"absolute", top:16, right:18, background:"none", border:"none",
+          color:C.textDim, fontSize:20, cursor:"pointer", lineHeight:1 }}>✕</button>
+
+        {/* Header */}
+        <div style={{ textAlign:"center", marginBottom:28 }}>
+          <div style={{ fontWeight:800, fontSize:18, fontFamily:"monospace", marginBottom:6 }}>
+            SIGNAL<span style={{ color:C.accent }}>BOSS</span>
+          </div>
+          <div style={{ fontSize:20, fontWeight:700, marginBottom:4 }}>Choose Your Plan</div>
+          <div style={{ fontSize:12, color:C.textDim }}>30-day money-back guarantee · Cancel anytime</div>
+        </div>
+
+        {/* Plans */}
+        <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:22 }}>
+          {plans.map(p => (
+            <div key={p.id} onClick={() => setSelectedPlan(p.id)}
+              style={{ background:C.surface, border:`2px solid ${selectedPlan===p.id ? p.color : C.border}`,
+                borderRadius:12, padding:"14px 18px", cursor:"pointer", position:"relative", transition:"border-color 0.15s" }}>
+              {p.popular && (
+                <div style={{ position:"absolute", top:-9, right:16, background:p.color, color:"#080909",
+                  fontSize:9, fontWeight:700, padding:"2px 10px", borderRadius:20, fontFamily:"monospace", letterSpacing:"0.08em" }}>
+                  RECOMMENDED
+                </div>
+              )}
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                  <div style={{ width:14, height:14, borderRadius:"50%", border:`2px solid ${p.color}`,
+                    background: selectedPlan===p.id ? p.color : "transparent", flexShrink:0 }} />
+                  <div>
+                    <div style={{ fontWeight:700, fontSize:14, color:p.color }}>{p.name}</div>
+                    <div style={{ fontSize:11, color:C.textDim, marginTop:2 }}>{p.desc}</div>
+                  </div>
+                </div>
+                <div style={{ textAlign:"right", flexShrink:0, marginLeft:12 }}>
+                  <div style={{ fontSize:20, fontWeight:700, fontFamily:"monospace" }}>${p.price}</div>
+                  <div style={{ fontSize:10, color:C.textDim }}>/month</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {error && (
+          <div style={{ background:C.short+"22", border:`1px solid ${C.short}44`, borderRadius:8,
+            padding:"8px 14px", marginBottom:14, fontSize:12, color:C.short }}>{error}</div>
+        )}
+
+        <button onClick={handleCheckout} disabled={loading}
+          style={{ width:"100%", padding:"14px", background:C.accent, color:"#080909", border:"none",
+            borderRadius:10, fontWeight:700, fontSize:15, cursor:"pointer", opacity:loading?0.7:1,
+            letterSpacing:"0.02em" }}>
+          {loading ? "Connecting to checkout…" : "Get Access →"}
+        </button>
+
+        <div style={{ textAlign:"center", marginTop:12, fontSize:11, color:C.textDim }}>
+          All major cards accepted · Secured by Stripe
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SubscribePage({ user, plan, onNavigate, t, track }) {
   const [selectedPlan, setSelectedPlan] = useState(track === "forex" ? "major" : "pro");
   const [loading, setLoading]           = useState(false);
@@ -2719,6 +2820,7 @@ function AppInner() {
   const [lang, setLang]   = useState("en");
   const [track, setTrack] = useState(null);
   const [postAuthDest, setPostAuthDest] = useState(null);
+  const [showPricingModal, setShowPricingModal] = useState(false);
   const t = T[lang];
 
   const isSubscribed = clerkUser?.publicMetadata?.subscribed === true;
@@ -2727,7 +2829,12 @@ function AppInner() {
   useEffect(() => {
     if (!isLoaded) return;
     if (isSignedIn && (page === "login" || page === "signup")) {
-      setPage(isSubscribed ? "dashboard" : "subscribe");
+      if (isSubscribed) {
+        setPage("dashboard");
+      } else {
+        setPage("landing");
+        setShowPricingModal(true);
+      }
     }
     if (!isSignedIn && page === "dashboard") {
       setPage("landing");
@@ -2765,7 +2872,7 @@ function AppInner() {
             <LangSwitcher lang={lang} setLang={setLang} />
             {isSignedIn ? (
               <>
-                <button onClick={() => setPage(isSubscribed ? "dashboard" : "subscribe")}
+                <button onClick={() => isSubscribed ? setPage("dashboard") : setShowPricingModal(true)}
                   style={{ padding:"8px 20px", background:C.accent, border:"none", borderRadius:6, color:"#080909", cursor:"pointer", fontWeight:700, fontSize:13 }}>
                   {isSubscribed ? "Dashboard →" : "Activate →"}
                 </button>
@@ -2796,6 +2903,9 @@ function AppInner() {
         )}
         {page==="forex-demo" && <ForexDemo onNavigate={setPage} t={t} />}
       </div>
+      {showPricingModal && (
+        <PricingModal user={clerkUser} track={track} onClose={() => setShowPricingModal(false)} />
+      )}
     </>
   );
 }
