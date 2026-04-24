@@ -418,6 +418,7 @@ const TICKER_ITEMS = [
 ];
 
 const GIST_URL    = "https://gist.githubusercontent.com/raw/336ce62861f67be83d1fdbd34576f4c5/signals.json";
+const LEVELS_URL  = "https://gist.githubusercontent.com/raw/336ce62861f67be83d1fdbd34576f4c5/levels.json";
 const HISTORY_URL = "/history.json";              // static file in public/ — always available
 const API_URL     = import.meta.env.VITE_API_URL || (window.location.hostname === "localhost" ? "http://localhost:4242" : "/vps");
 const MICROS    = { ES:"MES", NQ:"MNQ", YM:"MYM", RTY:"M2K", CL:"MCL", GC:"MGC" };
@@ -1675,6 +1676,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   const isAdmin  = !!user; // Admin tab visible to any logged-in user
 
   const [signals,      setSignals]      = useState([]);
+  const [levels,       setLevels]       = useState({});
   const [lastUpdated,  setLastUpdated]  = useState(null);
   const [activeTab,    setActiveTab]    = useState("signals");
   const [history,      setHistory]      = useState([]);
@@ -1698,7 +1700,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
     });
   };
 
-  // Live signals (Gist)
+  // Live signals (Gist) — drives Live Signals tab
   useEffect(() => {
     const load = () =>
       fetch(`${GIST_URL}?t=${Date.now()}`)
@@ -1707,6 +1709,18 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
           setSignals(d.signals || []);
           setLastUpdated(new Date().toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" }));
         })
+        .catch(() => {});
+    load();
+    const iv = setInterval(load, 60000);
+    return () => clearInterval(iv);
+  }, []);
+
+  // VRB Levels (Gist) — posts at 9:00 AM when range closes, no signal needed
+  useEffect(() => {
+    const load = () =>
+      fetch(`${LEVELS_URL}?t=${Date.now()}`)
+        .then(r => r.json())
+        .then(d => { if (d.levels) setLevels(d.levels); })
         .catch(() => {});
     load();
     const iv = setInterval(load, 60000);
@@ -1836,20 +1850,14 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
         )}
 
         {activeTab==="levels" && (() => {
-          // Build per-instrument map from today's active signals
-          const byInst = {};
-          signals.forEach(sig => {
-            if (!byInst[sig.instrument]) byInst[sig.instrument] = sig;
-          });
-
-          const fmtRange = (sym, val) => {
+          const fmtRange = (val) => {
             if (val == null) return null;
-            // Pick decimal places based on price magnitude
-            if (val >= 10)   return val.toFixed(2);
-            if (val >= 1)    return val.toFixed(3);
-            if (val >= 0.1)  return val.toFixed(4);
+            if (val >= 10)  return val.toFixed(2);
+            if (val >= 1)   return val.toFixed(3);
+            if (val >= 0.1) return val.toFixed(4);
             return val.toFixed(6);
           };
+          const fmtPx  = v => v == null ? null : v.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:6 });
           const fmtUsd = v => v == null ? null : `$${Math.round(v).toLocaleString()}`;
           const dash = <span style={{ color:C.textDim }}>—</span>;
 
@@ -1881,18 +1889,15 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                   </thead>
                   <tbody>
                     {ALL_INSTS.map((sym, i) => {
-                      const sig      = byInst[sym];
-                      const micro    = MICROS[sym];
-                      const isLong   = sig?.direction === "LONG";
-                      const range    = sig ? Math.abs((sig.price ?? 0) - (sig.risk?.stopPrice ?? 0)) : null;
-                      const slUsd    = sig?.risk?.stopUsd ?? null;
-                      const t31      = slUsd != null ? slUsd * 3 : null;
-                      const t51      = slUsd != null ? slUsd * 5 : null;
-                      // OR high = LONG entry, OR low = SHORT entry — derivable from either signal direction
-                      const orHigh   = sig ? (isLong ? sig.price : sig.risk?.stopPrice) : null;
-                      const orLow    = sig ? (isLong ? sig.risk?.stopPrice : sig.price) : null;
-                      const fmtPx    = v => v == null ? null : v.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:6 });
-                      const rowBg    = i % 2 === 1 ? `${C.surface}66` : "transparent";
+                      const lv     = levels[sym];   // from levels.json — available at 9:00 AM
+                      const micro  = MICROS[sym];
+                      const orHigh = lv?.orHigh   ?? null;
+                      const orLow  = lv?.orLow    ?? null;
+                      const range  = lv?.rangePts ?? null;
+                      const slUsd  = lv?.slUsd    ?? null;
+                      const t31    = lv?.t31Usd   ?? null;
+                      const t51    = lv?.t51Usd   ?? null;
+                      const rowBg  = i % 2 === 1 ? `${C.surface}66` : "transparent";
 
                       return (
                         <tr key={sym} style={{ background:rowBg, borderBottom:`1px solid ${C.border}22` }}>
@@ -1939,7 +1944,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
               </div>
 
               <div style={{ marginTop:14, fontSize:11, color:C.textDim, fontFamily:"monospace" }}>
-                Rows show <span style={{ color:C.long }}>—</span> until the signal fires for that instrument.&nbsp;
+                All rows populate at 9:00 AM when the range closes.&nbsp;
                 Micro contract targets = divide $ values by 10.
               </div>
             </div>
