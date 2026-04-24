@@ -1,4 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import {
+  ClerkProvider, SignIn, SignUp,
+  useUser, useAuth, UserButton,
+  SignedIn, SignedOut,
+} from "@clerk/clerk-react";
 
 const LANGS = {
   en: { label: "EN", name: "English",   flag: "🇺🇸" },
@@ -416,6 +421,25 @@ const TICKER_ITEMS = [
   { sym: "6E",  price: "1.0842",    chg: "+0.0012", up: true  },
   { sym: "ZN",  price: "108.24",    chg: "-0.06",   up: false },
 ];
+
+const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
+const clerkDark = {
+  variables: {
+    colorBackground: "#111820",
+    colorText: "#e8f0f0",
+    colorTextSecondary: "#b8cccc",
+    colorPrimary: "#c9a84c",
+    colorNeutral: "#263444",
+  },
+  elements: {
+    userButtonPopoverCard: { background: "#111820", border: "1px solid #263444", boxShadow: "0 8px 32px #000a" },
+    userButtonPopoverActionButton: { color: "#e8f0f0" },
+    userButtonPopoverActionButtonText: { color: "#e8f0f0" },
+    userButtonPopoverActionButtonIcon: { color: "#b8cccc" },
+    userButtonPopoverFooter: { display: "none" },
+  },
+};
 
 const GIST_URL    = "https://gist.githubusercontent.com/raw/336ce62861f67be83d1fdbd34576f4c5/signals.json";
 const LEVELS_URL  = "https://gist.githubusercontent.com/raw/336ce62861f67be83d1fdbd34576f4c5/levels.json";
@@ -1349,85 +1373,133 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
   );
 }
 
-function AuthPage({ mode, onNavigate, onAuth, t, track }) {
-  const [email, setEmail]       = useState("");
-  const [name, setName]         = useState("");
-  const [password, setPassword] = useState("");
-  const [plan, setPlan]         = useState("pro");
-  const [signupTrack, setSignupTrack] = useState(track || "futures");
-  const [submitting, setSubmitting]   = useState(false);
-  const [submitted, setSubmitted]     = useState(false);
-  const isLogin = mode === "login";
-  const inputStyle = { width:"100%", padding:"11px 14px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace", outline:"none" };
-  const labelStyle = { fontSize:10, color:C.textMid, letterSpacing:"0.12em", display:"block", marginBottom:7, fontFamily:"monospace" };
+function ClerkAuthPage({ mode, onNavigate, initialEmail }) {
+  return (
+    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", padding:24 }}>
+      {mode === "sign-in"
+        ? <SignIn afterSignInUrl="/" signUpUrl="#" signUpForceRedirectUrl="/"
+            appearance={{ elements: { footerAction: { display:"none" } } }} />
+        : <SignUp afterSignUpUrl="/" signInUrl="#" signInForceRedirectUrl="/"
+            initialValues={initialEmail ? { emailAddress: initialEmail } : undefined}
+            appearance={{ elements: { footerAction: { display:"none" } } }} />
+      }
+      <div style={{ position:"absolute", bottom:32, fontSize:13, color:C.textMid }}>
+        {mode === "sign-in"
+          ? <span>No account? <span onClick={() => onNavigate("signup")} style={{ color:C.accent, cursor:"pointer" }}>Start free trial →</span></span>
+          : <span>Already subscribed? <span onClick={() => onNavigate("login")} style={{ color:C.accent, cursor:"pointer" }}>Sign in →</span></span>
+        }
+      </div>
+    </div>
+  );
+}
 
-  const handleSignup = async () => {
-    if (!email || !email.includes("@")) return;
-    setSubmitting(true);
+function SubscribePage({ user, plan, onNavigate, t, track }) {
+  const [selectedPlan, setSelectedPlan] = useState(track === "forex" ? "major" : "pro");
+  const [loading, setLoading]           = useState(false);
+  const [error, setError]               = useState(null);
+
+  const futurePlans = [
+    { id:"starter", name:"Starter",  price:149, desc:"Equity index, Treasury, Energy & Metals · Smart Stop & Take Profit · Risk Calculator · Email alerts", color:C.textMid },
+    { id:"pro",     name:"Pro",      price:249, desc:"Everything in Starter + Currency Futures · Email & WhatsApp alerts · 1 Standard Deviation of Intraday IV on every signal", color:C.accent, popular:true },
+    { id:"elite",   name:"Elite",    price:449, desc:"Everything in Pro · 1 & 2 Standard Deviations of Intraday IV · Compression/Expansion · Treasury bond spread analysis", color:C.long, contactUs:true },
+  ];
+  const forexPlans = [
+    { id:"major",   name:"Major Pairs", price:129, desc:"Forex Trade Signals · Smart Stop & Take Profit · Risk Calculator · Email alerts", color:C.accent, popular:true },
+    { id:"full",    name:"Full Coverage",price:249,desc:"All Major Pairs instruments · Email & WhatsApp alerts · Additional indicator signals", color:C.long },
+  ];
+  const plans = track === "forex" ? forexPlans : futurePlans;
+
+  const handleSubscribe = async () => {
+    if (!user) { onNavigate("signup"); return; }
+    setLoading(true);
+    setError(null);
     try {
-      await fetch("https://formspree.io/f/xdalyedn", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({
-          name, email, plan,
-          track: signupTrack,
-          _subject: `🚀 New Signal Boss Trial Signup — ${signupTrack.toUpperCase()} — ${plan}`,
+      const resp = await fetch(`/api/create-checkout-session`, {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({
+          userId: user.id,
+          email:  user.primaryEmailAddress?.emailAddress || "",
+          plan:   selectedPlan,
         }),
       });
-    } catch(e) { /* silent fail — don't block the user */ }
-    setSubmitting(false);
-    onAuth({email, plan});
+      const data = await resp.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setError(data.error || "Something went wrong. Please try again.");
+      }
+    } catch(e) {
+      setError("Could not connect to payment server. Please try again.");
+    }
+    setLoading(false);
   };
 
   return (
     <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", padding:24 }}>
-      <div style={{ width:"100%", maxWidth:400, background:C.surface, border:`1px solid ${C.border}`, borderRadius:16, padding:36 }}>
-        <div style={{ marginBottom:28 }}>
-          <div style={{ fontSize:20, fontWeight:600, marginBottom:6 }}>{isLogin?t.signInTitle:t.signUpTitle}</div>
-          <div style={{ color:C.textMid, fontSize:13 }}>{isLogin?t.signInSub:t.signUpSub}</div>
+      <div style={{ width:"100%", maxWidth:560 }}>
+        <div style={{ textAlign:"center", marginBottom:36 }}>
+          <div style={{ fontWeight:800, fontSize:22, fontFamily:"monospace", marginBottom:8 }}>
+            SIGNAL<span style={{ color:C.accent }}>BOSS</span>
+          </div>
+          <h2 style={{ fontSize:22, fontWeight:700, marginBottom:8 }}>
+            {plan ? "Manage your subscription" : "Choose your plan"}
+          </h2>
+          <p style={{ color:C.textMid, fontSize:13 }}>
+            30-day money-back guarantee · Cancel anytime · All major cards accepted
+          </p>
         </div>
-        <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
-          {!isLogin && <div><label style={labelStyle}>{t.fullName}</label><input style={inputStyle} value={name} onChange={e=>setName(e.target.value)} placeholder="John Smith" /></div>}
-          <div><label style={labelStyle}>{t.email}</label><input style={inputStyle} value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com" type="email" /></div>
-          <div><label style={labelStyle}>{t.password}</label><input style={inputStyle} value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••" type="password" /></div>
-          {!isLogin && (
-            <>
-              <div>
-                <label style={labelStyle}>MARKET TRACK</label>
-                <div style={{ display:"flex", gap:8 }}>
-                  {[["futures","Futures"],["forex","Forex"]].map(([val,label]) => (
-                    <button key={val} onClick={() => setSignupTrack(val)} type="button"
-                      style={{ flex:1, padding:"10px", borderRadius:7, border:`1px solid ${signupTrack===val?C.long:C.border}`, background:signupTrack===val?C.longDim:"transparent", color:signupTrack===val?C.long:C.textMid, fontSize:13, fontWeight:signupTrack===val?600:400, cursor:"pointer", fontFamily:"monospace" }}>
-                      {label}
-                    </button>
-                  ))}
+        <div style={{ display:"flex", flexDirection:"column", gap:12, marginBottom:28 }}>
+          {plans.map(p => (
+            <div key={p.id}
+              onClick={() => setSelectedPlan(p.id)}
+              style={{ background:C.surface, border:`2px solid ${selectedPlan===p.id ? p.color : C.border}`,
+                borderRadius:12, padding:"18px 22px", cursor:"pointer", position:"relative",
+                transition:"border-color 0.15s" }}>
+              {p.popular && (
+                <div style={{ position:"absolute", top:-10, right:20, background:p.color, color:"#080909",
+                  fontSize:9, fontWeight:700, padding:"2px 12px", borderRadius:20, fontFamily:"monospace", letterSpacing:"0.1em" }}>
+                  RECOMMENDED
                 </div>
-                {signupTrack && <div style={{ fontSize:11, color:C.textDim, marginTop:6, fontFamily:"monospace" }}>{signupTrack==="futures" ? "ES · NQ · CL · /6E · /6B · /6J + more" : "EUR/USD · GBP/USD · USD/JPY · crosses + more"}</div>}
+              )}
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                <div>
+                  <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                    <div style={{ width:16, height:16, borderRadius:"50%", border:`2px solid ${p.color}`,
+                      background: selectedPlan===p.id ? p.color : "transparent", flexShrink:0 }} />
+                    <span style={{ fontWeight:700, fontSize:15, color:p.color }}>{p.name}</span>
+                  </div>
+                  <div style={{ fontSize:12, color:C.textMid, marginTop:5, marginLeft:26 }}>{p.desc}</div>
+                </div>
+                <div style={{ textAlign:"right", flexShrink:0 }}>
+                  <div style={{ fontSize:22, fontWeight:700, fontFamily:"monospace" }}>${p.price}</div>
+                  <div style={{ fontSize:11, color:C.textDim }}>/month</div>
+                </div>
               </div>
-              <div><label style={labelStyle}>{t.plan}</label>
-                <select value={plan} onChange={e=>setPlan(e.target.value)} style={{ width:"100%", padding:"11px 14px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, fontFamily:"monospace" }}>
-                  {signupTrack === "forex" ? <>
-                    <option value="major">Major Pairs — $129/mo</option>
-                    <option value="full">Full Coverage — $249/mo</option>
-                  </> : <>
-                    <option value="starter">Starter — $149/mo</option>
-                    <option value="pro">Pro — $249/mo</option>
-                    <option value="elite">Elite — $449/mo</option>
-                  </>}
-                </select>
-              </div>
-            </>
-          )}
-          <button
-            onClick={isLogin ? () => onAuth({email,plan}) : handleSignup}
-            disabled={submitting}
-            style={{ width:"100%", padding:"13px", background:C.accent, color:"#080909", border:"none", borderRadius:8, fontWeight:600, fontSize:14, cursor:"pointer", marginTop:4, opacity:submitting?0.7:1 }}>
-            {submitting ? "Submitting..." : isLogin ? t.signIn : t.createAccount}
-          </button>
+            </div>
+          ))}
         </div>
-        <div style={{ textAlign:"center", marginTop:20, fontSize:13, color:C.textMid }}>
-          {isLogin?t.noAccount:t.haveAccount}
-          <span onClick={() => onNavigate(isLogin?"signup":"login")} style={{ color:C.accent, cursor:"pointer" }}>{isLogin?t.signUp:t.signIn}</span>
+        {error && (
+          <div style={{ background:C.short+"22", border:`1px solid ${C.short}44`, borderRadius:8,
+            padding:"10px 16px", marginBottom:16, fontSize:12, color:C.short }}>
+            {error}
+          </div>
+        )}
+        <button onClick={handleSubscribe} disabled={loading}
+          style={{ width:"100%", padding:"15px", background:C.accent, color:"#080909", border:"none",
+            borderRadius:10, fontWeight:700, fontSize:15, cursor:"pointer", opacity:loading?0.7:1 }}>
+          {loading ? "Connecting to checkout…" : "Get Started →"}
+        </button>
+        {selectedPlan === "elite" && (
+          <div style={{ textAlign:"center", marginTop:12 }}>
+            <a href="mailto:info@signalboss.net"
+              style={{ fontSize:12, color:C.long, textDecoration:"none", borderBottom:`1px solid ${C.long}44` }}>
+              📞 Contact us to learn everything Elite includes →
+            </a>
+          </div>
+        )}
+        <div style={{ textAlign:"center", marginTop:14, fontSize:12, color:C.textDim }}>
+          30-day money-back guarantee · Cancel anytime in your account settings
         </div>
       </div>
     </div>
@@ -2640,19 +2712,32 @@ function ContactPage({ onNavigate }) {
   );
 }
 
-export default function App() {
-  const [page, _setPage] = useState(() => {
-    const saved = sessionStorage.getItem("sb_page");
-    return saved === "dashboard" ? "dashboard" : "landing";
-  });
-  const [user, _setUser] = useState(() => {
-    try { return JSON.parse(sessionStorage.getItem("sb_user") || "null"); } catch { return null; }
-  });
-  const setPage = (p) => { _setPage(p); sessionStorage.setItem("sb_page", p); };
-  const setUser = (u) => { _setUser(u); sessionStorage.setItem("sb_user", JSON.stringify(u)); };
-  const [lang, setLang] = useState("en");
-  const [track, setTrack] = useState(null); // "futures" | "forex" | null
+function AppInner() {
+  const { isSignedIn, isLoaded } = useAuth();
+  const { user: clerkUser }      = useUser();
+  const [page, setPage]   = useState("landing");
+  const [lang, setLang]   = useState("en");
+  const [track, setTrack] = useState(null);
+  const [postAuthDest, setPostAuthDest] = useState(null);
   const t = T[lang];
+
+  const isSubscribed = clerkUser?.publicMetadata?.subscribed === true;
+  const activePlan   = clerkUser?.publicMetadata?.plan || null;
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    if (isSignedIn && (page === "login" || page === "signup")) {
+      setPage(isSubscribed ? "dashboard" : "subscribe");
+    }
+    if (!isSignedIn && page === "dashboard") {
+      setPage("landing");
+    }
+    if (isSignedIn && window.location.search.includes("subscribed=true")) {
+      window.history.replaceState({}, "", "/");
+      setPage("dashboard");
+    }
+  }, [isLoaded, isSignedIn, isSubscribed]);
+
   return (
     <>
       <style>{css}</style>
@@ -2661,14 +2746,11 @@ export default function App() {
           <div onClick={() => { setPage("landing"); setTrack(null); }} style={{ fontWeight:800, fontSize:20, cursor:"pointer", fontFamily:"monospace", color:"#ffffff", letterSpacing:"0.04em" }}>
             SIGNAL<span style={{ color:C.accent }}>BOSS</span>
           </div>
-          {/* Center: track toggle + nav links */}
           <div style={{ display:"flex", alignItems:"center", gap:24 }}>
-            {/* Track toggle */}
             <div style={{ display:"flex", alignItems:"center", gap:4, background:C.surface, border:`1px solid ${C.border}`, borderRadius:8, padding:3 }}>
               <button onClick={() => setTrack("futures")} style={{ padding:"6px 18px", borderRadius:6, border:"none", background:(!track||track==="futures")?C.longDim:"transparent", color:(!track||track==="futures")?C.long:C.textMid, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"monospace", letterSpacing:"0.08em", transition:"all 0.15s" }}>FUTURES</button>
               <button onClick={() => setTrack("forex")} style={{ padding:"6px 18px", borderRadius:6, border:"none", background:track==="forex"?C.accentDim:"transparent", color:track==="forex"?C.accent:C.textMid, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"monospace", letterSpacing:"0.08em", transition:"all 0.15s" }}>FOREX</button>
             </div>
-            {/* Nav links */}
             {page === "landing" && (
               <div style={{ display:"flex", gap:20, alignItems:"center" }}>
                 <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("how-it-works")?.scrollIntoView({behavior:"smooth"})}}>How It Works</a>
@@ -2681,21 +2763,65 @@ export default function App() {
           </div>
           <div style={{ display:"flex", gap:12, alignItems:"center" }}>
             <LangSwitcher lang={lang} setLang={setLang} />
-            <span onClick={() => setPage("login")} style={{ fontSize:13, color:C.textMid, cursor:"pointer", padding:"8px 14px" }}>{t.signIn}</span>
-            <button onClick={() => setPage("signup")} style={{ padding:"8px 20px", background:C.accent, border:"none", borderRadius:6, color:"#080909", cursor:"pointer", fontWeight:700, fontSize:13 }}>{t.startTrial}</button>
+            {isSignedIn ? (
+              <>
+                <button onClick={() => setPage(isSubscribed ? "dashboard" : "subscribe")}
+                  style={{ padding:"8px 20px", background:C.accent, border:"none", borderRadius:6, color:"#080909", cursor:"pointer", fontWeight:700, fontSize:13 }}>
+                  {isSubscribed ? "Dashboard →" : "Activate →"}
+                </button>
+                <div style={{ border:`1px solid ${C.border}`, borderRadius:"50%", padding:2 }}>
+                  <UserButton afterSignOutUrl="/" appearance={clerkDark} />
+                </div>
+              </>
+            ) : (
+              <>
+                <span onClick={() => setPage("login")} style={{ fontSize:13, color:C.textMid, cursor:"pointer", padding:"8px 14px" }}>{t.signIn}</span>
+                <button onClick={() => setPage("signup")} style={{ padding:"8px 20px", background:C.accent, border:"none", borderRadius:6, color:"#080909", cursor:"pointer", fontWeight:700, fontSize:13 }}>{t.startTrial}</button>
+              </>
+            )}
           </div>
         </div>
       )}
       <div style={{ paddingTop:page==="dashboard"?0:64 }}>
         {page==="landing"    && <LandingPage onNavigate={setPage} t={t} track={track} setTrack={setTrack} />}
-        {(page==="login"||page==="signup") && <AuthPage mode={page} onNavigate={setPage} onAuth={u=>{setUser(u);setPage("dashboard");}} t={t} track={track} />}
+        {page==="login"      && <ClerkAuthPage mode="sign-in" onNavigate={setPage} />}
+        {page==="signup"     && <ClerkAuthPage mode="sign-up" onNavigate={setPage} />}
+        {page==="subscribe"  && <SubscribePage user={clerkUser} plan={activePlan} onNavigate={setPage} t={t} track={track} />}
         {page==="calc"       && <StandaloneCalc onNavigate={setPage} t={t} />}
         {page==="contact"    && <ContactPage onNavigate={setPage} />}
-        {page==="signals-fire" && <SignalFiresPlayer onNavigate={setPage} />}
-        {page==="demo-chooser" && <DemoChooser onNavigate={setPage} setTrack={setTrack} />}
-        {page==="dashboard"  && <Dashboard user={user} onNavigate={setPage} t={t} lang={lang} setLang={setLang} track={track} />}
+        {page==="dashboard"  && (
+          isSubscribed
+            ? <Dashboard user={clerkUser} onNavigate={setPage} t={t} lang={lang} setLang={setLang} track={track} />
+            : <SubscribePage user={clerkUser} plan={activePlan} onNavigate={setPage} t={t} track={track} />
+        )}
         {page==="forex-demo" && <ForexDemo onNavigate={setPage} t={t} />}
       </div>
     </>
+  );
+}
+
+export default function App() {
+  return (
+    <ClerkProvider
+      publishableKey={CLERK_KEY}
+      appearance={{
+        variables: {
+          colorPrimary:         "#00d4aa",
+          colorBackground:      "#0d1117",
+          colorInputBackground: "#131b22",
+          colorText:            "#e6edf3",
+          colorTextSecondary:   "#8b949e",
+          colorDanger:          "#ff6b6b",
+          borderRadius:         "8px",
+          fontFamily:           "monospace",
+        },
+        elements: {
+          card:              { border: "1px solid #21262d", boxShadow: "none" },
+          formButtonPrimary: { fontWeight: 700 },
+        },
+      }}
+    >
+      <AppInner />
+    </ClerkProvider>
   );
 }
