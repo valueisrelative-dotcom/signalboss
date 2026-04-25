@@ -36,6 +36,9 @@ export default async function handler(req, res) {
 
   const meta = { userId, plan, ...(ref ? { ref } : {}) };
 
+  const AFFILIATE_COUPONS = { latimax: "LATIMAX25" };
+  const coupon = ref ? AFFILIATE_COUPONS[ref] : null;
+
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -44,6 +47,7 @@ export default async function handler(req, res) {
       customer_email: email || undefined,
       metadata: meta,
       subscription_data: { metadata: meta },
+      ...(coupon ? { discounts: [{ coupon }] } : { allow_promotion_codes: true }),
       success_url: "https://signalboss.net/?payment=success",
       cancel_url:  "https://signalboss.net/?payment=cancelled",
     });
