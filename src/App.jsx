@@ -942,8 +942,6 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
 
   return (
     <div style={{ width:"100%", overflowX:"hidden" }}>
-      <PriceTicker />
-
       {/* Hero — always shown first */}
       <div style={{ minHeight:"92vh", display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", textAlign:"center", padding:"80px 24px" }}>
         <div style={{ fontSize:10, letterSpacing:"0.3em", color:track==="forex"?C.accent:C.long, textTransform:"uppercase", marginBottom:20, display:"flex", alignItems:"center", gap:10, fontFamily:"monospace" }}>
@@ -3318,7 +3316,12 @@ function AppInner() {
           </div>
         </div>
       )}
-      <div style={{ paddingTop:page==="dashboard"?0:72 }}>
+      {page !== "dashboard" && (
+        <div style={{ position:"fixed", top:64, left:0, right:0, zIndex:99 }}>
+          <PriceTicker />
+        </div>
+      )}
+      <div style={{ paddingTop:page==="dashboard"?0:96 }}>
         {page==="landing"    && <LandingPage onNavigate={setPage} t={t} track={track} setTrack={setTrack} />}
         {page==="login"      && <ClerkAuthPage mode="sign-in" onNavigate={setPage} />}
         {page==="signup"     && <ClerkAuthPage mode="sign-up" onNavigate={setPage} />}
