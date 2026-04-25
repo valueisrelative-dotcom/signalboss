@@ -59,10 +59,11 @@ export default async function handler(req, res) {
     const session    = event.data.object;
     const userId     = session.metadata?.userId;
     const plan       = session.metadata?.plan;
+    const ref        = session.metadata?.ref || "";
     const customerId = session.customer;
     const email      = session.customer_details?.email;
 
-    console.log("✅ Payment confirmed:", { userId, plan, customerId, email });
+    console.log("✅ Payment confirmed:", { userId, plan, customerId, email, ref });
 
     if (userId) {
       try {
@@ -74,6 +75,38 @@ export default async function handler(req, res) {
       }
     } else {
       console.warn("⚠️  No userId in session metadata — cannot grant access automatically");
+    }
+
+    // ── Affiliate notification ──
+    if (ref === "latimax") {
+      try {
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: "Signal Boss <onboarding@resend.dev>",
+            to:   ["alberto13777@gmail.com"],
+            subject: "💰 New Signal Boss referral — you earned a commission",
+            text: [
+              "Alberto,",
+              "",
+              "Someone subscribed to Signal Boss using your referral link.",
+              "",
+              `Plan  : ${plan || "unknown"}`,
+              `Email : ${email || "(not shared)"}`,
+              "",
+              "Your commission will be settled at the end of the month.",
+              "",
+              "— Signal Boss",
+            ].join("\n"),
+          }),
+        });
+      } catch (err) {
+        console.error("Affiliate email failed:", err.message);
+      }
     }
   }
 
