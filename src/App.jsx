@@ -3318,7 +3318,7 @@ function AppInner() {
           </div>
         </div>
       )}
-      <div style={{ paddingTop:page==="dashboard"?0:64 }}>
+      <div style={{ paddingTop:page==="dashboard"?0:72 }}>
         {page==="landing"    && <LandingPage onNavigate={setPage} t={t} track={track} setTrack={setTrack} />}
         {page==="login"      && <ClerkAuthPage mode="sign-in" onNavigate={setPage} />}
         {page==="signup"     && <ClerkAuthPage mode="sign-up" onNavigate={setPage} />}
