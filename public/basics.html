@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Master the Basics — Signal Boss</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:         #080c14;
+      --bg-card:    #0d1424;
+      --bg-cover:   #050810;
+      --border:     #1a2540;
+      --border-lit: #243656;
+      --text:       #f2f6fa;
+      --muted:      #9ab0c8;
+      --dim:        #6a82a0;
+      --gold:       #c9a84c;
+      --gold-light: #e6c76a;
+      --green:      #22c55e;
+      --red:        #ef4444;
+      --blue:       #3b82f6;
+      --font:       'DM Sans', sans-serif;
+      --mono:       'IBM Plex Mono', monospace;
+      --display:    'Bebas Neue', sans-serif;
+    }
+
+    html { background: var(--bg); }
+    body { font-family: var(--font); color: var(--text); font-size: 17px; line-height: 1.7; -webkit-font-smoothing: antialiased; background: var(--bg); }
+
+    /* ── Nav ── */
+    nav { position: sticky; top: 0; z-index: 100; background: rgba(5,8,16,0.92); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo-mark { width: 32px; height: 32px; border-radius: 7px; background: linear-gradient(135deg, var(--gold) 0%, #8a6c2a 100%); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #050810; }
+    .nav-logo-text { font-weight: 700; font-size: 16px; color: var(--text); }
+    .nav-logo-text span { color: var(--gold); }
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--muted); font-size: 13px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text); }
+    .nav-cta { background: var(--gold) !important; color: #050810 !important; padding: 8px 18px; border-radius: 6px; font-weight: 600 !important; font-size: 13px !important; }
+    @media (max-width: 640px) { .nav-links { display: none; } }
+
+    /* ── Layout ── */
+    .cover {
+      min-height: 80vh; background: var(--bg-cover);
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 80px 64px; position: relative; overflow: hidden;
+    }
+    .cover::before { content: ''; position: absolute; top: -120px; right: -120px; width: 600px; height: 600px; background: radial-gradient(ellipse at center, rgba(201,168,76,0.06) 0%, transparent 70%); pointer-events: none; }
+    .cover::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold) 0%, transparent 60%); }
+
+    .section { padding: 72px 64px; border-bottom: 1px solid var(--border); max-width: 860px; margin: 0 auto; width: 100%; }
+    .section:last-of-type { border-bottom: none; }
+
+    .section-number { font-family: var(--mono); font-size: 11px; color: var(--gold); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+    .section-number::after { content: ''; display: block; flex: 1; height: 1px; background: var(--border); }
+
+    .section-title { font-family: var(--display); font-size: clamp(32px, 5vw, 46px); line-height: 1.0; letter-spacing: 0.02em; color: var(--text); margin-bottom: 28px; }
+
+    .body-text { font-size: 17px; line-height: 1.78; color: var(--muted); }
+    .body-text p { margin-bottom: 22px; }
+    .body-text p:last-child { margin-bottom: 0; }
+    .body-text strong { color: var(--text); font-weight: 600; }
+    .body-text em { color: var(--text); font-style: italic; }
+
+    .pull-quote { border-left: 3px solid var(--gold); padding: 18px 26px; margin: 32px 0; background: rgba(201,168,76,0.04); border-radius: 0 8px 8px 0; }
+    .pull-quote p { font-size: 18px; line-height: 1.55; color: var(--text); font-weight: 500; margin: 0; }
+
+    .callout { background: var(--bg-card); border: 1px solid var(--border-lit); border-radius: 12px; padding: 26px 30px; margin: 32px 0; }
+    .callout-label { font-family: var(--mono); font-size: 11px; color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
+    .callout p { font-size: 15px; color: var(--muted); line-height: 1.65; margin: 0; }
+    .callout strong { color: var(--text); }
+
+    /* ── Tick table ── */
+    .tick-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-family: var(--mono); font-size: 13px; }
+    .tick-table th { text-align: left; padding: 10px 14px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid var(--border-lit); }
+    .tick-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); color: var(--muted); }
+    .tick-table td:first-child { color: var(--text); font-weight: 600; }
+    .tick-table td.val { color: var(--green); }
+    .tick-table tr:last-child td { border-bottom: none; }
+    .tick-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .tick-section-row td { background: rgba(201,168,76,0.04); color: var(--dim) !important; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 6px 14px; }
+
+    /* ── Sizing example ── */
+    .sizing-example { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 28px 0; }
+    .sizing-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px; }
+    .sizing-card-label { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+    .sizing-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; font-family: var(--mono); border-bottom: 1px solid var(--border); }
+    .sizing-row:last-child { border-bottom: none; }
+    .sizing-row .label { color: var(--dim); }
+    .sizing-row .val { color: var(--text); font-weight: 600; }
+    .sizing-row .val.green { color: var(--green); }
+    .sizing-row .val.red { color: var(--red); }
+    .sizing-row .val.gold { color: var(--gold); }
+
+    /* ── Reality check box ── */
+    .reality-box { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.25); border-radius: 12px; padding: 24px 28px; margin: 28px 0; }
+    .reality-label { font-family: var(--mono); font-size: 11px; color: var(--red); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
+    .reality-box p { font-size: 15px; color: var(--muted); line-height: 1.65; margin: 0; }
+    .reality-box strong { color: var(--text); }
+
+    /* ── Access section ── */
+    .access-section { background: var(--bg-cover); padding: 72px 64px; text-align: center; }
+    .access-eyebrow { font-family: var(--mono); font-size: 11px; color: var(--gold); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 18px; }
+    .access-title { font-family: var(--display); font-size: clamp(36px, 5vw, 50px); line-height: 1.0; color: var(--text); margin-bottom: 14px; }
+    .access-sub { font-size: 16px; color: var(--muted); max-width: 460px; margin: 0 auto 36px; line-height: 1.6; }
+    .access-btn { display: inline-block; padding: 15px 38px; background: var(--gold); color: #050810; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 15px; transition: background 0.2s; }
+    .access-btn:hover { background: var(--gold-light); }
+
+    /* ── Risk footer ── */
+    .risk-footer { padding: 40px 64px; border-top: 1px solid var(--border); max-width: 860px; margin: 0 auto; }
+    .risk-footer p { font-size: 11px; color: var(--dim); line-height: 1.7; }
+
+    @media (max-width: 640px) {
+      .cover, .section, .access-section, .risk-footer { padding: 48px 24px; }
+      .sizing-example { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav>
+  <div class="nav-inner">
+    <a href="https://signalboss.net" class="nav-logo">
+      <div class="nav-logo-mark">SB</div>
+      <div class="nav-logo-text">Signal <span>Boss</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/basics.html" class="active">Master the Basics</a></li>
+      <li><a href="/market_driver.html">What 90% Miss</a></li>
+      <li><a href="https://signalboss.net" class="nav-cta">Get Access</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+<!-- ── Cover ── -->
+<div class="cover">
+  <div style="max-width: 860px; margin: 0 auto; width: 100%;">
+    <div style="font-family: var(--mono); font-size: 12px; color: var(--gold); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 24px;">Signal Boss · Foundation Series</div>
+
+    <h1 style="font-family: var(--display); font-size: clamp(56px, 9vw, 90px); line-height: 0.93; letter-spacing: 0.01em; color: var(--text); margin-bottom: 28px;">
+      Master<br>the <span style="color: var(--gold);">Basics</span>
+    </h1>
+
+    <p style="font-size: 20px; color: var(--muted); max-width: 580px; line-height: 1.6; margin-bottom: 20px; font-weight: 400;">
+      <strong style="color: var(--text);">The only real measure of trading intelligence is that you get what you want out of trading.</strong>
+    </p>
+    <p style="font-size: 16px; color: var(--dim); max-width: 560px; line-height: 1.65;">
+      Whether that's monthly income or long-term wealth — consistent results come from mastering a small number of things completely, not from knowing a little about everything.
+    </p>
+  </div>
+</div>
+
+
+<!-- ── Section 1 ── -->
+<div class="section">
+  <div class="section-number">Section 01</div>
+  <h2 class="section-title">What You're Actually Trading</h2>
+
+  <div class="body-text">
+    <p>A futures contract is not a stock. When you buy one ES contract you are entering a legally binding agreement to exchange the value of the S&P 500 index at a future date. You are not buying a piece of a company. You are not investing. You are speculating on directional movement — and you are doing it with leverage.</p>
+
+    <p>That leverage is the point. One ES contract controls roughly <strong>$265,000 in notional value</strong> with an intraday margin of around $500–$1,000 depending on your broker. A 1-point move in ES is worth <strong>$50</strong>. The market moves 20–40 points on a normal day. Do the math on both sides of that.</p>
+
+    <p>This is not a warning. It is context. Leverage works the same way in both directions — and understanding exactly what you control is step one.</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">The Micro Solution</div>
+    <p>Every Signal Boss alert includes micro contract sizing. MES (Micro E-mini S&amp;P) is 1/10th the size of ES — <strong>$5 per point</strong> instead of $50. You trade the same signal with $50–$100 of real risk instead of $500–$1,000. Micros exist specifically so you can learn and execute without betting the account on every trade.</p>
+  </div>
+</div>
+
+
+<!-- ── Section 2 ── -->
+<div class="section">
+  <div class="section-number">Section 02</div>
+  <h2 class="section-title">Know What Every Tick Costs</h2>
+
+  <div class="body-text">
+    <p>Before you place a single order, you must know the dollar value of every tick movement in the instrument you're trading. A Signal Boss alert gives you a stop in ticks. If you don't know what a tick costs, you cannot know your risk. These numbers are fixed — memorize them.</p>
+  </div>
+
+  <table class="tick-table">
+    <thead>
+      <tr>
+        <th>Instrument</th>
+        <th>Tick Size</th>
+        <th>$ Per Tick</th>
+        <th>$ Per Point</th>
+        <th>Micro</th>
+        <th>Micro $/Tick</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="tick-section-row"><td colspan="6">Equity Index Futures</td></tr>
+      <tr>
+        <td>ES — S&amp;P 500</td>
+        <td>0.25 pts</td>
+        <td class="val">$12.50</td>
+        <td>$50.00</td>
+        <td>MES</td>
+        <td class="val">$1.25</td>
+      </tr>
+      <tr>
+        <td>NQ — Nasdaq-100</td>
+        <td>0.25 pts</td>
+        <td class="val">$5.00</td>
+        <td>$20.00</td>
+        <td>MNQ</td>
+        <td class="val">$0.50</td>
+      </tr>
+      <tr>
+        <td>YM — Dow Jones</td>
+        <td>1 pt</td>
+        <td class="val">$5.00</td>
+        <td>$5.00</td>
+        <td>MYM</td>
+        <td class="val">$0.50</td>
+      </tr>
+      <tr>
+        <td>RTY — Russell 2000</td>
+        <td>0.10 pts</td>
+        <td class="val">$5.00</td>
+        <td>$50.00</td>
+        <td>M2K</td>
+        <td class="val">$0.50</td>
+      </tr>
+      <tr class="tick-section-row"><td colspan="6">Commodity Futures</td></tr>
+      <tr>
+        <td>GC — Gold</td>
+        <td>$0.10/oz</td>
+        <td class="val">$10.00</td>
+        <td>$100.00</td>
+        <td>MGC</td>
+        <td class="val">$1.00</td>
+      </tr>
+      <tr>
+        <td>CL — Crude Oil</td>
+        <td>$0.01/bbl</td>
+        <td class="val">$10.00</td>
+        <td>$1,000.00</td>
+        <td>MCL</td>
+        <td class="val">$1.00</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <div class="callout-label">How to Use This</div>
+    <p>A Signal Boss ES alert has a stop of 8 ticks. That's <strong>8 × $12.50 = $100 per contract</strong>. On MES it's <strong>8 × $1.25 = $10</strong>. You know your exact dollar risk before you click the button — not after.</p>
+  </div>
+</div>
+
+
+<!-- ── Section 3 ── -->
+<div class="section">
+  <div class="section-number">Section 03</div>
+  <h2 class="section-title">Your Stop Is Your Position Size</h2>
+
+  <div class="body-text">
+    <p>Most new traders decide how many contracts to trade, then figure out where to put the stop. This is backwards — and it's how you end up risking $800 when you meant to risk $100.</p>
+
+    <p>The correct workflow is: <strong>decide how much you're willing to lose on this trade first</strong>. Then let the stop location and tick value tell you how many contracts to trade. The signal gives you the stop. You bring the risk amount.</p>
+  </div>
+
+  <div class="pull-quote">
+    <p>Risk amount → Stop location → Contract size.<br>
+    <span style="font-size: 14px; color: var(--dim); font-style: normal;">In that order. Every time. Without exception.</span></p>
+  </div>
+
+  <div class="sizing-example">
+    <div class="sizing-card" style="border-top: 3px solid var(--green);">
+      <div class="sizing-card-label">Example — ES Signal</div>
+      <div class="sizing-row"><span class="label">Max risk this trade</span><span class="val gold">$100</span></div>
+      <div class="sizing-row"><span class="label">Stop distance</span><span class="val">4 ticks</span></div>
+      <div class="sizing-row"><span class="label">Cost per contract</span><span class="val">4 × $12.50 = $50</span></div>
+      <div class="sizing-row"><span class="label">Contracts to trade</span><span class="val green">2 ES  (or 20 MES)</span></div>
+    </div>
+    <div class="sizing-card" style="border-top: 3px solid var(--red);">
+      <div class="sizing-card-label">What Not to Do</div>
+      <div class="sizing-row"><span class="label">Decide: "I'll trade 5 contracts"</span><span class="val red">✗</span></div>
+      <div class="sizing-row"><span class="label">Put stop "somewhere reasonable"</span><span class="val red">✗</span></div>
+      <div class="sizing-row"><span class="label">Discover risk is $312.50</span><span class="val red">✗</span></div>
+      <div class="sizing-row"><span class="label">Move stop wider to "give it room"</span><span class="val red">✗</span></div>
+    </div>
+  </div>
+
+  <div class="body-text">
+    <p>The Risk Calculator in your Signal Boss dashboard does this math for you automatically. Input your account settings once. Every subsequent alert shows you the exact contract count for your risk level.</p>
+  </div>
+</div>
+
+
+<!-- ── Section 4 ── -->
+<div class="section">
+  <div class="section-number">Section 04</div>
+  <h2 class="section-title">The Prop Account Reality</h2>
+
+  <div class="body-text">
+    <p>If you are trading a funded account — Apex, Topstep, FTMO, MyFundedFX, or any of the dozens of prop challenge providers — there is one number you need to understand before you place a single trade.</p>
+
+    <p>Your account size is not your trading capital. It is your breach threshold.</p>
+  </div>
+
+  <div class="reality-box">
+    <div class="reality-label">Account Reality Check</div>
+    <p>A <strong>"$50,000 funded account"</strong> typically has a maximum drawdown of 5–6%. That means you have <strong>$2,500–$3,000</strong> before you breach and lose the account. That is your true working capital — whether it's a prop challenge or your own money with hard stops. Size every trade against the drawdown buffer, not the account balance.</p>
+  </div>
+
+  <div class="body-text">
+    <p>A trader who sizes against a $50,000 account will blow through the drawdown limit in a handful of bad trades. A trader who sizes against $2,500 and treats that as their real capital survives long enough to let edge play out.</p>
+
+    <p>The Account Risk Calculator in your dashboard handles this. Enter your actual max drawdown — not your account size — as the "Loss to Ruin" number. Everything else flows from there.</p>
+  </div>
+</div>
+
+
+<!-- ── Section 5 ── -->
+<div class="section">
+  <div class="section-number">Section 05</div>
+  <h2 class="section-title">One Signal. One Decision.</h2>
+
+  <div class="body-text">
+    <p>When Signal Boss fires, the analysis is complete. The implied volatility data has been read. The expected move boundary has been identified. The entry, stop, and target have been calculated. Your job at that point is exactly one thing:</p>
+  </div>
+
+  <div class="pull-quote">
+    <p>Take it or pass. That's the decision. Nothing else.</p>
+  </div>
+
+  <div class="body-text">
+    <p>You do not move the stop after entry. You do not add contracts to a losing position. You do not override a take-profit target because the market "looks like it wants to go further." You do not hold past the signal exit time because you are up and feeling good.</p>
+
+    <p>Every one of those decisions introduces a variable that the backtest did not account for — which means every one of those decisions degrades the edge. The signal has a documented edge. <strong>You overriding the signal does not.</strong></p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">The Hard Part</div>
+    <p>Discipline is not a personality trait. It is a skill built through repetition. The traders who get consistent results are not smarter — they simply make <strong>fewer decisions per trade</strong>. Entry, stop, target. Set it. Leave it. That's the system.</p>
+  </div>
+</div>
+
+
+<!-- ── Section 6 ── -->
+<div class="section">
+  <div class="section-number">Section 06</div>
+  <h2 class="section-title">Why We Exit at End of Hour</h2>
+
+  <div class="body-text">
+    <p>Signal Boss signals are designed around intraday volatility expansion events. When conditions align — the expected move boundary, VWAP positioning, and momentum confirmation — a directional move is underway. That move has a natural lifecycle.</p>
+
+    <p>Most intraday momentum moves exhaust within 45–60 minutes of the setup forming. The first wave of institutional activity resolves. The options hedgers who drove the volatility signal have repositioned. The speculative follow-through completes.</p>
+
+    <p>Holding beyond that window introduces a different and largely unquantifiable risk: the macro, the Fed speaker, the news release, the random order flow of the afternoon. <strong>We capture the move that the signal identified. We do not try to capture everything after it.</strong></p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Why This Matters for Your Account</div>
+    <p>End-of-hour exits mean defined exposure time. You know your maximum holding period before you enter. That predictability is part of what makes the strategy manageable for traders with jobs, families, and real lives — you are not glued to a screen all day waiting to see if a trade works out.</p>
+  </div>
+</div>
+
+
+<!-- ── Access ── -->
+<div class="access-section">
+  <div class="access-eyebrow">You're Ready</div>
+  <h2 class="access-title">Apply the Basics in Real Time</h2>
+  <p class="access-sub">
+    Every Signal Boss alert includes entry, stop, target, and micro sizing — so you can put everything on this page into practice the moment a signal fires.
+  </p>
+  <a href="https://signalboss.net" class="access-btn">Get Access →</a>
+</div>
+
+
+<!-- ── Risk Footer ── -->
+<div class="risk-footer">
+  <p><strong style="color: var(--muted);">Risk Disclosure:</strong> Futures trading involves substantial risk of loss and is not appropriate for all investors. Past performance is not necessarily indicative of future results. Signal Boss provides trade signals for educational and informational purposes only and does not constitute financial advice or a solicitation to buy or sell any financial instrument. You could lose all or more than your initial investment. Only risk capital you can afford to lose. Signal Boss LLC is not a registered investment advisor, broker-dealer, or commodity trading advisor.</p>
+</div>
+
+</body>
+</html>

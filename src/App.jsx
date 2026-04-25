@@ -942,45 +942,6 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
           <button onClick={() => onNavigate("signals-fire")} style={{ padding:"15px 36px", background:"transparent", color:C.long, border:`1px solid ${C.long}`, borderRadius:8, fontWeight:500, fontSize:14, cursor:"pointer" }}>{t.viewDemo}</button>
         </div>
 
-        {/* Example signal card + equity curve */}
-        <div style={{ marginTop:72, display:"flex", gap:24, flexWrap:"wrap", justifyContent:"center", alignItems:"flex-start", width:"100%", maxWidth:780 }}>
-          <div style={{ maxWidth:340, width:"100%", textAlign:"left" }}>
-            <div style={{ fontSize:10, color:C.textDim, letterSpacing:"0.15em", marginBottom:12, fontFamily:"monospace", textAlign:"center" }}>{t.exampleSignal}</div>
-            <div style={{ background:C.surfaceUp, border:`1px solid ${track==="forex"?C.accent+"33":C.long+"33"}`, borderRadius:12, padding:20, position:"relative", overflow:"hidden" }}>
-              <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:track==="forex"?C.accent:C.long }} />
-              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:track==="forex"?8:14 }}>
-                <LiveDot color={track==="forex"?C.accent:C.long} size={8} />
-                <span style={{ fontSize:18, fontWeight:700, color:C.long, fontFamily:"monospace" }}>LONG</span>
-                <span style={{ fontSize:18, fontWeight:700, fontFamily:"monospace" }}>{track==="forex"?"EUR/USD":"ES"}</span>
-                <span style={{ fontSize:10, color:C.textMid, background:C.border, padding:"2px 7px", borderRadius:4, fontFamily:"monospace" }}>5m</span>
-                <span style={{ marginLeft:"auto", fontSize:10, color:C.long, background:C.longDim, padding:"3px 10px", borderRadius:20, fontFamily:"monospace" }}>ACTIVE</span>
-              </div>
-              {track==="forex" && (
-                <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", background:C.accentDim, padding:"2px 8px", borderRadius:4, display:"inline-block", marginBottom:10 }}>DERIVED FROM /6E</div>
-              )}
-              <div style={{ display:"flex", gap:3, marginBottom:12 }}>
-                {[1,2,3].map(i => <span key={i} style={{ fontSize:14, filter:`drop-shadow(0 0 4px ${C.long})` }}>⚡</span>)}
-                <span style={{ fontSize:11, fontWeight:600, color:C.strong, marginLeft:4, fontFamily:"monospace" }}>STRONG</span>
-              </div>
-              {[["Daily","↑ above zero"],["2-Day","↑ above zero"],["4-Day","↑ above zero"]].map(([l,s]) => (
-                <div key={l} style={{ display:"flex", justifyContent:"space-between", padding:"6px 0", borderBottom:`1px solid ${C.border}`, fontSize:11, fontFamily:"monospace" }}>
-                  <span style={{ color:C.textMid }}>{l}</span><span style={{ color:C.long }}>{s} ✓</span>
-                </div>
-              ))}
-              <div style={{ display:"flex", justifyContent:"space-between", padding:"6px 0", borderBottom:`1px solid ${C.border}`, fontSize:11, fontFamily:"monospace" }}>
-                <span style={{ color:C.textMid }}>Daily VWAP</span><span style={{ color:C.long }}>↑ above ✓</span>
-              </div>
-              <div style={{ display:"flex", justifyContent:"space-between", padding:"6px 0", fontSize:11, fontFamily:"monospace" }}>
-                <span style={{ color:C.textMid }}>Weekly VWAP</span><span style={{ color:C.long }}>↑ above ✓</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div style={{ textAlign:"center", marginTop:16 }}>
-          <p style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", fontStyle:"italic" }}>
-            Hypothetical and Illustrative Examples · Not actual trading results · Past performance does not guarantee future results
-          </p>
-        </div>
       </div>
 
       {/* Choose Your Track — moved below hero */}
