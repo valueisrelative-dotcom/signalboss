@@ -3033,14 +3033,10 @@ function ContactPage({ onNavigate }) {
     if (!email.includes("@")) { setError("Please enter a valid email address."); return; }
     setSubmitting(true); setError("");
     try {
-      const res = await fetch("https://formspree.io/f/mbdaqgye", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({
-          name, email, subject: subject || "(no subject)",
-          message,
-          _subject: `📬 Signal Boss Contact: ${subject || message.slice(0,50)}`,
-        }),
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, subject, message }),
       });
       if (res.ok) { setSubmitted(true); }
       else { setError("Something went wrong. Please try again or email info@signalboss.net directly."); }
