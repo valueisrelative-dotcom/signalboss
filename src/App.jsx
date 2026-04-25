@@ -448,6 +448,65 @@ const MICROS    = { ES:"MES", NQ:"MNQ", YM:"MYM", RTY:"M2K", CL:"MCL", GC:"MGC" 
 const ALL_INSTS = ["ES","NQ","YM","CL","GC","RTY","ZN","ZF","ZT"];
 const INST_FILTER_V = 4; // bump when ALL_INSTS changes
 
+const ORB_BACKTESTS = [
+  {
+    id: "es-30m", label: "ES", sub: "380 Day", instrument: "ES",
+    name: "E-mini S&P 500", timeframe: "30-min bars",
+    period: "380 trading days", dates: "Sep 2025 – Apr 2026",
+    netPnl: 261788, trades: 707, wins: 298, losses: 409,
+    winRate: 42.2, profitFactor: 4.05, avgWin: 1147, avgLoss: 484,
+    maxDrawdown: 12473, expectancy: 369, riskNote: null,
+    curve: [3855,5319,14828,22012,69366,82240,91868,88781,93176,106297,104632,112786,110738,126890,138911,144463,154277,157290,158659,163335,172287,191920,207236,208368,235847,242438,251570,246532,240347,262890,261788],
+  },
+  {
+    id: "nq-30m", label: "NQ", sub: "380 Day", instrument: "NQ",
+    name: "E-mini Nasdaq-100", timeframe: "30-min bars",
+    period: "380 trading days", dates: "Sep 2025 – Apr 2026",
+    netPnl: 465796, trades: 477, wins: 196, losses: 281,
+    winRate: 41.1, profitFactor: 3.60, avgWin: 1787, avgLoss: 826,
+    maxDrawdown: 19186, expectancy: 684, riskNote: null,
+    curve: [5353,6937,20915,29064,104119,118764,134559,133968,158398,175544,182979,199215,192865,231769,257508,261158,289742,287508,288295,301523,317758,357428,380712,386524,414760,435160,462424,454356,447714,467711,465796],
+  },
+  {
+    id: "nq-1h", label: "NQ", sub: "360 Day", instrument: "NQ",
+    name: "E-mini Nasdaq-100", timeframe: "60-min bars",
+    period: "360 trading days", dates: "Jul 2024 – Mar 2026",
+    netPnl: 1513320, trades: 1034, wins: 677, losses: 357,
+    winRate: 65.5, profitFactor: 5.72, avgWin: 2708, avgLoss: 897,
+    maxDrawdown: 13635, expectancy: 1464,
+    riskNote: "Stop size is proportionally larger in dollar terms. Verify this fits within your maximum risk per trade before sizing your position.",
+    curve: [-785,11915,39220,56065,63280,108935,137730,160395,186440,233285,240605,261845,291160,299020,324665,344920,357555,375640,397845,428060,433395,457855,476080,488790,520430,573960,648170,655890,715040,728635,750065,786245,836680,870905,882865,901345,940395,959530,992560,1034935,1073220,1162115,1215745,1259215,1302115,1339280,1410370,1440425,1474410,1499940,1498390,1512610,1513320],
+  },
+  {
+    id: "rty-30m", label: "RTY", sub: "180 Day", instrument: "RTY",
+    name: "E-mini Russell 2000", timeframe: "30-min bars",
+    period: "180 trading days", dates: "Jul 10, 2025 – Mar 26, 2026",
+    netPnl: 223060, trades: 734, wins: 418, losses: 316,
+    winRate: 56.9, profitFactor: 3.50, avgWin: 748, avgLoss: 283,
+    maxDrawdown: 4260, expectancy: 304, riskNote: null,
+    curve: [-215,4735,8845,9095,16710,16385,22990,22270,25750,38310,41295,46830,50185,53305,56500,60580,61485,64195,69510,72450,77760,81690,83005,85950,92960,97400,99635,104885,106540,110835,113315,116900,125270,131550,135585,137805,142365,148730,149320,155480,160115,164990,166365,172835,187760,192540,198775,206375,212080,213790,218575,220290,220310,223060],
+  },
+  {
+    id: "cl-1h", label: "CL", sub: "360 Day", instrument: "CL",
+    name: "Crude Oil Futures", timeframe: "60-min bars",
+    period: "360 trading days", dates: "Oct 2024 – Mar 2026",
+    netPnl: 449750, trades: 1389, wins: 901, losses: 488,
+    winRate: 64.9, profitFactor: 4.07, avgWin: 662, avgLoss: 300,
+    maxDrawdown: 7960, expectancy: 324,
+    riskNote: "Stop size is proportionally larger in dollar terms. Verify this fits within your maximum risk per trade before sizing your position.",
+    curve: [-240,9960,22650,30110,47790,54760,60290,63950,72000,83040,85270,97920,105640,114180,121570,128810,137620,144330,151140,166920,176380,185920,197890,205880,210820,220670,228110,232640,250760,253560,266630,269200,271830,277570,281120,286340,294050,298950,303710,307140,315180,322210,323450,329240,331120,336440,350340,350350,346130,358590,359720,373220,437620,443450,449750],
+  },
+  {
+    id: "vol-filtered", label: "VOL", sub: "Filtered", instrument: null,
+    name: "Volatility Filtered", timeframe: null, comingSoon: true,
+    description: [
+      { heading: "What is Volatility Filtering?", body: "Not every breakout is worth taking. Volatility filtering screens each opening range for expansion conditions — entries are only triggered when intraday volatility confirms a directional move is underway, not just noise." },
+      { heading: "Why it matters", body: "Fixed stops on a volatile day get wiped by normal price movement. Volatility-adjusted sizing respects what the market is actually doing — keeping risk consistent as a percentage of the move, not as an arbitrary number of ticks." },
+    ],
+    riskNote: null, curve: null,
+  },
+];
+
 function LiveSignalCard({ signal }) {
   const isLong   = signal.direction === "LONG";
   const dirColor = isLong ? C.long : C.short;
@@ -569,6 +628,30 @@ function SignalCounter({ count }) {
   );
 }
 
+function CalcInputRow({ label, value, onChange, min, max, step, prefix, suffix }) {
+  return (
+    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
+      <span style={{ fontSize:12, color:C.textMid }}>{label}</span>
+      <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+        {prefix && <span style={{ fontSize:12, color:C.textDim, fontFamily:"monospace" }}>{prefix}</span>}
+        <input type="number" value={value} min={min} max={max} step={step||1}
+          onChange={e => { const n = +e.target.value; if (!isNaN(n)) onChange(n); }}
+          style={{ width:80, textAlign:"right", padding:"5px 8px" }} />
+        {suffix && <span style={{ fontSize:12, color:C.textDim, fontFamily:"monospace" }}>{suffix}</span>}
+      </div>
+    </div>
+  );
+}
+
+function CalcResultRow({ label, value, color, big }) {
+  return (
+    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
+      <span style={{ fontSize:12, color:C.textMid }}>{label}</span>
+      <span style={{ fontSize:big?18:14, fontWeight:big?700:600, color:color||C.text, fontFamily:"monospace" }}>{value}</span>
+    </div>
+  );
+}
+
 function PropCalc({ t }) {
   const [qty, setQty]         = useState(1);
   const [tickVal, setTickVal] = useState(12.50);
@@ -579,6 +662,8 @@ function PropCalc({ t }) {
   const [currentBal, setCurrentBal] = useState(0);
   const [maxDD, setMaxDD]     = useState(2500);
   const [dailyLimit, setDailyLimit] = useState(1000);
+  const [simWins, setSimWins]     = useState(0);
+  const [simLosses, setSimLosses] = useState(0);
 
   const lossPerTrade   = qty * stopTicks * tickVal;
   const profitPerTrade = qty * tgtTicks  * tickVal;
@@ -591,25 +676,9 @@ function PropCalc({ t }) {
   const maxTradesToDaily = Math.floor(dailyLimit / lossPerTrade);
   const daysToPass     = expectedVal > 0 ? (neededToPass / expectedVal / 3).toFixed(1) : "∞";
 
-  const InputRow = ({ label, value, onChange, min, max, step, prefix, suffix }) => (
-    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
-      <span style={{ fontSize:12, color:C.textMid }}>{label}</span>
-      <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-        {prefix && <span style={{ fontSize:12, color:C.textDim, fontFamily:"monospace" }}>{prefix}</span>}
-        <input type="number" value={value} min={min} max={max} step={step||1}
-          onChange={e => onChange(+e.target.value)}
-          style={{ width:80, textAlign:"right", padding:"5px 8px" }} />
-        {suffix && <span style={{ fontSize:12, color:C.textDim, fontFamily:"monospace" }}>{suffix}</span>}
-      </div>
-    </div>
-  );
-
-  const ResultRow = ({ label, value, color, big }) => (
-    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
-      <span style={{ fontSize:12, color:C.textMid }}>{label}</span>
-      <span style={{ fontSize:big?18:14, fontWeight:big?700:600, color:color||C.text, fontFamily:"monospace" }}>{value}</span>
-    </div>
-  );
+  const simTotal   = simWins + simLosses;
+  const simWinRate = simTotal > 0 ? (simWins / simTotal * 100).toFixed(1) : "—";
+  const simPnL     = (simWins * profitPerTrade) - (simLosses * lossPerTrade);
 
   const dangerColor = (val, threshold) => val <= threshold * 1.5 ? C.short : val <= threshold * 2.5 ? C.warn : C.long;
 
@@ -617,53 +686,44 @@ function PropCalc({ t }) {
     <div style={{ padding:24, maxWidth:800 }}>
       <h2 style={{ fontSize:18, fontWeight:600, marginBottom:4 }}>{t.propTitle}</h2>
       <p style={{ color:C.textMid, fontSize:13, marginBottom:24 }}>{t.propSub}</p>
-      <div style={{ background:C.propDim, border:`1px solid ${C.prop}33`, borderRadius:10, padding:"12px 16px", marginBottom:24, display:"flex", gap:10, alignItems:"flex-start" }}>
-        <span style={{ fontSize:16 }}>⚠️</span>
-        <div>
-          <div style={{ fontSize:13, fontWeight:600, color:C.prop, marginBottom:4 }}>Account Reality Check</div>
-          <div style={{ fontSize:12, color:C.textMid, lineHeight:1.6 }}>
-            A "$50,000 funded account" gives you roughly <strong style={{ color:C.text }}>$2,500–$3,000 before you breach drawdown and lose the account.</strong> That's your true trading capital — whether it's a prop challenge or your own money. Size accordingly.
-          </div>
-        </div>
-      </div>
       <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(340px,1fr))", gap:20 }}>
         <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
           <div style={{ fontWeight:600, fontSize:14, marginBottom:16 }}>Trade Parameters</div>
-          <InputRow label="Contracts / Qty"        value={qty}       onChange={setQty}       min={1}   max={20} />
-          <InputRow label="Tick / Pip Value"        value={tickVal}   onChange={setTickVal}   min={0.1} step={0.25} prefix="$" />
-          <InputRow label="Stop Loss"               value={stopTicks} onChange={setStop}      min={1}   suffix="ticks" />
-          <InputRow label="Profit Target"           value={tgtTicks}  onChange={setTgt}       min={1}   suffix="ticks" />
-          <InputRow label="Win Rate"                value={winRate}   onChange={setWinRate}   min={1}   max={99} suffix="%" />
+          <CalcInputRow label="Contracts / Qty"        value={qty}       onChange={setQty}       min={1}   max={20} />
+          <CalcInputRow label="Tick / Pip Value"        value={tickVal}   onChange={setTickVal}   min={0.1} step={0.25} prefix="$" />
+          <CalcInputRow label="Stop Loss"               value={stopTicks} onChange={setStop}      min={1}   suffix="ticks" />
+          <CalcInputRow label="Profit Target"           value={tgtTicks}  onChange={setTgt}       min={1}   suffix="ticks" />
+          <CalcInputRow label="Win Rate"                value={winRate}   onChange={setWinRate}   min={1}   max={99} suffix="%" />
           <div style={{ fontWeight:600, fontSize:14, marginBottom:12, marginTop:20 }}>Account Settings</div>
-          <InputRow label="Profit Goal"             value={profitGoal}   onChange={setProfitGoal} min={0} prefix="$" />
-          <InputRow label="Current P&L"             value={currentBal}   onChange={setCurrentBal} prefix="$" />
+          <CalcInputRow label="Profit Goal"             value={profitGoal}   onChange={setProfitGoal} min={0} prefix="$" />
+          <CalcInputRow label="Current P&L"             value={currentBal}   onChange={setCurrentBal} prefix="$" />
           <div>
-            <InputRow label="Max Drawdown / Loss to Ruin" value={maxDD} onChange={setMaxDD} min={0} prefix="$" />
+            <CalcInputRow label="Max Drawdown / Loss to Ruin" value={maxDD} onChange={setMaxDD} min={0} prefix="$" />
             <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginTop:4, marginBottom:8 }}>Prop challenge breach limit or total account loss</div>
           </div>
-          <InputRow label="Daily Loss Limit"        value={dailyLimit}   onChange={setDailyLimit} min={0} prefix="$" />
+          <CalcInputRow label="Daily Loss Limit"        value={dailyLimit}   onChange={setDailyLimit} min={0} prefix="$" />
         </div>
         <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
           <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
             <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>Per Trade</div>
-            <ResultRow label="Loss per trade"   value={`$${lossPerTrade.toFixed(2)}`}   color={C.short} />
-            <ResultRow label="Profit per trade" value={`$${profitPerTrade.toFixed(2)}`} color={C.long} />
-            <ResultRow label="Risk : Reward"    value={`${rr.toFixed(2)} : 1`}          color={C.accent} />
-            <ResultRow label="Expected Value"   value={`$${expectedVal.toFixed(2)}`}    color={expectedVal>=0?C.long:C.short} big />
+            <CalcResultRow label="Loss per trade"   value={`$${lossPerTrade.toFixed(2)}`}   color={C.short} />
+            <CalcResultRow label="Profit per trade" value={`$${profitPerTrade.toFixed(2)}`} color={C.long} />
+            <CalcResultRow label="Risk : Reward"    value={`${rr.toFixed(2)} : 1`}          color={C.accent} />
+            <CalcResultRow label="Expected Value"   value={`$${expectedVal.toFixed(2)}`}    color={expectedVal>=0?C.long:C.short} big />
           </div>
           <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
             <div style={{ fontWeight:600, fontSize:14, marginBottom:14 }}>Account Progress</div>
-            <ResultRow label="Profit goal"       value={`$${profitGoal.toLocaleString()}`} />
-            <ResultRow label="Current P&L"       value={`$${currentBal.toLocaleString()}`}   color={C.accent} />
-            <ResultRow label="Still needed"      value={`$${neededToPass.toLocaleString()}`} color={neededToPass>0?C.warn:C.long} big />
-            <ResultRow label="Trades to goal"    value={tradesNeeded}  color={C.accent} />
-            <ResultRow label="Est. days to goal" value={daysToPass}    color={C.long} />
+            <CalcResultRow label="Profit goal"       value={`$${profitGoal.toLocaleString()}`} />
+            <CalcResultRow label="Current P&L"       value={`$${currentBal.toLocaleString()}`}   color={C.accent} />
+            <CalcResultRow label="Still needed"      value={`$${neededToPass.toLocaleString()}`} color={neededToPass>0?C.warn:C.long} big />
+            <CalcResultRow label="Trades to goal"    value={tradesNeeded}  color={C.accent} />
+            <CalcResultRow label="Est. days to goal" value={daysToPass}    color={C.long} />
           </div>
           <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22 }}>
             <div style={{ fontWeight:600, fontSize:14, marginBottom:6 }}>⚠ Risk Limits</div>
             <div style={{ fontSize:12, color:C.textMid, marginBottom:14 }}>Consecutive losing trades before limits hit</div>
-            <ResultRow label="Trades until ruin"        value={maxTradesToDD}    color={dangerColor(maxTradesToDD, 3)} big />
-            <ResultRow label="Trades until daily limit" value={maxTradesToDaily} color={dangerColor(maxTradesToDaily, 2)} />
+            <CalcResultRow label="Trades until ruin"        value={maxTradesToDD}    color={dangerColor(maxTradesToDD, 3)} big />
+            <CalcResultRow label="Trades until daily limit" value={maxTradesToDaily} color={dangerColor(maxTradesToDaily, 2)} />
             <div style={{ marginTop:14 }}>
               <div style={{ fontSize:10, color:C.textMid, marginBottom:6, fontFamily:"monospace" }}>DRAWDOWN BUFFER</div>
               <div style={{ height:8, background:C.border, borderRadius:4, overflow:"hidden" }}>
@@ -677,6 +737,30 @@ function PropCalc({ t }) {
                 <span>$0</span><span>${maxDD} limit</span>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:22, marginTop:20 }}>
+        <div style={{ fontWeight:600, fontSize:14, marginBottom:4 }}>Hypothetical Scenario</div>
+        <div style={{ fontSize:12, color:C.textMid, marginBottom:14 }}>Enter wins and losses to see projected P&amp;L and calculated win rate.</div>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(260px,1fr))", gap:20 }}>
+          <div>
+            <CalcInputRow label="Wins"   value={simWins}   onChange={setSimWins}   min={0} />
+            <CalcInputRow label="Losses" value={simLosses} onChange={setSimLosses} min={0} />
+          </div>
+          <div>
+            <CalcResultRow label="Total Trades" value={simTotal} />
+            <CalcResultRow label="Win Rate"     value={simTotal > 0 ? `${simWinRate}%` : "—"} color={C.accent} />
+            <CalcResultRow label="Gross P&L"    value={simTotal > 0 ? `$${simPnL.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}` : "—"} color={simPnL >= 0 ? C.long : C.short} big />
+          </div>
+        </div>
+      </div>
+      <div style={{ background:C.propDim, border:`1px solid ${C.prop}33`, borderRadius:10, padding:"12px 16px", marginTop:20, display:"flex", gap:10, alignItems:"flex-start" }}>
+        <span style={{ fontSize:16 }}>⚠️</span>
+        <div>
+          <div style={{ fontSize:13, fontWeight:600, color:C.prop, marginBottom:4 }}>Account Reality Check</div>
+          <div style={{ fontSize:12, color:C.textMid, lineHeight:1.6 }}>
+            A "$50,000 funded account" gives you roughly <strong style={{ color:C.text }}>$2,500–$3,000 before you breach drawdown and lose the account.</strong> That's your true trading capital — whether it's a prop challenge or your own money. Size accordingly.
           </div>
         </div>
       </div>
@@ -882,45 +966,6 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
           <button onClick={() => onNavigate("signals-fire")} style={{ padding:"15px 36px", background:"transparent", color:C.long, border:`1px solid ${C.long}`, borderRadius:8, fontWeight:500, fontSize:14, cursor:"pointer" }}>{t.viewDemo}</button>
         </div>
 
-        {/* Example signal card + equity curve */}
-        <div style={{ marginTop:72, display:"flex", gap:24, flexWrap:"wrap", justifyContent:"center", alignItems:"flex-start", width:"100%", maxWidth:780 }}>
-          <div style={{ maxWidth:340, width:"100%", textAlign:"left" }}>
-            <div style={{ fontSize:10, color:C.textDim, letterSpacing:"0.15em", marginBottom:12, fontFamily:"monospace", textAlign:"center" }}>{t.exampleSignal}</div>
-            <div style={{ background:C.surfaceUp, border:`1px solid ${track==="forex"?C.accent+"33":C.long+"33"}`, borderRadius:12, padding:20, position:"relative", overflow:"hidden" }}>
-              <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:track==="forex"?C.accent:C.long }} />
-              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:track==="forex"?8:14 }}>
-                <LiveDot color={track==="forex"?C.accent:C.long} size={8} />
-                <span style={{ fontSize:18, fontWeight:700, color:C.long, fontFamily:"monospace" }}>LONG</span>
-                <span style={{ fontSize:18, fontWeight:700, fontFamily:"monospace" }}>{track==="forex"?"EUR/USD":"ES"}</span>
-                <span style={{ fontSize:10, color:C.textMid, background:C.border, padding:"2px 7px", borderRadius:4, fontFamily:"monospace" }}>5m</span>
-                <span style={{ marginLeft:"auto", fontSize:10, color:C.long, background:C.longDim, padding:"3px 10px", borderRadius:20, fontFamily:"monospace" }}>ACTIVE</span>
-              </div>
-              {track==="forex" && (
-                <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", background:C.accentDim, padding:"2px 8px", borderRadius:4, display:"inline-block", marginBottom:10 }}>DERIVED FROM /6E</div>
-              )}
-              <div style={{ display:"flex", gap:3, marginBottom:12 }}>
-                {[1,2,3].map(i => <span key={i} style={{ fontSize:14, filter:`drop-shadow(0 0 4px ${C.long})` }}>⚡</span>)}
-                <span style={{ fontSize:11, fontWeight:600, color:C.strong, marginLeft:4, fontFamily:"monospace" }}>STRONG</span>
-              </div>
-              {[["Daily","↑ above zero"],["2-Day","↑ above zero"],["4-Day","↑ above zero"]].map(([l,s]) => (
-                <div key={l} style={{ display:"flex", justifyContent:"space-between", padding:"6px 0", borderBottom:`1px solid ${C.border}`, fontSize:11, fontFamily:"monospace" }}>
-                  <span style={{ color:C.textMid }}>{l}</span><span style={{ color:C.long }}>{s} ✓</span>
-                </div>
-              ))}
-              <div style={{ display:"flex", justifyContent:"space-between", padding:"6px 0", borderBottom:`1px solid ${C.border}`, fontSize:11, fontFamily:"monospace" }}>
-                <span style={{ color:C.textMid }}>Daily VWAP</span><span style={{ color:C.long }}>↑ above ✓</span>
-              </div>
-              <div style={{ display:"flex", justifyContent:"space-between", padding:"6px 0", fontSize:11, fontFamily:"monospace" }}>
-                <span style={{ color:C.textMid }}>Weekly VWAP</span><span style={{ color:C.long }}>↑ above ✓</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div style={{ textAlign:"center", marginTop:16 }}>
-          <p style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", fontStyle:"italic" }}>
-            Hypothetical and Illustrative Examples · Not actual trading results · Past performance does not guarantee future results
-          </p>
-        </div>
       </div>
 
       {/* Choose Your Track — moved below hero */}
@@ -1911,6 +1956,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   const [histTypeFilter, setHistTypeFilter] = useState("ALL");
   const [manualForm,   setManualForm]   = useState({ instrument:"NQ", direction:"LONG", price:"", stop:"", tp:"", note:"" });
   const [manualStatus, setManualStatus] = useState(null);
+  const [btOrbIdx, setBtOrbIdx] = useState(0);
 
   // Admin — Manual History Entry form
   const today = new Date().toISOString().slice(0, 10);
@@ -1923,7 +1969,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   // Admin — Broadcast Message
   const [broadcastMsg,    setBroadcastMsg]    = useState("");
   const [broadcastStatus, setBroadcastStatus] = useState(null);
-  const [broadcastActive, setBroadcastActive] = useState(null); // current active message from Gist
+  const [broadcastActive, setBroadcastActive] = useState(null);
 
   // Broadcast banner
   const [broadcastData,      setBroadcastData]      = useState(null);
@@ -2022,9 +2068,12 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   const shorts   = active.filter(s => s.direction === "SHORT").length;
 
   const tabs = [
-    { id:"signals", label:t.liveSignals,   icon:"◉" },
-    { id:"levels",  label:"VRB Levels",    icon:"▤" },
-    { id:"history", label:t.signalHistory, icon:"◷" },
+    { id:"signals",  label:t.liveSignals,   icon:"◉" },
+    { id:"levels",   label:"VRB Levels",    icon:"▤" },
+    { id:"history",  label:t.signalHistory, icon:"◷" },
+    { id:"backtest", label:"Backtest",       icon:"◫" },
+    { id:"pnl",      label:"P&L Tracker",   icon:"◈" },
+    { id:"config",   label:t.configuration, icon:"⚙" },
     { id:"prop",    label:t.propCalc,       icon:"⬡" },
     { id:"account", label:t.account,        icon:"◎" },
     ...(isAdmin ? [{ id:"admin", label:"Admin", icon:"⬛" }] : []),
@@ -2409,6 +2458,110 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
           );
         })()}
 
+        {activeTab==="backtest" && (() => {
+          const bt  = ORB_BACKTESTS[btOrbIdx];
+          const pts = bt.curve || [];
+          const lo  = pts.length ? Math.min(0, ...pts) : 0;
+          const hi  = pts.length ? Math.max(...pts) : 0;
+          const span = hi - lo || 1;
+          const W = 780, H = 160, pad = 8;
+          const xStep = pts.length > 1 ? (W - pad*2) / (pts.length - 1) : 1;
+          const toY   = v => H - pad - ((v - lo) / span) * (H - pad*2);
+          const zero  = toY(0);
+          const pathD = pts.map((v,i) => `${i===0?"M":"L"}${pad+i*xStep},${toY(v)}`).join(" ");
+          const fillD = pts.length ? `${pathD} L${pad+(pts.length-1)*xStep},${H-pad} L${pad},${H-pad} Z` : "";
+          return (
+            <div style={{ padding:22, maxWidth:900 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:18, flexWrap:"wrap" }}>
+                <h2 style={{ fontSize:18, fontWeight:700, margin:0 }}>Backtest Results</h2>
+                <span style={{ fontSize:10, fontFamily:"monospace", background:C.accentDim, color:C.accent, padding:"2px 8px", borderRadius:4, border:`1px solid ${C.accent}44` }}>HYPOTHETICAL</span>
+              </div>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:20 }}>
+                {ORB_BACKTESTS.map((b, i) => (
+                  <button key={b.id} onClick={() => setBtOrbIdx(i)} style={{
+                    padding:"14px 16px", borderRadius:10, cursor:"pointer", textAlign:"left",
+                    background: btOrbIdx===i ? C.accentDim : C.surface,
+                    border:`1px solid ${btOrbIdx===i ? C.accent : C.border}`,
+                    transition:"all 0.15s",
+                  }}>
+                    <div style={{ fontSize:15, fontWeight:700, fontFamily:"monospace", color: btOrbIdx===i ? C.accent : C.text, marginBottom:4 }}>{b.label}</div>
+                    <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace" }}>{b.sub}</div>
+                  </button>
+                ))}
+              </div>
+              {bt.riskNote && (
+                <div style={{ background:C.warn+"11", border:`1px solid ${C.warn}44`, borderRadius:10, padding:"12px 18px", marginBottom:20, display:"flex", gap:10, alignItems:"flex-start" }}>
+                  <span style={{ color:C.warn, fontSize:14, lineHeight:1 }}>⚠</span>
+                  <span style={{ fontSize:12, color:C.textMid, lineHeight:1.6 }}>{bt.riskNote}</span>
+                </div>
+              )}
+              {bt.comingSoon ? (
+                <div>
+                  <div style={{ fontSize:13, color:C.textMid, marginBottom:18, lineHeight:1.6 }}>How Signal Boss calculates dynamic stop-loss and take-profit levels based on each session's volatility range.</div>
+                  {bt.description.map(d => (
+                    <div key={d.heading} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"18px 20px", marginBottom:12 }}>
+                      <div style={{ fontSize:12, fontWeight:700, color:C.accent, fontFamily:"monospace", letterSpacing:"0.06em", marginBottom:8 }}>{d.heading}</div>
+                      <p style={{ fontSize:13, color:C.textMid, margin:0, lineHeight:1.7 }}>{d.body}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <>
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(130px,1fr))", gap:10, marginBottom:22 }}>
+                    {[
+                      { label:"NET P&L",        value:`+$${bt.netPnl.toLocaleString()}`,    sub:`${bt.wins}W / ${bt.losses}L`,      color:C.long },
+                      { label:"TRADES",         value: bt.trades,                            sub: bt.dates,                          color:C.text },
+                      { label:"WIN RATE",       value:`${bt.winRate}%`,                      sub:`B/E at ${(100/(1+4)).toFixed(1)}%`, color:C.long },
+                      { label:"PROFIT FACTOR",  value:`${bt.profitFactor}x`,                sub:"gross W ÷ gross L",                color:C.accent },
+                      { label:"AVG WIN",        value:`$${bt.avgWin.toLocaleString()}`,      sub:"per winning trade",                color:C.long },
+                      { label:"AVG LOSS",       value:`$${bt.avgLoss.toLocaleString()}`,     sub:"per losing trade",                 color:C.short },
+                      { label:"MAX DRAWDOWN",   value:`$${bt.maxDrawdown.toLocaleString()}`, sub:"peak-to-trough",                   color:C.warn },
+                      { label:"EXPECTANCY",     value:`$${bt.expectancy.toLocaleString()}`,  sub:"avg $ earned per trade",           color:C.long },
+                    ].map(s => (
+                      <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"14px 16px" }}>
+                        <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:5 }}>{s.label}</div>
+                        <div style={{ fontSize:17, fontWeight:700, color:s.color, fontFamily:"monospace" }}>{s.value}</div>
+                        <div style={{ fontSize:10, color:C.textDim, marginTop:3 }}>{s.sub}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:"18px 20px", marginBottom:22 }}>
+                    <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", marginBottom:10, display:"flex", justifyContent:"space-between" }}>
+                      <span>EQUITY CURVE  ({bt.trades} trades · 1 contract · cumulative)</span>
+                      <span style={{ color:C.long }}>+${hi.toLocaleString()} peak</span>
+                    </div>
+                    <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:H, display:"block" }}>
+                      <defs>
+                        <linearGradient id="eq-fill" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor={C.long} stopOpacity="0.18"/>
+                          <stop offset="100%" stopColor={C.long} stopOpacity="0.02"/>
+                        </linearGradient>
+                      </defs>
+                      <line x1={pad} y1={zero} x2={W-pad} y2={zero} stroke={C.border} strokeWidth="1" strokeDasharray="3,3"/>
+                      <path d={fillD} fill="url(#eq-fill)"/>
+                      <path d={pathD} fill="none" stroke={C.long} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
+                    </svg>
+                    <div style={{ display:"flex", gap:14, marginTop:8, fontSize:10, color:C.textDim, fontFamily:"monospace" }}>
+                      <span style={{ color:C.long }}>● {bt.wins} wins</span>
+                      <span style={{ color:C.short }}>● {bt.losses} losses</span>
+                      <span style={{ marginLeft:"auto" }}>Zero line = breakeven</span>
+                    </div>
+                  </div>
+                  <div style={{ background:C.surface, border:`1px solid ${C.border}44`, borderRadius:10, padding:"16px 20px" }}>
+                    <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.06em", marginBottom:6 }}>IMPORTANT DISCLOSURE</div>
+                    <p style={{ fontSize:12, color:C.textMid, margin:0, lineHeight:1.7 }}>
+                      Hypothetical results based on backtesting on historical data from ThinkOrSwim. Past performance is not indicative of future results. All trading involves risk of loss.
+                    </p>
+                    <p style={{ fontSize:11, color:C.textDim, margin:"8px 0 0", lineHeight:1.6 }}>
+                      {bt.dates} · {bt.period}. Results do not account for slippage, commissions, or execution differences. For educational purposes only. Not financial advice.
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })()}
+
         {activeTab==="admin" && isAdmin && (() => {
           const activeNow = signals.filter(s => s.status === "ACTIVE");
           return (
@@ -2471,7 +2624,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                 </div>
                 <div style={{ marginBottom:14 }}>
                   <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", marginBottom:5 }}>NOTE (optional)</div>
-                  <input type="text" placeholder="e.g. ORB breakout confirmed · strong volume" value={manualForm.note}
+                  <input type="text" placeholder="e.g. VRB breakout confirmed · strong volume" value={manualForm.note}
                     onChange={e=>setManualForm(p=>({...p,note:e.target.value}))}
                     style={{ width:"100%", padding:"8px 10px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:7, color:C.text, fontSize:13, boxSizing:"border-box" }} />
                 </div>
@@ -3015,6 +3168,117 @@ function ContactPage({ onNavigate }) {
   );
 }
 
+function PublicBacktests({ onNavigate }) {
+  const [btIdx, setBtIdx] = useState(0);
+  const bt   = ORB_BACKTESTS[btIdx];
+  const pts  = bt.curve || [];
+  const lo   = pts.length ? Math.min(0, ...pts) : 0;
+  const hi   = pts.length ? Math.max(...pts) : 0;
+  const span = hi - lo || 1;
+  const W = 780, H = 160, pad = 8;
+  const xStep = pts.length > 1 ? (W - pad*2) / (pts.length - 1) : 1;
+  const toY   = v => H - pad - ((v - lo) / span) * (H - pad*2);
+  const zero  = toY(0);
+  const pathD = pts.map((v,i) => `${i===0?"M":"L"}${pad+i*xStep},${toY(v)}`).join(" ");
+  const fillD = pts.length ? `${pathD} L${pad+(pts.length-1)*xStep},${H-pad} L${pad},${H-pad} Z` : "";
+
+  return (
+    <div style={{ minHeight:"100vh", padding:"40px 24px 80px", maxWidth:960, margin:"0 auto" }}>
+      <div style={{ marginBottom:8, cursor:"pointer", fontSize:12, color:C.textDim, fontFamily:"monospace" }} onClick={() => onNavigate("landing")}>← Back</div>
+      <div style={{ marginBottom:32 }}>
+        <div style={{ fontSize:11, color:C.accent, fontFamily:"monospace", letterSpacing:"0.18em", marginBottom:10 }}>VOLATILITY ALIGNED BREAKOUT TRADES</div>
+        <h1 style={{ fontSize:28, fontWeight:800, marginBottom:10, letterSpacing:"-0.03em" }}>Backtest Results</h1>
+        <p style={{ color:C.textMid, fontSize:14, lineHeight:1.7, maxWidth:620 }}>
+          Historical performance of the Signal Boss volatility-range breakout strategy across five futures instruments.
+          All results generated in ThinkOrSwim on tick-accurate historical data.
+        </p>
+      </div>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:24 }}>
+        {ORB_BACKTESTS.map((b, i) => (
+          <button key={b.id} onClick={() => setBtIdx(i)} style={{
+            padding:"14px 16px", borderRadius:10, cursor:"pointer", textAlign:"left",
+            background: btIdx===i ? C.accentDim : C.surface,
+            border:`1px solid ${btIdx===i ? C.accent : C.border}`,
+            transition:"all 0.15s",
+          }}>
+            <div style={{ fontSize:15, fontWeight:700, fontFamily:"monospace", color:btIdx===i?C.accent:C.text, marginBottom:4 }}>{b.label}</div>
+            <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace" }}>{b.sub}</div>
+          </button>
+        ))}
+      </div>
+      {bt.riskNote && (
+        <div style={{ background:C.warn+"11", border:`1px solid ${C.warn}44`, borderRadius:10, padding:"12px 18px", marginBottom:20, display:"flex", gap:10, alignItems:"flex-start" }}>
+          <span style={{ color:C.warn, fontSize:14, lineHeight:1 }}>⚠</span>
+          <span style={{ fontSize:12, color:C.textMid, lineHeight:1.6 }}>{bt.riskNote}</span>
+        </div>
+      )}
+      {bt.comingSoon ? (
+        <div>
+          <div style={{ fontSize:13, color:C.textMid, marginBottom:18, lineHeight:1.6 }}>How Signal Boss calculates dynamic stop-loss and take-profit levels based on each session's volatility range.</div>
+          {bt.description.map(d => (
+            <div key={d.heading} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"18px 20px", marginBottom:12 }}>
+              <div style={{ fontSize:12, fontWeight:700, color:C.accent, fontFamily:"monospace", letterSpacing:"0.06em", marginBottom:8 }}>{d.heading}</div>
+              <p style={{ fontSize:13, color:C.textMid, margin:0, lineHeight:1.7 }}>{d.body}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(130px,1fr))", gap:10, marginBottom:22 }}>
+            {[
+              { label:"NET P&L",       value:`+$${bt.netPnl.toLocaleString()}`,    sub:`${bt.wins}W / ${bt.losses}L`,      color:C.long },
+              { label:"TRADES",        value: bt.trades,                            sub: bt.dates,                          color:C.text },
+              { label:"WIN RATE",      value:`${bt.winRate}%`,                      sub:`B/E at ${(100/(1+4)).toFixed(1)}%`, color:C.long },
+              { label:"PROFIT FACTOR", value:`${bt.profitFactor}x`,                sub:"gross W ÷ gross L",                color:C.accent },
+              { label:"AVG WIN",       value:`$${bt.avgWin.toLocaleString()}`,      sub:"per winning trade",                color:C.long },
+              { label:"AVG LOSS",      value:`$${bt.avgLoss.toLocaleString()}`,     sub:"per losing trade",                 color:C.short },
+              { label:"MAX DRAWDOWN",  value:`$${bt.maxDrawdown.toLocaleString()}`, sub:"peak-to-trough",                   color:C.warn },
+              { label:"EXPECTANCY",    value:`$${bt.expectancy.toLocaleString()}`,  sub:"avg $ earned per trade",           color:C.long },
+            ].map(s => (
+              <div key={s.label} style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, padding:"14px 16px" }}>
+                <div style={{ fontSize:9, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:5 }}>{s.label}</div>
+                <div style={{ fontSize:17, fontWeight:700, color:s.color, fontFamily:"monospace" }}>{s.value}</div>
+                <div style={{ fontSize:10, color:C.textDim, marginTop:3 }}>{s.sub}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:"18px 20px", marginBottom:22 }}>
+            <div style={{ fontSize:11, color:C.textDim, fontFamily:"monospace", marginBottom:10, display:"flex", justifyContent:"space-between" }}>
+              <span>EQUITY CURVE  ({bt.trades} trades · 1 contract · cumulative)</span>
+              <span style={{ color:C.long }}>+${hi.toLocaleString()} peak</span>
+            </div>
+            <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:H, display:"block" }}>
+              <defs>
+                <linearGradient id="pub-eq-fill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={C.long} stopOpacity="0.18"/>
+                  <stop offset="100%" stopColor={C.long} stopOpacity="0.02"/>
+                </linearGradient>
+              </defs>
+              <line x1={pad} y1={zero} x2={W-pad} y2={zero} stroke={C.border} strokeWidth="1" strokeDasharray="3,3"/>
+              <path d={fillD} fill="url(#pub-eq-fill)"/>
+              <path d={pathD} fill="none" stroke={C.long} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
+            </svg>
+            <div style={{ display:"flex", gap:14, marginTop:8, fontSize:10, color:C.textDim, fontFamily:"monospace" }}>
+              <span style={{ color:C.long }}>● {bt.wins} wins</span>
+              <span style={{ color:C.short }}>● {bt.losses} losses</span>
+              <span style={{ marginLeft:"auto" }}>Zero line = breakeven</span>
+            </div>
+          </div>
+          <div style={{ background:C.surface, border:`1px solid ${C.border}44`, borderRadius:10, padding:"16px 20px", marginBottom:32 }}>
+            <div style={{ fontSize:10, color:C.textDim, fontFamily:"monospace", letterSpacing:"0.06em", marginBottom:6 }}>IMPORTANT DISCLOSURE</div>
+            <p style={{ fontSize:12, color:C.textMid, margin:0, lineHeight:1.7 }}>
+              Hypothetical results based on backtesting on historical data from ThinkOrSwim. Past performance is not indicative of future results. All trading involves significant risk of loss. Do not trade with money you cannot afford to lose.
+            </p>
+            <p style={{ fontSize:11, color:C.textDim, margin:"8px 0 0", lineHeight:1.6 }}>
+              {bt.dates} · {bt.period}. Results do not account for slippage, commissions, or execution differences. For educational purposes only. Not financial advice.
+            </p>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 function AppInner() {
   const { isSignedIn, isLoaded } = useAuth();
   const { user: clerkUser }      = useUser();
@@ -3066,13 +3330,15 @@ function AppInner() {
               <button onClick={() => setTrack("futures")} style={{ padding:"6px 18px", borderRadius:6, border:"none", background:(!track||track==="futures")?C.longDim:"transparent", color:(!track||track==="futures")?C.long:C.textMid, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"monospace", letterSpacing:"0.08em", transition:"all 0.15s" }}>FUTURES</button>
               <button onClick={() => setTrack("forex")} style={{ padding:"6px 18px", borderRadius:6, border:"none", background:track==="forex"?C.accentDim:"transparent", color:track==="forex"?C.accent:C.textMid, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"monospace", letterSpacing:"0.08em", transition:"all 0.15s" }}>FOREX</button>
             </div>
-            {page === "landing" && (
+            {(page === "landing" || page === "backtests") && (
               <div style={{ display:"flex", gap:20, alignItems:"center" }}>
-                <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("methodology")?.scrollIntoView({behavior:"smooth"})}}>Methodology</a>
+                <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("methodology")?.scrollIntoView({behavior:"smooth"});setPage("landing");}}>Methodology</a>
                 <span style={{ color:C.border }}>·</span>
-                <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("how-it-works")?.scrollIntoView({behavior:"smooth"})}}>How It Works</a>
+                <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("how-it-works")?.scrollIntoView({behavior:"smooth"});setPage("landing");}}>How It Works</a>
                 <span style={{ color:C.border }}>·</span>
-                <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("pricing")?.scrollIntoView({behavior:"smooth"})}}>Pricing</a>
+                <a style={{ fontSize:13, color: page==="backtests" ? C.accent : C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();setPage("backtests");}}>Backtests</a>
+                <span style={{ color:C.border }}>·</span>
+                <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("pricing")?.scrollIntoView({behavior:"smooth"});setPage("landing");}}>Pricing</a>
                 <span style={{ color:C.border }}>·</span>
                 <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();setPage("contact")}}>Contact</a>
               </div>
@@ -3106,12 +3372,15 @@ function AppInner() {
         {page==="subscribe"  && <SubscribePage user={clerkUser} plan={activePlan} onNavigate={setPage} t={t} track={track} />}
         {page==="calc"       && <StandaloneCalc onNavigate={setPage} t={t} />}
         {page==="contact"    && <ContactPage onNavigate={setPage} />}
+        {page==="signals-fire" && <SignalFiresPlayer onNavigate={setPage} />}
+        {page==="demo-chooser" && <DemoChooser onNavigate={setPage} setTrack={setTrack} />}
         {page==="dashboard"  && (
           isSubscribed
             ? <Dashboard user={clerkUser} onNavigate={setPage} t={t} lang={lang} setLang={setLang} track={track} />
             : <SubscribePage user={clerkUser} plan={activePlan} onNavigate={setPage} t={t} track={track} />
         )}
         {page==="forex-demo" && <ForexDemo onNavigate={setPage} t={t} />}
+        {page==="backtests"  && <PublicBacktests onNavigate={setPage} />}
       </div>
       {showPricingModal && (
         <PricingModal user={clerkUser} track={track} onClose={() => setShowPricingModal(false)} />
