@@ -2864,26 +2864,6 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
 }
 
 function StandaloneCalc({ onNavigate, t }) {
-  const [email, setEmail]       = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError]       = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const handleSubmit = async () => {
-    if (!email || !email.includes("@")) { setError("Please enter a valid email."); return; }
-    setSubmitting(true);
-    try {
-      await fetch("https://formspree.io/f/mbdaqgye", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({
-          email,
-          _subject: "🔢 Signal Boss Calculator Access Request",
-          source: "Risk Calculator Gate",
-        }),
-      });
-    } catch(e) { /* silent fail */ }
-    setSubmitted(true); setError(""); setSubmitting(false);
-  };
   return (
     <div style={{ minHeight:"100vh", background:C.bg, padding:"100px 24px 40px" }}>
       <div style={{ maxWidth:860, margin:"0 auto" }}>
@@ -2892,41 +2872,7 @@ function StandaloneCalc({ onNavigate, t }) {
           <h1 style={{ fontSize:28, fontWeight:700, letterSpacing:"-0.02em", marginBottom:8 }}>Account Risk Calculator</h1>
           <p style={{ color:C.textMid, fontSize:14 }}>Free tool. No subscription required. Know your real risk before you trade.</p>
         </div>
-        {!submitted ? (
-          <div style={{ maxWidth:480, background:C.surface, border:`1px solid ${C.prop}44`, borderRadius:14, padding:32, marginBottom:40 }}>
-            <div style={{ fontSize:13, fontWeight:600, color:C.prop, marginBottom:8 }}>⬡ Free Access</div>
-            <p style={{ fontSize:13, color:C.textMid, lineHeight:1.6, marginBottom:20 }}>
-              Enter your email to unlock the full calculator. We'll also send you a free guide on prop firm risk management.
-            </p>
-            <input type="email" value={email} onChange={e => { setEmail(e.target.value); setError(""); }}
-              placeholder="your@email.com" onKeyDown={e => e.key==="Enter" && handleSubmit()}
-              style={{ width:"100%", boxSizing:"border-box", padding:"12px 16px", background:C.bg, border:`1px solid ${error?C.short:C.border}`, borderRadius:7, color:C.text, fontSize:14, fontFamily:"monospace", outline:"none", marginBottom:10, display:"block" }} />
-            <button onClick={handleSubmit} disabled={submitting} style={{ width:"100%", padding:"12px", background:C.prop, color:"#fff", border:"none", borderRadius:7, fontWeight:700, fontSize:14, cursor:"pointer", opacity:submitting?0.7:1 }}>
-              {submitting ? "Unlocking..." : "Get Access →"}
-            </button>
-            {error && <div style={{ fontSize:12, color:C.short, marginTop:10, fontFamily:"monospace" }}>{error}</div>}
-            <div style={{ fontSize:11, color:C.textDim, marginTop:12, textAlign:"center" }}>No spam. Unsubscribe anytime.</div>
-          </div>
-        ) : (
-          <div style={{ maxWidth:440, background:C.surface, border:`1px solid ${C.long}33`, borderRadius:14, padding:22, marginBottom:32, display:"flex", gap:12, alignItems:"center" }}>
-            <span style={{ fontSize:22 }}>✓</span>
-            <div>
-              <div style={{ fontWeight:600, color:C.long, marginBottom:4 }}>You're in!</div>
-              <div style={{ fontSize:13, color:C.textMid }}>Check {email} for your free risk management guide.</div>
-            </div>
-          </div>
-        )}
-        <div style={{ position:"relative" }}>
-          {!submitted && (
-            <div style={{ position:"absolute", inset:0, backdropFilter:"blur(6px)", background:"#08090966", zIndex:10, borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center" }}>
-              <div style={{ textAlign:"center", color:C.textMid, fontFamily:"monospace", fontSize:13 }}>
-                <div style={{ fontSize:28, marginBottom:10 }}>🔒</div>
-                Enter your email above to unlock
-              </div>
-            </div>
-          )}
-          <PropCalc t={t} />
-        </div>
+        <PropCalc t={t} />
       </div>
     </div>
   );
@@ -3337,6 +3283,10 @@ function AppInner() {
                 <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("how-it-works")?.scrollIntoView({behavior:"smooth"});setPage("landing");}}>How It Works</a>
                 <span style={{ color:C.border }}>·</span>
                 <a style={{ fontSize:13, color: page==="backtests" ? C.accent : C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();setPage("backtests");}}>Backtests</a>
+                <span style={{ color:C.border }}>·</span>
+                <a href="/basics.html" style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }}>Master the Basics</a>
+                <span style={{ color:C.border }}>·</span>
+                <a href="/market_driver.html" style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }}>What 90% Miss</a>
                 <span style={{ color:C.border }}>·</span>
                 <a style={{ fontSize:13, color:C.textMid, textDecoration:"none", fontFamily:"monospace", cursor:"pointer" }} onClick={e=>{e.preventDefault();document.getElementById("pricing")?.scrollIntoView({behavior:"smooth"});setPage("landing");}}>Pricing</a>
                 <span style={{ color:C.border }}>·</span>
