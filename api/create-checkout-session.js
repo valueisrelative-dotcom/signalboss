@@ -27,12 +27,14 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).end("Method Not Allowed");
 
-  const { userId, email, plan } = await parseBody(req);
+  const { userId, email, plan, ref } = await parseBody(req);
 
   const priceId = PRICE_IDS[plan];
   if (!priceId) {
     return res.status(400).json({ error: `Unknown plan: ${plan}` });
   }
+
+  const meta = { userId, plan, ...(ref ? { ref } : {}) };
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -40,7 +42,8 @@ export default async function handler(req, res) {
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
       customer_email: email || undefined,
-      metadata: { userId, plan },
+      metadata: meta,
+      subscription_data: { metadata: meta },
       success_url: "https://signalboss.net/?payment=success",
       cancel_url:  "https://signalboss.net/?payment=cancelled",
     });

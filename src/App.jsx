@@ -1515,7 +1515,7 @@ function PricingModal({ user, track, onClose }) {
       const resp = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id, email: user.primaryEmailAddress?.emailAddress || "", plan: selectedPlan }),
+        body: JSON.stringify({ userId: user.id, email: user.primaryEmailAddress?.emailAddress || "", plan: selectedPlan, ref: localStorage.getItem("signalboss_ref") || "" }),
       });
       const data = await resp.json();
       if (data.url) { window.location.href = data.url; }
@@ -1621,6 +1621,7 @@ function SubscribePage({ user, plan, onNavigate, t, track }) {
           userId: user.id,
           email:  user.primaryEmailAddress?.emailAddress || "",
           plan:   selectedPlan,
+          ref:    localStorage.getItem("signalboss_ref") || "",
         }),
       });
       const data = await resp.json();
@@ -3238,6 +3239,12 @@ function AppInner() {
 
   const isSubscribed = clerkUser?.publicMetadata?.subscribed === true;
   const activePlan   = clerkUser?.publicMetadata?.plan || null;
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("ref");
+    if (ref) localStorage.setItem("signalboss_ref", ref);
+  }, []);
 
   useEffect(() => {
     if (!isLoaded) return;

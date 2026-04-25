@@ -41,9 +41,10 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true, skipped: true });
   }
 
-  const { id, email_addresses, first_name, last_name, created_at } = event.data;
+  const { id, email_addresses, first_name, last_name, created_at, unsafe_metadata } = event.data;
   const email   = email_addresses?.[0]?.email_address ?? "(no email)";
   const name    = [first_name, last_name].filter(Boolean).join(" ") || "(no name)";
+  const ref     = unsafe_metadata?.ref || "";
   const ts      = new Date(created_at).toLocaleString("en-US", {
     timeZone: "America/New_York",
     dateStyle: "medium",
@@ -61,7 +62,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         from: "Signal Boss Alerts <onboarding@resend.dev>",
         to:   ["info@signalboss.net"],
-        subject: `🆕 New Signup: ${email}`,
+        subject: ref ? `🆕 New Signup [ref: ${ref}]: ${email}` : `🆕 New Signup: ${email}`,
         text: [
           "New user signed up on Signal Boss.",
           "",
@@ -69,6 +70,7 @@ export default async function handler(req, res) {
           `Email   : ${email}`,
           `Clerk ID: ${id}`,
           `Time    : ${ts} ET`,
+          ...(ref ? [`Ref     : ${ref}`] : []),
           "",
           "No payment on file yet. Check Clerk dashboard if needed.",
           "https://dashboard.clerk.com",
