@@ -6,6 +6,29 @@ A React single-page application (Vite + JSX) for futures trading signals. Deploy
 
 ---
 
+## CRITICAL — READ BEFORE TOUCHING ANYTHING
+
+**Do not remove, rename, or restructure any existing feature without an explicit instruction to do so.**
+
+The following features MUST remain intact at all times. If you find them missing, restore them — do not assume they were intentionally removed:
+
+| Feature | Location |
+|---|---|
+| Backtest tab | Dashboard sidebar nav + `activeTab==="backtest"` content block |
+| Public Backtests page | `PublicBacktests` component + `page==="backtests"` route |
+| Backtests nav link | Top nav, visible on landing and backtests pages |
+| "What 90% Miss" nav link | Top nav → `/market_driver.html` |
+| "Master the Basics" nav link | Top nav → `/basics.html` |
+| VRB Levels tab | Dashboard — label must say VRB, not ORB |
+| Risk Calculator | `/calc` route → `StandaloneCalc` → `PropCalc` — no email gate |
+| Ticker tape | Fixed below nav in `AppInner`, not inside `LandingPage` |
+| Affiliate tracking | `?ref=` captured in localStorage, passed to Stripe metadata |
+| Contact form | Routes to `/api/contact`, not Formspree |
+
+**If a Claude session removed any of the above, it was an error. The user did not ask for it.**
+
+---
+
 ## Authoritative source of truth
 
 **`src/App.jsx` is the only file that defines the React app.**
@@ -34,6 +57,8 @@ These files are served directly by Vercel from `public/`. They have their own se
 | `public/today.html` | Same as landing.html — different OG meta tags for social sharing |
 | `public/twoday.html` | Same as landing.html — different OG meta tags for social sharing |
 | `public/market_driver.html` | Lead magnet: "The Signal 90% of Traders Ignore" — long-form editorial |
+| `public/basics.html` | Foundation guide: "Master the Basics" |
+| `public/signalboss-latimax.html` | Co-branded Spanish landing page for Latimax affiliate |
 
 ### Video animations (standalone, NOT part of the React build)
 Loaded by the HTML files below via Babel standalone. `animations.jsx` is NOT a React component and is not processed by Vite.
@@ -51,9 +76,9 @@ Loaded by the HTML files below via Babel standalone. `animations.jsx` is NOT a R
 | File | Purpose |
 |---|---|
 | `api/clerk-webhook.js` | Clerk new-user signup webhook |
-| `api/contact.js` | Contact form handler |
-| `api/create-checkout-session.js` | Stripe checkout |
-| `api/webhook.js` | Stripe webhook |
+| `api/contact.js` | Contact form handler (uses Resend → info@signalboss.net) |
+| `api/create-checkout-session.js` | Stripe checkout — auto-applies affiliate coupons |
+| `api/webhook.js` | Stripe webhook — grants Clerk access + notifies affiliates |
 
 ---
 
@@ -74,10 +99,20 @@ The system trades **Volatility Range Breakouts (VRB)** — not Opening Range Bre
 
 ---
 
+## Affiliates
+
+| Affiliate | Ref param | Coupon | Email |
+|---|---|---|---|
+| Alberto / Latimax | `?ref=latimax` | LATIMAX25 (25% off first month) | alberto13777@gmail.com |
+| Juanita | `?ref=jmm` | — | TBD |
+
+---
+
 ## Standing rules
 
 - **Only modify what was explicitly requested.** No cleanup, refactoring, or "while I'm in here" changes.
-- **Do not restore removed features.** If a tab or section was removed (e.g., a Backtest tab), do not add it back unless asked.
+- **Do not remove any existing tab, page, nav link, or feature** unless the user explicitly says to remove it.
+- **Do not restore removed features** that the user intentionally deleted — but the features in the table above are permanent.
 - **Do not add new tabs, features, or sections** without being asked.
 - **Do not modify marketing copy** in the public HTML files unless asked.
 - **Do not change design tokens** (colors, fonts, spacing) unless asked.
