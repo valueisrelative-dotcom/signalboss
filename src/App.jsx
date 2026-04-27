@@ -1,9 +1,30 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, Component } from "react";
 import {
   ClerkProvider, SignIn, SignUp,
   useUser, useAuth, UserButton,
   SignedIn, SignedOut,
 } from "@clerk/clerk-react";
+
+class TabErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { error: null }; }
+  static getDerivedStateFromError(e) { return { error: e }; }
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{ padding: 40, color: "#9ab0b0", fontFamily: "monospace", fontSize: 13 }}>
+          <div style={{ color: "#ff4560", marginBottom: 8 }}>Tab failed to load.</div>
+          <div style={{ color: "#4a5e5e", fontSize: 11 }}>{String(this.state.error)}</div>
+          <button onClick={() => this.setState({ error: null })}
+            style={{ marginTop: 16, padding: "6px 16px", background: "#0c0e0f", border: "1px solid #161a1a",
+                     color: "#9ab0b0", borderRadius: 6, cursor: "pointer", fontSize: 12 }}>
+            Retry
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const LANGS = {
   en: { label: "EN", name: "English",   flag: "🇺🇸" },
@@ -442,7 +463,7 @@ const clerkDark = {
 
 const GIST_URL    = "https://gist.githubusercontent.com/raw/336ce62861f67be83d1fdbd34576f4c5/signals.json";
 const LEVELS_URL  = "https://gist.githubusercontent.com/raw/336ce62861f67be83d1fdbd34576f4c5/levels.json";
-const HISTORY_URL = "/history.json";              // static file in public/ — always available
+const HISTORY_URL = "/history.json"; // static frozen file — past dates never change
 const API_URL     = import.meta.env.VITE_API_URL || (window.location.hostname === "localhost" ? "http://localhost:4242" : "/vps");
 const MICROS    = { ES:"MES", NQ:"MNQ", YM:"MYM", RTY:"M2K", CL:"MCL", GC:"MGC" };
 const ALL_INSTS = ["ES","NQ","YM","CL","GC","RTY","ZN","ZF","ZT"];
@@ -2017,29 +2038,26 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
     return () => clearInterval(iv);
   }, []);
 
-  // History — static file (always works) + optional VPS live updates
-  const fetchHistory = () =>
-    fetch(`${HISTORY_URL}?t=${Date.now()}`)
-      .then(r => r.json())
-      .then(data => {
-        const rows = Array.isArray(data) ? data : (data.history || []);
-        if (rows.length > 0) setHistory(rows);
-        // Also try live VPS for any today's records not yet in static file
-        return fetch(`${API_URL}/history?t=${Date.now()}`)
-          .then(r => r.json())
-          .then(live => {
-            const liveRows = Array.isArray(live) ? live : (live.history || []);
-            if (liveRows.length > 0) {
-              setHistory(prev => {
-                const ids = new Set(prev.map(s => s.id));
-                const merged = [...prev, ...liveRows.filter(s => !ids.has(s.id))];
-                return merged.sort((a,b) => (b.date||"").localeCompare(a.date||""));
-              });
-            }
-          })
-          .catch(() => {});
-      })
-      .catch(() => {});
+  // History — two strict sources, hard boundaries:
+  //   PAST (< today)  →  public/history.json only — FROZEN, never changes
+  //   TODAY           →  VPS /vps/history — live, updates as trades close
+  // This prevents historical P&L from ever shifting after a date is closed.
+  const fetchHistory = () => {
+    const todayStr = new Date().toLocaleDateString("en-CA"); // "YYYY-MM-DD" in local time
+    return Promise.all([
+      fetch(`/history.json?t=${Date.now()}`).then(r => r.json()).catch(() => ({})),
+      fetch(`${API_URL}/history?t=${Date.now()}`).then(r => r.json()).catch(() => ({}))
+    ]).then(([staticData, vpsData]) => {
+      const staticRows = Array.isArray(staticData) ? staticData : (staticData.history || []);
+      const vpsRows    = Array.isArray(vpsData)    ? vpsData    : (vpsData.history    || []);
+      // Past = static file only (immutable); Today = VPS only (live)
+      const pastRows  = staticRows.filter(t => t.date !== todayStr);
+      const todayRows = vpsRows.filter(t => t.date === todayStr);
+      const merged = [...pastRows, ...todayRows]
+        .sort((a, b) => (b.date || "").localeCompare(a.date || "") || (b.time || "").localeCompare(a.time || ""));
+      if (merged.length > 0) setHistory(merged);
+    });
+  };
 
   useEffect(() => {
     fetchHistory();
@@ -2133,6 +2151,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
       {/* Main */}
       <div style={{ flex:1, overflow:"auto", background:C.bg }}>
         <PriceTicker />
+        <TabErrorBoundary key={activeTab}>
 
         {activeTab==="signals" && (
           <div style={{ padding:22 }}>
@@ -2226,7 +2245,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
 
                           {/* Range Pts */}
                           <td style={{ ...CELL(), textAlign:"right", color:C.accent, fontWeight:600 }}>
-                            {range != null ? fmtRange(sym, range) : dash}
+                            {range != null ? fmtRange(range) : dash}
                           </td>
 
                           {/* LONG Entry = OR high */}
@@ -2856,6 +2875,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
             </div>
           </div>
         )}
+        </TabErrorBoundary>
       </div>
       </div>
     </div>
