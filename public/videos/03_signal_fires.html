@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Signal Boss — Multi-Market Signal Burst (video)</title>
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  html,body { margin:0; padding:0; background:#000; height:100%; overflow:hidden; }
+  #root { position:fixed; inset:0; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="animations.jsx"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const GOLD='#c8a96e', GREEN='#00e5a0', RED='#ff4560';
+const BG='#050810', SURF='#0f1624', MID='#b8cccc', TEXT='#eaeeee';
+const MONO='IBM Plex Mono, monospace', UI='DM Sans, system-ui, sans-serif';
+
+function Ticker(){
+  const {time}=useTimeline();
+  const items=['ES 7,119.25','NQ 26,672.50','GC 4,808.40','CL 87.50','RTY 2,761.40','ZN 111\'12'];
+  const all=[...items,...items,...items];
+  const x=-(time*100)%800;
+  return(<div style={{position:'absolute',top:0,left:0,right:0,height:48,background:'#000',borderBottom:'1px solid #1a2e48',overflow:'hidden',display:'flex',alignItems:'center'}}>
+    <div style={{position:'absolute',left:x,display:'flex',gap:40,whiteSpace:'nowrap',fontFamily:MONO,fontSize:18,color:'#fff',fontWeight:500,paddingLeft:40}}>
+      {all.map((t,i)=><span key={i}><b style={{color:GOLD,marginRight:8}}>●</b>{t}</span>)}
+    </div>
+  </div>);
+}
+
+function Header(){
+  const t=useTime();
+  const p=clamp(t/0.5,0,1);
+  return(<div style={{position:'absolute',top:60,left:0,right:0,textAlign:'center',opacity:p,transform:`translateY(${(1-p)*8}px)`}}>
+    <div style={{fontFamily:MONO,fontSize:13,letterSpacing:'0.2em',color:GOLD,fontWeight:700}}>SIGNAL BOSS  ·  LIVE SCAN  ·  APR 20 2026</div>
+  </div>);
+}
+
+function MiniCard({dir,color,sym,entry,stop,target,delay}){
+  const t=useTime();
+  if(t<delay) return null;
+  const p=clamp((t-delay)/0.5,0,1);
+  const ease=Easing.easeOutBack(p);
+  const opacity=clamp((t-delay)/0.3,0,1);
+  const nt=clamp((t-delay-0.4)/0.5,0,1);
+  const ns=clamp((t-delay-0.5)/0.5,0,1);
+  const ntg=clamp((t-delay-0.6)/0.5,0,1);
+  const ev=(entry*Easing.easeOutCubic(nt)).toFixed(2);
+  const sv=(stop*Easing.easeOutCubic(ns)).toFixed(2);
+  const tv=(target*Easing.easeOutCubic(ntg)).toFixed(2);
+  const pulse=0.55+0.45*Math.sin(t*4+delay);
+  const glow=`0 0 28px ${color}33, 0 0 56px ${color}18`;
+  return(<div style={{
+    position:'relative',background:SURF,
+    border:`1.5px solid ${color}88`,borderRadius:12,
+    boxShadow:glow,overflow:'hidden',fontFamily:UI,
+    transform:`translateY(${(1-ease)*24}px) scale(${0.94+0.06*ease})`,
+    opacity,
+  }}>
+    <div style={{height:3,background:color}}/>
+    <div style={{padding:'14px 18px 16px'}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+        <span style={{display:'inline-flex',alignItems:'center',gap:7,padding:'5px 12px',borderRadius:20,background:`${color}12`,border:`1px solid ${color}55`,color,fontFamily:MONO,fontWeight:700,fontSize:13,letterSpacing:'0.12em'}}>
+          <span style={{width:8,height:8,borderRadius:'50%',background:color,boxShadow:`0 0 8px ${color}`,opacity:pulse}}/>
+          {dir}
+        </span>
+        <span style={{fontFamily:MONO,fontWeight:700,fontSize:16,color:'#fff',letterSpacing:'0.04em'}}>{sym}</span>
+      </div>
+      {[['Entry',ev,'#fff'],['Stop',sv,RED],['1st Target',tv,GREEN]].map(([lbl,val,vc],i)=>(
+        <div key={i} style={{display:'grid',gridTemplateColumns:'1fr auto',padding:'8px 0',borderBottom:i<2?'1px solid #ffffff0e':'none',alignItems:'center'}}>
+          <span style={{fontFamily:MONO,fontSize:12,letterSpacing:'0.1em',textTransform:'uppercase',color:MID,fontWeight:500}}>{lbl}</span>
+          <span style={{fontFamily:MONO,fontSize:20,fontWeight:700,color:vc,fontVariantNumeric:'tabular-nums'}}>{val}</span>
+        </div>
+      ))}
+    </div>
+  </div>);
+}
+
+function Grid(){
+  const t=useTime();
+  const gridOpacity=t<6.5?1:Math.max(0.35,1-0.65*Easing.easeInOutCubic(clamp((t-6.5)/0.6,0,1)));
+  const cards=[
+    {dir:'LONG', color:GREEN,sym:'ES MAR25',entry:7119.25,stop:7110.50,target:7146.00,delay:1.8},
+    {dir:'LONG', color:GREEN,sym:'NQ MAR25',entry:26672.50,stop:26610.00,target:26905.00,delay:2.1},
+    {dir:'SHORT',color:RED,  sym:'GC APR25',entry:4808.40,stop:4819.80,target:4775.60,delay:2.4},
+    {dir:'LONG', color:GREEN,sym:'RTY MAR25',entry:2761.40,stop:2752.20,target:2789.00,delay:2.7},
+  ];
+  return(<div style={{
+    position:'absolute',left:60,top:145,right:60,bottom:70,
+    display:'grid',gridTemplateColumns:'1fr 1fr',gridTemplateRows:'1fr 1fr',gap:20,
+    opacity:gridOpacity,
+  }}>
+    {cards.map((c,i)=><MiniCard key={i} {...c}/>)}
+  </div>);
+}
+
+function Overlay(){
+  const t=useTime();
+  if(t<6.5) return null;
+  const p=clamp((t-6.5)/0.7,0,1);
+  const ease=Easing.easeOutCubic(p);
+  return(<div style={{
+    position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',
+    opacity:ease,pointerEvents:'none',
+  }}>
+    <div style={{
+      background:'rgba(5,8,16,0.82)',backdropFilter:'blur(3px)',
+      borderRadius:20,padding:'40px 80px',textAlign:'center',
+      border:'1px solid rgba(200,169,110,0.25)',
+      transform:`scale(${0.94+0.06*ease}) translateY(${(1-ease)*20}px)`,
+      boxShadow:'0 0 80px rgba(5,8,16,0.95)',
+    }}>
+      <div style={{fontFamily:MONO,fontSize:15,letterSpacing:'0.24em',color:GOLD,fontWeight:700,marginBottom:16}}>●  SIGNAL BOSS</div>
+      <div style={{fontFamily:UI,fontSize:38,fontWeight:700,color:'#fff',letterSpacing:'-0.02em',marginBottom:18}}>4 Markets. 8 Instruments. One Edge.</div>
+      <div style={{fontFamily:MONO,fontSize:16,color:GOLD,letterSpacing:'0.08em',opacity:0.85}}>signalboss.net</div>
+    </div>
+  </div>);
+}
+
+function Scene(){
+  return(<div style={{position:'absolute',inset:0,background:BG}}>
+    <Ticker/>
+    <Header/>
+    <Grid/>
+    <Overlay/>
+  </div>);
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <Stage width={1280} height={720} duration={9} background={BG} persistKey="sb_burst"><Scene/></Stage>
+);
+</script>
+</body>
+</html>

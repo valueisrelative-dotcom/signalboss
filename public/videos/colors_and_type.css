@@ -1,0 +1,203 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Signal Boss — Colors & Typography
+   Pulled directly from src/App.jsx (C = {...}) and public/landing.html (:root)
+   ────────────────────────────────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=IBM+Plex+Mono:wght@400;500;600;700&family=Bebas+Neue&display=swap');
+
+:root {
+  /* ── Backgrounds ─────────────────────────────────────────────── */
+  --sb-bg:          #090e18;  /* app bg — deepest */
+  --sb-bg-deep:     #050810;  /* landing deepest */
+  --sb-bg-base:     #080c14;  /* landing base */
+  --sb-surface:     #0e1929;  /* panels, cards */
+  --sb-surface-up:  #0f2019;  /* long-tinted surface (faint green) */
+  --sb-surface-dn:  #200f14;  /* short-tinted surface (faint red) */
+  --sb-silver:      #131e2e;  /* brushed-silver section bg */
+  --sb-silver-up:   #192840;  /* elevated silver card */
+  --sb-card:        #0d1424;  /* landing card */
+  --sb-card-alt:    #101828;  /* landing card alt */
+
+  /* ── Borders ─────────────────────────────────────────────────── */
+  --sb-border:        #1a2e48;  /* default */
+  --sb-border-hi:     #243c5e;  /* focused / hover */
+  --sb-silver-border: #274060;  /* on silver panels */
+  --sb-border-alt:    #1a2540;  /* landing default */
+  --sb-border-lit:    #243656;  /* landing focused */
+
+  /* ── Text ────────────────────────────────────────────────────── */
+  --sb-text:       #eaeeee;  /* primary */
+  --sb-text-mid:   #b8cccc;  /* secondary */
+  --sb-text-dim:   #6a8888;  /* tertiary / hints */
+  --sb-text-muted: #9ab0c8;  /* landing muted */
+
+  /* ── Brand / Accent ──────────────────────────────────────────── */
+  --sb-accent:        #c8a96e;  /* brand gold (app) */
+  --sb-accent-warm:   #c9a84c;  /* brand gold (landing) */
+  --sb-accent-light:  #e6c76a;  /* bright gold */
+  --sb-accent-dim:    #c8a96e18; /* 9% alpha gold wash */
+  --sb-accent-mid:    #e8c97e;
+
+  /* ── Signal semantic (long = green, short = red) ────────────── */
+  --sb-long:      #00e5a0;
+  --sb-long-dim:  #00e5a012;
+  --sb-long-glow: #00e5a030;
+  --sb-short:     #ff4560;
+  --sb-short-dim: #ff456012;
+  --sb-short-glow:#ff456030;
+
+  /* ── Additional semantic ─────────────────────────────────────── */
+  --sb-warn:      #f59e0b;
+  --sb-warn-dim:  #f59e0b15;
+  --sb-prop:      #a78bfa;   /* admin / special badge */
+  --sb-prop-dim:  #a78bfa15;
+  --sb-neutral:   #4a5568;
+
+  /* ── Strength tiers (signal confluence) ──────────────────────── */
+  --sb-strength-weak:   #c8a96e;  /* 1/3 cycles */
+  --sb-strength-mod:    #e8c97e;  /* 2/3 cycles */
+  --sb-strength-strong: #ffffff;  /* 3/3 cycles */
+
+  /* ── Radii ───────────────────────────────────────────────────── */
+  --sb-r-xs:  4px;
+  --sb-r-sm:  6px;
+  --sb-r-md:  8px;
+  --sb-r-lg:  12px;
+  --sb-r-xl:  14px;
+  --sb-r-2xl: 18px;
+  --sb-r-pill: 20px;
+
+  /* ── Shadows & glows ─────────────────────────────────────────── */
+  --sb-shadow-card:   0 16px 48px #000c;
+  --sb-shadow-popover:0 8px 32px #000a;
+  --sb-shadow-soft:   0 4px 16px rgba(0,0,0,0.4);
+  --sb-glow-long:     0 0 40px var(--sb-long-glow), 0 0 80px var(--sb-long-dim);
+  --sb-glow-short:    0 0 40px var(--sb-short-glow), 0 0 80px var(--sb-short-dim);
+  --sb-glow-accent:   0 0 28px #c8a96e30, 0 4px 16px #c8a96e18;
+
+  /* ── Type families ───────────────────────────────────────────── */
+  --sb-font-ui:      'DM Sans', 'Segoe UI', system-ui, sans-serif;
+  --sb-font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+  --sb-font-display: 'Bebas Neue', 'DM Sans', sans-serif;
+
+  /* ── Type scale ──────────────────────────────────────────────── */
+  --sb-fs-xs:    10px;  /* eyebrow / taglabel */
+  --sb-fs-sm:    12px;  /* helper, ticker */
+  --sb-fs-base:  14px;  /* body default */
+  --sb-fs-md:    15px;  /* body large */
+  --sb-fs-lg:    17px;  /* emphasized body */
+  --sb-fs-xl:    22px;  /* data hero */
+  --sb-fs-2xl:   28px;  /* h2 */
+  --sb-fs-3xl:   clamp(28px, 4vw, 54px);   /* hero-small */
+  --sb-fs-hero:  clamp(44px, 6.5vw, 86px); /* landing hero */
+
+  /* ── Letter-spacing (heavy use of tracking on eyebrows) ──────── */
+  --sb-ls-eyebrow: 0.15em;
+  --sb-ls-ticker:  0.08em;
+  --sb-ls-caps:    0.12em;
+  --sb-ls-wide:    0.25em;
+  --sb-ls-tight:   -0.03em;
+  --sb-ls-hero:    -0.04em;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Semantic element defaults
+   ────────────────────────────────────────────────────────────────────────── */
+html, body {
+  background: var(--sb-bg);
+  color: var(--sb-text);
+  font-family: var(--sb-font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+body { font-size: var(--sb-fs-md); line-height: 1.6; }
+
+h1 {
+  font-family: var(--sb-font-ui);
+  font-size: var(--sb-fs-hero);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: var(--sb-ls-hero);
+  color: #ffffff;
+}
+
+h2 {
+  font-size: var(--sb-fs-2xl);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: var(--sb-ls-tight);
+  color: var(--sb-text);
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--sb-text);
+}
+
+p  { font-size: var(--sb-fs-md); color: var(--sb-text); line-height: 1.75; }
+small, .sb-caption { font-size: var(--sb-fs-sm); color: var(--sb-text-dim); }
+
+/* Eyebrow / tag-label above headlines — used everywhere */
+.sb-eyebrow {
+  font-family: var(--sb-font-mono);
+  font-size: var(--sb-fs-xs);
+  letter-spacing: var(--sb-ls-eyebrow);
+  color: var(--sb-accent);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Monospace used for ALL numbers, prices, data, metadata, timestamps */
+.mono, .sb-mono {
+  font-family: var(--sb-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+code, kbd, pre {
+  font-family: var(--sb-font-mono);
+  font-size: 0.92em;
+}
+
+/* Inputs — dark, monospace, gold-ish focus ring */
+input[type=text], input[type=number], input[type=email], input[type=password], select, textarea {
+  background: var(--sb-bg);
+  color: var(--sb-text);
+  border: 1px solid var(--sb-border);
+  border-radius: var(--sb-r-sm);
+  padding: 9px 12px;
+  font-family: var(--sb-font-mono);
+  font-size: var(--sb-fs-base);
+  outline: none;
+}
+input:focus, select:focus, textarea:focus { border-color: #c8a96e44; }
+
+/* Buttons — two default variants */
+.sb-btn-primary {
+  padding: 15px 42px;
+  background: var(--sb-accent-warm);
+  color: #080909;
+  border: none;
+  border-radius: var(--sb-r-md);
+  font-family: var(--sb-font-ui);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.sb-btn-primary:hover { filter: brightness(1.08); }
+
+.sb-btn-ghost {
+  padding: 15px 36px;
+  background: transparent;
+  color: var(--sb-long);
+  border: 1px solid var(--sb-long);
+  border-radius: var(--sb-r-md);
+  font-family: var(--sb-font-ui);
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.sb-btn-ghost:hover { background: var(--sb-long-dim); }
