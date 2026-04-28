@@ -586,9 +586,69 @@ footer { background: var(--dark); border-top: 1px solid var(--border-faint); pad
 </footer>
 
 <script>
+/* ── ACCESS GATE ── */
+(function() {
+  const CODE = 'FIDELIS';
+  const KEY  = 'fc_access';
+  if (sessionStorage.getItem(KEY) === '1') return;
+  document.body.style.overflow = 'hidden';
+  const gate = document.createElement('div');
+  gate.id = 'fc-gate';
+  gate.innerHTML = `
+    <style>
+      #fc-gate {
+        position:fixed;inset:0;z-index:9999;
+        background:#070706;
+        display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;
+      }
+      #fc-gate .g-word { font-family:'Playfair Display',serif;font-size:1.5rem;letter-spacing:0.18em;color:#F0C96A;text-transform:uppercase; }
+      #fc-gate .g-sub  { font-size:0.62rem;letter-spacing:0.38em;text-transform:uppercase;color:#7A7A72;margin-top:-1.4rem; }
+      #fc-gate .g-line { width:48px;height:1px;background:linear-gradient(to right,#D4A843,transparent); }
+      #fc-gate .g-label{ font-size:0.62rem;letter-spacing:0.35em;text-transform:uppercase;color:#7A7A72; }
+      #fc-gate input {
+        background:transparent;border:none;border-bottom:1px solid rgba(212,168,67,0.35);
+        color:#F5F2EB;font-family:'Lato',sans-serif;font-size:1.1rem;letter-spacing:0.35em;
+        text-align:center;text-transform:uppercase;padding:0.7rem 1rem;width:220px;outline:none;
+        transition:border-color 0.3s;
+      }
+      #fc-gate input:focus { border-color:#D4A843; }
+      #fc-gate .g-err { font-size:0.62rem;letter-spacing:0.2em;color:#c0392b;min-height:1em;text-transform:uppercase; }
+      #fc-gate button {
+        padding:0.85rem 2.5rem;background:#D4A843;border:none;color:#070706;
+        font-family:'Lato',sans-serif;font-size:0.62rem;letter-spacing:0.35em;text-transform:uppercase;
+        cursor:pointer;transition:background 0.3s;
+      }
+      #fc-gate button:hover { background:#F0C96A; }
+    </style>
+    <div class="g-word">Fidelis Capital</div>
+    <div class="g-sub">Private Access</div>
+    <div class="g-line"></div>
+    <div class="g-label">Enter Access Code</div>
+    <input id="fc-input" type="password" autocomplete="off" placeholder="· · · · · · ·" />
+    <div class="g-err" id="fc-err"></div>
+    <button id="fc-btn">Enter</button>
+  `;
+  document.body.prepend(gate);
+  function attempt() {
+    const val = document.getElementById('fc-input').value.trim().toUpperCase();
+    if (val === CODE) {
+      sessionStorage.setItem(KEY, '1');
+      gate.style.opacity = '0';
+      gate.style.transition = 'opacity 0.6s ease';
+      setTimeout(() => { gate.remove(); document.body.style.overflow = ''; }, 600);
+    } else {
+      document.getElementById('fc-err').textContent = 'Invalid code';
+      document.getElementById('fc-input').value = '';
+    }
+  }
+  document.getElementById('fc-btn').addEventListener('click', attempt);
+  document.getElementById('fc-input').addEventListener('keydown', e => { if (e.key === 'Enter') attempt(); });
+})();
+
+/* ── REVEAL ON SCROLL ── */
 const els = document.querySelectorAll('.reveal');
 const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { [e.target](http://e.target).classList.add('visible'); obs.unobserve([e.target](http://e.target)); } });
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
 }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
 els.forEach(el => obs.observe(el));
 
