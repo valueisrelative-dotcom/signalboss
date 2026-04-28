@@ -2655,7 +2655,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                         price: manualForm.price ? parseFloat(manualForm.price) : undefined,
                         stop:  manualForm.stop  ? parseFloat(manualForm.stop)  : undefined,
                         tp:    manualForm.tp    ? parseFloat(manualForm.tp)    : undefined,
-                        note:  manualForm.note }),
+                        note:  manualForm.note || undefined }),
                     });
                     const data = await resp.json();
                     if (resp.ok) { setManualStatus({ok:true,msg:`✅ Signal posted: ${data.id}`}); setManualForm(p=>({...p,price:"",stop:"",tp:"",note:""})); }
