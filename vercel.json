@@ -1,5 +1,10 @@
 {
   "rewrites": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "fidelis.signalboss.net" }],
+      "destination": "/fidelis/$1"
+    },
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/(.*)",     "destination": "/index.html" }
   ]

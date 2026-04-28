@@ -6727,6 +6727,7 @@ function AppInner() {
             )}
           </div>
           <div style={{ display:"flex", gap:12, alignItems:"center" }}>
+            <a href="https://fidelis.signalboss.net" target="_blank" rel="noopener noreferrer" style={{ fontSize:11, fontWeight:700, color:"#D4A843", textDecoration:"none", fontFamily:"'IBM Plex Mono','Courier New',monospace", letterSpacing:"0.12em", textTransform:"uppercase", cursor:"pointer", border:"1px solid #D4A84366", borderRadius:5, padding:"6px 12px", transition:"all 0.2s" }}>Invitation</a>
             <LangSwitcher lang={lang} setLang={setLang} />
             {isSignedIn ? (
               <>
