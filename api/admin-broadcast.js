@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
   const { token, message, clear } = req.body || {};
 
-  if (token !== process.env.GITHUB_TOKEN) {
+  if (!token || token !== process.env.ADMIN_TOKEN) {
     return res.status(403).json({ error: "Unauthorized" });
   }
 
