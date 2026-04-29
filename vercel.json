@@ -5,7 +5,7 @@
       "has": [{ "type": "host", "value": "fidelis.signalboss.net" }],
       "dest": "/fidelis/$1"
     },
-    { "src": "/vps/(.*)", "dest": "http://45.76.228.5:4242/$1" },
+    { "src": "/vps/(.*)", "dest": "https://vps.signalboss.net/$1" },
     { "src": "/api/(.*)", "dest": "/api/$1" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
