@@ -1990,6 +1990,9 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
   const [broadcastStatus, setBroadcastStatus] = useState(null);
   const [broadcastActive, setBroadcastActive] = useState(null);
 
+  // Admin — WhatsApp Alerts
+  const [whatsappStatus, setWhatsappStatus] = useState({});
+
   // Broadcast banner
   const [broadcastData,      setBroadcastData]      = useState(null);
   const [broadcastDismissed, setBroadcastDismissed] = useState(false);
@@ -2760,7 +2763,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                               stop:      parseFloat(histForm.stop)     || 0,
                               exitPrice: parseFloat(histForm.exitPrice)|| 0,
                               pnlUsd:    parseFloat(histForm.pnlUsd)   || 0,
-                              token:     "sb_admin_token_placeholder",
+                              token:     "sb_admin_2026_jr",
                             }),
                           });
                           const data = await resp.json();
@@ -2797,7 +2800,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                       const resp = await fetch("/api/admin-broadcast", {
                         method:"POST",
                         headers:{"Content-Type":"application/json"},
-                        body: JSON.stringify({ message: broadcastMsg, token: "sb_admin_token_placeholder" }),
+                        body: JSON.stringify({ message: broadcastMsg, token: "sb_admin_2026_jr" }),
                       });
                       const data = await resp.json();
                       if (resp.ok) { setBroadcastStatus({ok:true,msg:"Broadcast sent."}); setBroadcastActive(broadcastMsg); }
@@ -2812,7 +2815,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                       const resp = await fetch("/api/admin-broadcast", {
                         method:"POST",
                         headers:{"Content-Type":"application/json"},
-                        body: JSON.stringify({ clear: true, token: "sb_admin_token_placeholder" }),
+                        body: JSON.stringify({ clear: true, token: "sb_admin_2026_jr" }),
                       });
                       const data = await resp.json();
                       if (resp.ok) { setBroadcastStatus({ok:true,msg:"Broadcast cleared."}); setBroadcastActive(null); setBroadcastDismissed(false); }
@@ -2823,6 +2826,50 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                   </button>
                 </div>
                 {broadcastStatus && <div style={{ marginTop:8, fontSize:12, fontFamily:"monospace", color:broadcastStatus.ok===true?C.long:broadcastStatus.ok===false?C.short:C.textMid }}>{broadcastStatus.msg}</div>}
+              </div>
+
+              {/* ── WhatsApp Alerts ── */}
+              <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.15em", marginBottom:10 }}>WHATSAPP ALERTS</div>
+              <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:12, padding:20, marginBottom:28 }}>
+                {signals.length === 0 ? (
+                  <div style={{ fontSize:13, color:C.textDim, fontFamily:"monospace" }}>No active signals.</div>
+                ) : signals.map(signal => (
+                  <div key={signal.id || signal.instrument} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:`1px solid ${C.border}` }}>
+                    <div>
+                      <div style={{ fontSize:13, fontWeight:700, color:C.text, fontFamily:"monospace" }}>
+                        {signal.direction} {signal.instrument}
+                      </div>
+                      <div style={{ fontSize:11, color:C.textDim, marginTop:2 }}>
+                        Entry {signal.risk?.entry ?? signal.entry} · Stop {signal.risk?.stop ?? signal.stop}
+                      </div>
+                    </div>
+                    <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                      {whatsappStatus[signal.id || signal.instrument] && (
+                        <span style={{ fontSize:11, fontFamily:"monospace", color: whatsappStatus[signal.id || signal.instrument].ok ? C.long : C.short }}>
+                          {whatsappStatus[signal.id || signal.instrument].msg}
+                        </span>
+                      )}
+                      <button onClick={async () => {
+                        const key = signal.id || signal.instrument;
+                        setWhatsappStatus(s => ({ ...s, [key]: { ok: null, msg: "Sending..." } }));
+                        try {
+                          const resp = await fetch("/api/notify-whatsapp", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ token: "sb_admin_2026_jr", signal }),
+                          });
+                          const data = await resp.json();
+                          if (resp.ok) setWhatsappStatus(s => ({ ...s, [key]: { ok: true, msg: "Sent!" } }));
+                          else setWhatsappStatus(s => ({ ...s, [key]: { ok: false, msg: data.error || "Failed" } }));
+                        } catch(e) {
+                          setWhatsappStatus(s => ({ ...s, [key]: { ok: false, msg: e.message } }));
+                        }
+                      }} style={{ padding:"7px 14px", background:C.accent, border:"none", borderRadius:7, color:"#080909", fontWeight:700, fontSize:12, fontFamily:"monospace", cursor:"pointer" }}>
+                        Send WhatsApp
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           );
