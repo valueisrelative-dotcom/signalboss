@@ -23,16 +23,27 @@ function verifySession(token, secret, ip) {
   }
 }
 
+function serveFile(res, relativePath) {
+  const html = readFileSync(join(process.cwd(), relativePath), 'utf8')
+  res.setHeader('Content-Type', 'text/html')
+  res.setHeader('Cache-Control', 'no-store')
+  res.status(200).send(html)
+}
+
 export default function handler(req, res) {
+  const path = req.url?.split('?')[0] || '/'
+
+  // Always serve these pages without auth
+  if (path === '/fidelis-gate.html' || path.startsWith('/fidelis-admin')) {
+    return serveFile(res, `public${path}`)
+  }
+
   const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.headers['x-real-ip'] || 'unknown'
   const cookie = getCookie(req, 'fidelis_session')
 
   if (!cookie || !verifySession(cookie, process.env.FIDELIS_SECRET, ip)) {
-    return res.redirect(302, '/fidelis-gate.html')
+    return serveFile(res, 'public/fidelis-gate.html')
   }
 
-  const html = readFileSync(join(process.cwd(), 'public/fidelis/index.html'), 'utf8')
-  res.setHeader('Content-Type', 'text/html')
-  res.setHeader('Cache-Control', 'no-store')
-  res.status(200).send(html)
+  serveFile(res, 'public/fidelis/index.html')
 }
