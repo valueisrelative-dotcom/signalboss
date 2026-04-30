@@ -4,6 +4,8 @@ import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+const gateHtml = readFileSync(join(__dirname, 'fidelis-gate.html'), 'utf8')
+const contentHtml = readFileSync(join(__dirname, 'fidelis-content.html'), 'utf8')
 
 function getCookie(req, name) {
   const cookie = req.headers.cookie || ''
@@ -27,15 +29,15 @@ function verifySession(token, secret, ip) {
 }
 
 export default function handler(req, res) {
+  res.setHeader('Content-Type', 'text/html')
+  res.setHeader('Cache-Control', 'no-store')
+
   const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.headers['x-real-ip'] || 'unknown'
   const cookie = getCookie(req, 'fidelis_session')
 
   if (!cookie || !verifySession(cookie, process.env.FIDELIS_SECRET, ip)) {
-    return res.redirect(302, '/fidelis-gate.html')
+    return res.status(200).send(gateHtml)
   }
 
-  const html = readFileSync(join(__dirname, 'fidelis-content.html'), 'utf8')
-  res.setHeader('Content-Type', 'text/html')
-  res.setHeader('Cache-Control', 'no-store')
-  res.status(200).send(html)
+  res.status(200).send(contentHtml)
 }

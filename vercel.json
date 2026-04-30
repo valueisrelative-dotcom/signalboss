@@ -2,12 +2,12 @@
   "routes": [
     { "src": "/vps/(.*)", "dest": "https://vps.signalboss.net/$1" },
     { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "handle": "filesystem" },
     {
       "src": "/(.*)",
       "has": [{ "type": "host", "value": "fidelis.signalboss.net" }],
       "dest": "/api/fidelis-page"
     },
+    { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
