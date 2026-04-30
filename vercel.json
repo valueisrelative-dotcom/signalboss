@@ -1,4 +1,11 @@
 {
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/fidelis/index.html",
+      "has": [{ "type": "host", "value": "fidelis.signalboss.net" }]
+    }
+  ],
   "routes": [
     {
       "src": "/(.*)",

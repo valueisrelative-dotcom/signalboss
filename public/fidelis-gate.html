@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fidelis Capital — Private Access</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #D4A843;
+      --gold-dim: rgba(212, 168, 67, 0.4);
+      --dark: #070706;
+      --cream: #F5F2EB;
+      --cream-60: rgba(245, 242, 235, 0.6);
+      --cream-30: rgba(245, 242, 235, 0.3);
+      --surface: rgba(255, 255, 255, 0.03);
+      --border: rgba(212, 168, 67, 0.2);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--dark);
+      color: var(--cream);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 48px 40px;
+      position: relative;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      color: var(--cream);
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--cream-60);
+      margin-bottom: 36px;
+      letter-spacing: 0.01em;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--cream-60);
+      margin-bottom: 8px;
+    }
+
+    input[type="email"],
+    input[type="text"] {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(245, 242, 235, 0.15);
+      color: var(--cream);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      padding: 13px 16px;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+      border-radius: 0;
+    }
+
+    input[type="email"]:focus,
+    input[type="text"]:focus {
+      border-color: var(--gold-dim);
+    }
+
+    input::placeholder {
+      color: rgba(245, 242, 235, 0.25);
+    }
+
+    /* OTP input — large centered digits */
+    input[type="text"]#otp-input {
+      font-size: 28px;
+      font-weight: 300;
+      letter-spacing: 12px;
+      text-align: center;
+      color: var(--gold);
+      padding: 16px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      background: transparent;
+      border: 1px solid var(--gold-dim);
+      color: var(--gold);
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: rgba(212, 168, 67, 0.08);
+      border-color: var(--gold);
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .error {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #c0694a;
+      line-height: 1.5;
+    }
+
+    .hint {
+      margin-top: 28px;
+      font-size: 11px;
+      color: var(--cream-30);
+      line-height: 1.7;
+      letter-spacing: 0.01em;
+    }
+
+    .email-display {
+      color: var(--cream-60);
+      font-style: italic;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      font-size: 11px;
+      color: var(--cream-30);
+      cursor: pointer;
+      letter-spacing: 0.08em;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      background: none;
+      border: none;
+      font-family: inherit;
+      padding: 0;
+    }
+
+    .back-link:hover { color: var(--cream-60); }
+
+    footer {
+      margin-top: 32px;
+      font-size: 10px;
+      color: var(--cream-30);
+      text-align: center;
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 36px 24px; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="logo">Fidelis Capital</div>
+
+    <!-- Phase 1: Email entry -->
+    <section id="phase-email">
+      <h1>Private Access</h1>
+      <p class="subtitle">Access is by invitation only.</p>
+
+      <form id="email-form" novalidate>
+        <label for="email-input">Email Address</label>
+        <input
+          type="email"
+          id="email-input"
+          placeholder="your@email.com"
+          autocomplete="email"
+          required
+        >
+        <button type="submit" class="btn" id="email-btn">Request Access</button>
+        <p class="error" id="email-error" hidden></p>
+      </form>
+    </section>
+
+    <!-- Phase 2: OTP entry (hidden initially) -->
+    <section id="phase-otp" hidden>
+      <h1>Check Your Inbox</h1>
+      <p class="subtitle">A 6-digit code was sent to <span class="email-display" id="email-display"></span></p>
+
+      <form id="otp-form" novalidate>
+        <label for="otp-input">Access Code</label>
+        <input
+          type="text"
+          id="otp-input"
+          inputmode="numeric"
+          maxlength="6"
+          pattern="[0-9]{6}"
+          placeholder="000000"
+          autocomplete="one-time-code"
+          required
+        >
+        <button type="submit" class="btn" id="otp-btn">Verify Code</button>
+        <p class="error" id="otp-error" hidden></p>
+      </form>
+
+      <p class="hint">Code expires in 15 minutes. It can only be used from this device and network.</p>
+      <button class="back-link" id="back-btn">← Try a different email</button>
+    </section>
+  </div>
+
+  <footer>Fidelis Capital &mdash; Private &amp; Confidential</footer>
+
+  <script>
+    let capturedEmail = ''
+    let otpToken = ''
+
+    function maskEmail(email) {
+      const [user, domain] = email.split('@')
+      return user[0] + '***@' + domain
+    }
+
+    const emailForm = document.getElementById('email-form')
+    const emailInput = document.getElementById('email-input')
+    const emailBtn = document.getElementById('email-btn')
+    const emailError = document.getElementById('email-error')
+
+    const otpForm = document.getElementById('otp-form')
+    const otpInput = document.getElementById('otp-input')
+    const otpBtn = document.getElementById('otp-btn')
+    const otpError = document.getElementById('otp-error')
+
+    const phaseEmail = document.getElementById('phase-email')
+    const phaseOtp = document.getElementById('phase-otp')
+    const emailDisplay = document.getElementById('email-display')
+    const backBtn = document.getElementById('back-btn')
+
+    function showError(el, msg) {
+      el.textContent = msg
+      el.hidden = false
+    }
+
+    function hideError(el) {
+      el.hidden = true
+      el.textContent = ''
+    }
+
+    emailForm.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      hideError(emailError)
+
+      const email = emailInput.value.trim().toLowerCase()
+      if (!email) return
+
+      emailBtn.disabled = true
+      emailBtn.textContent = 'Sending...'
+
+      try {
+        const res = await fetch('/api/fidelis-request-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        })
+        const data = await res.json()
+
+        if (res.ok) {
+          capturedEmail = email
+          otpToken = data.token
+          emailDisplay.textContent = maskEmail(email)
+          phaseEmail.hidden = true
+          phaseOtp.hidden = false
+          otpInput.focus()
+        } else {
+          showError(emailError, data.error || 'Unable to process request.')
+        }
+      } catch {
+        showError(emailError, 'Connection error. Please try again.')
+      } finally {
+        emailBtn.disabled = false
+        emailBtn.textContent = 'Request Access'
+      }
+    })
+
+    otpForm.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      hideError(otpError)
+
+      const code = otpInput.value.trim()
+      if (!code) return
+
+      otpBtn.disabled = true
+      otpBtn.textContent = 'Verifying...'
+
+      try {
+        const res = await fetch('/api/fidelis-verify-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: otpToken, code }),
+        })
+        const data = await res.json()
+
+        if (res.ok) {
+          window.location.href = '/'
+        } else {
+          showError(otpError, data.error || 'Verification failed. Please try again.')
+        }
+      } catch {
+        showError(otpError, 'Connection error. Please try again.')
+      } finally {
+        otpBtn.disabled = false
+        otpBtn.textContent = 'Verify Code'
+      }
+    })
+
+    // Only allow numeric input in OTP field
+    otpInput.addEventListener('input', () => {
+      otpInput.value = otpInput.value.replace(/\D/g, '').slice(0, 6)
+    })
+
+    backBtn.addEventListener('click', () => {
+      phaseOtp.hidden = true
+      phaseEmail.hidden = false
+      otpInput.value = ''
+      hideError(otpError)
+      capturedEmail = ''
+      emailInput.focus()
+    })
+  </script>
+</body>
+</html>
