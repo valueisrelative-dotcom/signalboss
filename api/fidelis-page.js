@@ -1,6 +1,9 @@
 import { createHmac } from 'crypto'
 import { readFileSync } from 'fs'
-import { join } from 'path'
+import { join, dirname } from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 function getCookie(req, name) {
   const cookie = req.headers.cookie || ''
@@ -24,7 +27,7 @@ function verifySession(token, secret, ip) {
 }
 
 function serveFile(res, relativePath) {
-  const html = readFileSync(join(process.cwd(), relativePath), 'utf8')
+  const html = readFileSync(join(__dirname, '..', relativePath), 'utf8')
   res.setHeader('Content-Type', 'text/html')
   res.setHeader('Cache-Control', 'no-store')
   res.status(200).send(html)
@@ -33,7 +36,6 @@ function serveFile(res, relativePath) {
 export default function handler(req, res) {
   const path = req.url?.split('?')[0] || '/'
 
-  // Always serve these pages without auth
   if (path === '/fidelis-gate.html' || path.startsWith('/fidelis-admin')) {
     return serveFile(res, `public${path}`)
   }
