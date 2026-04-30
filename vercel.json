@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/fidelis-page.js": {
+      "includeFiles": "public/fidelis/index.html,public/fidelis-gate.html,public/fidelis-admin.html"
+    }
+  },
   "routes": [
     { "src": "/vps/(.*)", "dest": "https://vps.signalboss.net/$1" },
     { "src": "/api/(.*)", "dest": "/api/$1" },
