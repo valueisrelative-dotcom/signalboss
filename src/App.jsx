@@ -37,7 +37,7 @@ const T = {
   en: {
     tagline: "Multi-Cycle Signal Engine · Live",
     heroTitle1: "Be the Only One Not Guessing When The Market Opens.", heroTitle2: "No Candles. 1 Signal & The Only 3 Numbers That Matter.",
-    heroSub: "Every morning before the open, Signal Boss delivers the three numbers that define your trade — entry, stop, and target. No charts. No guesswork. Just clarity.",
+    heroSub: "Signal Boss delivers institutional-grade signals exclusively inside the Live Trading Room — entry, stop, and target. No charts. No guesswork. Just clarity.",,
     engineTagline: "Institutional-Grade Signal Engine · Live",
     chooserTitle1: "Be the Only One Not Guessing When The Market Opens.", chooserTitle2: "", chooserTitle3: "No Candles. 1 Signal & The Only 3 Numbers That Matter.",
     chooserSub: "Volatility leads. Price follows. Signal Boss reads the state the market is actually in — so your decisions are based on what really moves it.",
@@ -66,7 +66,7 @@ const T = {
     forexLabel: "FOREX TRADERS", forexHeadline: "Trade the intelligence.",
     forexDesc: "EUR/USD, GBP/USD, USD/JPY and all major pairs including crosses. Same IV signal intelligence derived from currency futures — where price discovery actually begins.",
     forexFeatures: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "EUR/JPY · EUR/GBP · EUR/CHF + more", "Account Risk Calculator included", "Smart Stop & Take Profit on every signal"],
-    trialNote: "No commitment · Cancel anytime",
+    trialNote: "Free Week of Live Access · No commitment · Cancel anytime",
     exploreFutures: "Explore Futures →", exploreForex: "Explore Forex →",
     forexTagline: "Forex Signal Intelligence · Live",
     forexHeroTitle1: "No charts. No noise.", forexHeroTitle2: "The Inflection Point.",
@@ -812,7 +812,7 @@ function FAQSection() {
   const [open, setOpen] = useState(null);
   const faqs = [
     ["What markets does Signal Boss cover?", "Signal Boss is designed for US equity index futures — ES (S&P 500), NQ (Nasdaq), YM (Dow), and RTY (Russell 2000). The methodology works on any liquid futures contract with reliable implied volatility data."],
-    ["How are signals delivered?", "Signals appear in real-time on your Signal Boss dashboard. Alert delivery via email, SMS, and webhook (for automation) is available on Pro and Elite plans. You can also configure which instruments and timeframes trigger alerts."],
+    ["How are signals delivered?", "All signals are delivered exclusively inside the Signal Boss Live Trading Room. There are no signals on the website or WhatsApp — the room is the only access point. This keeps quality high and ensures every member gets every alert the moment it fires. A Free Week of Live Access is available to get started.",,
     ["Do I need to be at my desk all day?", "No. Signal Boss is designed around close-confirmed signals — meaning a signal fires when a candle closes with all conditions met, not on intraday noise. You can check in at key times rather than watching a screen all day."],
     ["What's the difference between 1, 2, and 3-cycle confluence?", "Each cycle (Daily, 2-Day, 4-Day) represents a different momentum timeframe. When all three align in the same direction, you get a 3/3 Strong signal — the highest conviction setup. 1 or 2 cycles aligning is still a valid signal, just with less confluence behind it."],
     ["Is this suitable for beginners?", "Signal Boss is best suited for traders who already understand futures basics — margin, leverage, tick values, and position sizing. If you're brand new to futures, we'd recommend building that foundation first. The Account Risk Calculator and methodology documentation can help bridge that gap."],
@@ -1066,7 +1066,7 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
           <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:14 }}>HOW IT WORKS</div>
           <h2 style={{ fontSize:32, fontWeight:700, letterSpacing:"-0.03em", marginBottom:16 }}>3 Numbers. Every Morning.</h2>
           <p style={{ color:C.textMid, fontSize:16, lineHeight:1.8, maxWidth:620, margin:"0 auto" }}>
-            Every morning between 8:00 AM and 9:00 AM, members receive the 3 Key Numbers for every instrument:
+            Every morning in the Live Trading Room, members receive the 3 Key Numbers for every instrument:
           </p>
         </div>
 
