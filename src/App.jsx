@@ -116,13 +116,10 @@ const T = {
       "04": { title: "Clean Signal Cards", desc: "No charts. No clutter. Precise, actionable alerts the moment conditions align." },
     },
     futuresPlans: [
-      { name: "Starter", price: 149, features: ["ES · NQ · RTY · YM · CL · GC · SI", "All 3 cycles", "Real-time dashboard", "Email alerts", "Account Risk Calculator"] },
-      { name: "Pro",     price: 249, features: ["Everything in Starter", "NG · RB · HG · ZB · ZN · ZT · ZF", "/6E · /6B · /6J · /6S · /6A · /6C", "ZS · ZW · ZC", "Telegram alerts · Webhook"] },
-      { name: "Elite",   price: 449, features: ["Everything in Pro", "Smart Stop & Target on every signal", "Priority support"] },
+      { name: "Signal Boss", price: 79, features: ["ES · NQ · RTY · YM · CL · GC · SI", "/6E · /6B · /6J · /6S · /6A · /6C", "NG · ZB · ZN · ZT · ZF · ZS · ZW · ZC", "All 3 cycles · Real-time dashboard", "Smart Stop & Target on every signal", "Telegram alerts · Webhook · Account Risk Calculator"] },
     ],
     forexPlans: [
-      { name: "Major Pairs", price: 129, features: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "Direct futures correlation", "All 3 cycles", "Real-time dashboard", "Email alerts", "Account Risk Calculator"] },
-      { name: "Full Coverage", price: 249, features: ["Everything in Major Pairs", "EUR/JPY · EUR/GBP · EUR/CHF", "Up to 15 pairs total", "Cross pair signals (dual futures ref.)", "Telegram alerts · Webhook"] },
+      { name: "Signal Boss", price: 79, features: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "EUR/JPY · EUR/GBP · EUR/CHF + more", "Direct futures correlation (up to 15 pairs)", "All 3 cycles · Real-time dashboard", "Smart Stop & Target on every signal", "Telegram alerts · Webhook · Account Risk Calculator"] },
     ],
   },
   es: {
@@ -205,13 +202,10 @@ const T = {
       "04": { title: "Tarjetas Limpias", desc: "Sin gráficos. Sin desorden. Alertas precisas cuando las condiciones se alinean." },
     },
     futuresPlans: [
-      { name: "Inicial",       price: 149, features: ["ES · NQ · RTY · YM · CL · GC · SI", "3 ciclos completos", "Panel en tiempo real", "Alertas email", "Calculadora de Riesgo"] },
-      { name: "Pro",           price: 249, features: ["Todo en Inicial", "NG · RB · HG · ZB · ZN · ZT · ZF", "/6E · /6B · /6J · /6S · /6A · /6C", "ZS · ZW · ZC", "Telegram · Webhook"] },
-      { name: "Elite",         price: 449, features: ["Todo en Pro", "Stop & Target Inteligentes", "Soporte prioritario"] },
+      { name: "Signal Boss", price: 79, features: ["ES · NQ · RTY · YM · CL · GC · SI", "/6E · /6B · /6J · /6S · /6A · /6C", "NG · ZB · ZN · ZT · ZF · ZS · ZW · ZC", "3 ciclos · Panel en tiempo real", "Stop & Target Inteligentes en cada señal", "Telegram · Webhook · Calculadora de Riesgo"] },
     ],
     forexPlans: [
-      { name: "Pares Principales", price: 129, features: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "Correlación directa con futuros", "3 ciclos", "Panel en tiempo real", "Email", "Calculadora de Riesgo"] },
-      { name: "Cobertura Total",   price: 249, features: ["Todo en Principales", "EUR/JPY · EUR/GBP · EUR/CHF", "Hasta 15 pares", "Señales de cruces (ref. doble)", "Telegram · Webhook"] },
+      { name: "Signal Boss", price: 79, features: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "EUR/JPY · EUR/GBP · EUR/CHF + más", "Correlación directa con futuros (hasta 15 pares)", "3 ciclos · Panel en tiempo real", "Stop & Target Inteligentes en cada señal", "Telegram · Webhook · Calculadora de Riesgo"] },
     ],
   },
   pt: {
@@ -294,13 +288,10 @@ const T = {
       "04": { title: "Cards Limpos", desc: "Sem gráficos. Alertas precisos quando as condições se alinham." },
     },
     futuresPlans: [
-      { name: "Inicial",        price: 149, features: ["ES · NQ · RTY · YM · CL · GC · SI", "3 ciclos completos", "Painel em tempo real", "Alertas email", "Calculadora de Risco"] },
-      { name: "Pro",            price: 249, features: ["Tudo no Inicial", "NG · RB · HG · ZB · ZN · ZT · ZF", "/6E · /6B · /6J · /6S · /6A · /6C", "ZS · ZW · ZC", "Telegram · Webhook"] },
-      { name: "Elite",          price: 449, features: ["Tudo no Pro", "Stop & Target Inteligentes", "Suporte prioritário"] },
+      { name: "Signal Boss", price: 79, features: ["ES · NQ · RTY · YM · CL · GC · SI", "/6E · /6B · /6J · /6S · /6A · /6C", "NG · ZB · ZN · ZT · ZF · ZS · ZW · ZC", "3 ciclos · Painel em tempo real", "Stop & Target Inteligentes em cada sinal", "Telegram · Webhook · Calculadora de Risco"] },
     ],
     forexPlans: [
-      { name: "Pares Principais", price: 129, features: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "Correlação direta com futuros", "3 ciclos", "Painel em tempo real", "Email", "Calculadora de Risco"] },
-      { name: "Cobertura Total",  price: 249, features: ["Tudo nos Principais", "EUR/JPY · EUR/GBP · EUR/CHF", "Até 15 pares", "Sinais cruzados (ref. dupla)", "Telegram · Webhook"] },
+      { name: "Signal Boss", price: 79, features: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "EUR/JPY · EUR/GBP · EUR/CHF + mais", "Correlação direta com futuros (até 15 pares)", "3 ciclos · Painel em tempo real", "Stop & Target Inteligentes em cada sinal", "Telegram · Webhook · Calculadora de Risco"] },
     ],
   },
   fr: {
@@ -383,13 +374,10 @@ const T = {
       "04": { title: "Cartes de Signal Claires", desc: "Pas de graphiques. Pas de désordre. Alertes précises dès que les conditions sont réunies." },
     },
     futuresPlans: [
-      { name: "Starter",          price: 149, features: ["ES · NQ · RTY · YM · CL · GC · SI", "3 cycles complets", "Tableau de bord temps réel", "Alertes email", "Calculateur de Risque"] },
-      { name: "Pro",              price: 249, features: ["Tout Starter inclus", "NG · RB · HG · ZB · ZN · ZT · ZF", "/6E · /6B · /6J · /6S · /6A · /6C", "ZS · ZW · ZC", "Telegram · Webhook"] },
-      { name: "Élite",            price: 449, features: ["Tout Pro inclus", "Stop & Target Intelligents", "Support prioritaire"] },
+      { name: "Signal Boss", price: 79, features: ["ES · NQ · RTY · YM · CL · GC · SI", "/6E · /6B · /6J · /6S · /6A · /6C", "NG · ZB · ZN · ZT · ZF · ZS · ZW · ZC", "3 cycles · Tableau de bord temps réel", "Stop & Target Intelligents sur chaque signal", "Telegram · Webhook · Calculateur de Risque"] },
     ],
     forexPlans: [
-      { name: "Paires Majeures",  price: 129, features: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "Corrélation directe avec les futures", "3 cycles", "Tableau de bord temps réel", "Email", "Calculateur de Risque"] },
-      { name: "Couverture Totale",price: 249, features: ["Tout Paires Majeures inclus", "EUR/JPY · EUR/GBP · EUR/CHF", "Jusqu'à 15 paires", "Signaux croisés (réf. double)", "Telegram · Webhook"] },
+      { name: "Signal Boss", price: 79, features: ["EUR/USD · GBP/USD · USD/JPY · USD/CHF", "EUR/JPY · EUR/GBP · EUR/CHF + plus", "Corrélation directe avec les futures (15 paires)", "3 cycles · Tableau de bord temps réel", "Stop & Target Intelligents sur chaque signal", "Telegram · Webhook · Calculateur de Risque"] },
     ],
   },
 };
@@ -1337,9 +1325,16 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
             })}
           </div>
         )}
-        <div style={{ textAlign:"center", marginTop:32 }}>
-          <span style={{ fontSize:13, color:C.textMid }}>Serious about institutional access? </span>
-          <span onClick={() => onNavigate("institutional")} style={{ fontSize:13, color:C.accent, cursor:"pointer", textDecoration:"underline" }}>Institutional Access →</span>
+        <div style={{ textAlign:"center", marginTop:40, padding:"24px 32px", background:C.surface, border:`1px solid ${C.accent}22`, borderRadius:12, maxWidth:560, margin:"40px auto 0" }}>
+          <div style={{ fontSize:10, color:C.accent, fontFamily:"monospace", letterSpacing:"0.2em", marginBottom:10 }}>PART OF A LARGER PLATFORM</div>
+          <div style={{ fontSize:16, fontWeight:600, marginBottom:8 }}>Signal Boss is one intraday module within FIT.</div>
+          <div style={{ fontSize:13, color:C.textMid, lineHeight:1.7, marginBottom:16 }}>
+            <strong style={{ color:C.text }}>FIT — Frontier Institutional Trade Platform</strong> — includes Session Integration, Cycle Boss, Macro Cycles, STD Dev/VWAP, Variance Risk Premium, Spread Analysis, Risk Calculator, and Economic Calendar. Signal Boss gives you the intraday VRB edge. Frontier gives you everything.
+          </div>
+          <a href="https://frontier.signalboss.net/landing" target="_blank" rel="noopener noreferrer"
+            style={{ fontSize:13, fontWeight:700, color:C.accent, textDecoration:"none", fontFamily:"monospace", letterSpacing:"0.08em", border:`1px solid ${C.accent}55`, borderRadius:6, padding:"8px 20px", display:"inline-block" }}>
+            Explore FIT — Frontier Terminal →
+          </a>
         </div>
       </div>
 
@@ -1479,7 +1474,7 @@ function LandingPage({ onNavigate, t, track, setTrack }) {
             <span style={{ color:"#2a3030" }}>·</span>
             <span style={{ cursor:"pointer", color:C.accent }}>Affiliates</span>
             <span style={{ color:"#2a3030" }}>·</span>
-            <span style={{ cursor:"pointer", color:C.accent }}>Institutional Access</span>
+            <a href="https://frontier.signalboss.net/landing" target="_blank" rel="noopener noreferrer" style={{ cursor:"pointer", color:C.accent, textDecoration:"none" }}>Frontier Terminal</a>
           </div>
           <div style={{ marginTop:16, fontSize:12, color:"#4b5563", fontFamily:"monospace", textAlign:"center" }}>
             © {new Date().getFullYear()} Signal Boss · All rights reserved
@@ -2149,6 +2144,16 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
 
       {/* Main */}
       <div style={{ flex:1, overflow:"auto", background:C.bg }}>
+        {/* Frontier upsell banner */}
+        <div style={{ background:"#0d0b14", borderBottom:`1px solid #ddb94a22`, padding:"9px 22px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:8 }}>
+          <span style={{ fontSize:12, color:"#7a7a98", fontFamily:"monospace" }}>
+            <strong style={{ color:"#c0c0d0" }}>Signal Boss</strong> — intraday VRB module · part of <strong style={{ color:"#c0c0d0" }}>FIT (Frontier Institutional Trade Platform)</strong>
+          </span>
+          <a href="https://frontier.signalboss.net/landing" target="_blank" rel="noopener noreferrer"
+            style={{ fontSize:11, fontWeight:700, color:"#ddb94a", textDecoration:"none", fontFamily:"monospace", letterSpacing:"0.1em", border:"1px solid #ddb94a44", borderRadius:5, padding:"5px 14px", whiteSpace:"nowrap" }}>
+            FRONTIER TERMINAL →
+          </a>
+        </div>
         <PriceTicker />
         <TabErrorBoundary key={activeTab}>
 
@@ -2378,7 +2383,7 @@ function Dashboard({ user, onNavigate, t, lang, setLang }) {
                 borderRadius:8, padding:"12px 20px", width:"fit-content" }}>
                 <span style={{ fontSize:18, color:"#22c55e", fontWeight:700 }}>✓</span>
                 <span style={{ fontFamily:"monospace", fontSize:15, color:"#22c55e", letterSpacing:"0.04em", fontWeight:600 }}>
-                  All trades verified — delivered to Website Signal History, e-mail and WhatsApp in real time
+                  All trades verified — Delivered to Member's email and confirmed in Signal History in real time
                 </span>
               </div>
               <div style={{ display:"flex", gap:8, marginBottom:14, flexWrap:"wrap" }}>
@@ -3315,7 +3320,6 @@ function AppInner() {
             )}
           </div>
           <div style={{ display:"flex", gap:12, alignItems:"center" }}>
-            <a href="https://fidelis.signalboss.net/fidelis-gate.html" target="_blank" rel="noopener noreferrer" style={{ fontSize:11, fontWeight:700, color:"#D4A843", textDecoration:"none", fontFamily:"'IBM Plex Mono','Courier New',monospace", letterSpacing:"0.12em", textTransform:"uppercase", cursor:"pointer", border:"1px solid #D4A84366", borderRadius:5, padding:"6px 12px", transition:"all 0.2s" }}>Invitation</a>
             <LangSwitcher lang={lang} setLang={setLang} />
             {isSignedIn ? (
               <>
