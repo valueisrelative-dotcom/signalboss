@@ -59,6 +59,7 @@ These files are served directly by Vercel from `public/`. They have their own se
 | `public/market_driver.html` | Lead magnet: "The Signal 90% of Traders Ignore" — long-form editorial |
 | `public/basics.html` | Foundation guide: "Master the Basics" |
 | `public/signalboss-latimax.html` | Co-branded Spanish landing page for Latimax affiliate |
+| `public/flexfinance.html` | Equipment credit application form (`/flexfinance` clean URL via vercel.json) — de-branded conversion of a lender's PDF intake form, submits to `/api/flexfinance` |
 
 ### Video animations (standalone, NOT part of the React build)
 Loaded by the HTML files below via Babel standalone. `animations.jsx` is NOT a React component and is not processed by Vite.
@@ -79,6 +80,7 @@ Loaded by the HTML files below via Babel standalone. `animations.jsx` is NOT a R
 | `api/contact.js` | Contact form handler (uses Resend → info@signalboss.net) |
 | `api/create-checkout-session.js` | Stripe checkout — auto-applies affiliate coupons |
 | `api/webhook.js` | Stripe webhook — grants Clerk access + notifies affiliates |
+| `api/flexfinance.js` | Equipment credit application form handler (uses Resend → info@signalboss.net) |
 
 ---
 

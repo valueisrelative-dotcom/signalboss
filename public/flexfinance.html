@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Equipment credit application — apply online in minutes." />
+  <title>Equipment Credit Application — Signal Boss</title>
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://signalboss.net/flexfinance" />
+  <meta property="og:title" content="Equipment Credit Application" />
+  <meta property="og:description" content="Apply for equipment financing online — no printing, scanning, or faxing required." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=IBM+Plex+Mono:wght@400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-deep:     #050810;
+      --bg-base:     #080c14;
+      --bg-card:     #0d1424;
+      --bg-card-alt: #101828;
+      --border:      #1a2540;
+      --border-lit:  #243656;
+      --text-primary: #f2f6fa;
+      --text-muted:   #9ab0c8;
+      --text-dim:     #6a82a0;
+      --gold:         #c9a84c;
+      --gold-light:   #e6c76a;
+      --gold-dim:     #7a6228;
+      --green:        #22c55e;
+      --red:          #ef4444;
+      --radius-sm:    6px;
+      --radius-md:    12px;
+      --radius-lg:    18px;
+      --font-ui:      'DM Sans', sans-serif;
+      --font-mono:    'IBM Plex Mono', monospace;
+      --font-display: 'Bebas Neue', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      line-height: 1.6;
+    }
+
+    a { color: var(--gold); text-decoration: none; }
+
+    nav {
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-base);
+    }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--gold) 0%, #8a6c2a 100%);
+      color: #050810;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-text {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      letter-spacing: 0.02em;
+      color: var(--text-primary);
+    }
+    .logo-text span { color: var(--gold); }
+    .nav-tag {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      letter-spacing: 0.04em;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.10) 0%, transparent 70%);
+      border-bottom: 1px solid var(--border);
+      padding: 56px 24px 44px;
+      text-align: center;
+    }
+    .hero-imgs {
+      display: flex; justify-content: center; gap: 14px;
+      margin-bottom: 30px; flex-wrap: wrap;
+    }
+    .hero-imgs img {
+      width: 220px; max-width: 42vw; height: 130px; object-fit: cover;
+      border-radius: var(--radius-md); border: 1px solid var(--border);
+      filter: saturate(0.92) brightness(0.95);
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(34px, 6vw, 56px);
+      letter-spacing: 0.02em;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+    }
+    .hero p {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    .wrap { max-width: 900px; margin: 0 auto; padding: 36px 20px 90px; }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      margin-bottom: 24px;
+    }
+    .card-title {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .subhead {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin: 0 0 14px;
+    }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px 18px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field.span-2 { grid-column: span 2; }
+    .field.span-full { grid-column: 1 / -1; }
+    @media (max-width: 640px) {
+      .field.span-2 { grid-column: span 1; }
+    }
+
+    label {
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+    input[type="text"], input[type="email"], input[type="tel"], input[type="date"], textarea {
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border-lit);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: var(--font-ui);
+      width: 100%;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+    textarea { resize: vertical; min-height: 70px; }
+
+    .radio-group {
+      display: flex; gap: 18px; flex-wrap: wrap;
+      align-items: center;
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border-lit);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+    }
+    .radio-group label {
+      display: flex; align-items: center; gap: 6px;
+      text-transform: none; font-size: 14px; color: var(--text-primary);
+      font-weight: 400; letter-spacing: 0; cursor: pointer;
+    }
+    .radio-group input[type="radio"] { accent-color: var(--gold); width: 16px; height: 16px; }
+
+    .consent {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border-lit);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      margin-bottom: 18px;
+    }
+    .checkbox-row {
+      display: flex; align-items: flex-start; gap: 10px;
+      margin-bottom: 20px;
+    }
+    .checkbox-row input[type="checkbox"] {
+      accent-color: var(--gold); width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0;
+    }
+    .checkbox-row label {
+      text-transform: none; font-weight: 400; font-size: 13.5px; color: var(--text-primary); letter-spacing: 0;
+    }
+
+    .sig-note { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+    .submit-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    button.submit {
+      background: linear-gradient(135deg, var(--gold) 0%, #8a6c2a 100%);
+      color: #050810;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 14px 32px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: var(--font-mono);
+    }
+    button.submit:hover { filter: brightness(1.08); }
+    button.submit:active { transform: scale(0.98); }
+    button.submit:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    #status { font-size: 13.5px; font-weight: 600; font-family: var(--font-mono); }
+    #status.ok { color: var(--green); }
+    #status.err { color: var(--red); }
+
+    .footer {
+      text-align: center;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 28px;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="logo">
+        <div class="logo-mark">SB</div>
+        <span class="logo-text">Signal<span>Boss</span></span>
+      </a>
+      <span class="nav-tag">FLEXFINANCE</span>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-imgs">
+      <img src="/img/flexlease/truck1.png" alt="Equipment financing" />
+      <img src="/img/flexlease/truck2.png" alt="Equipment financing" />
+      <img src="/img/flexlease/truck3.png" alt="Equipment financing" />
+    </div>
+    <h1>Equipment Credit Application</h1>
+    <p>Apply for equipment financing online. Fill out the form below and submit — no printing, scanning, or faxing required.</p>
+  </section>
+
+  <div class="wrap">
+    <form id="ff-form">
+
+      <div class="card">
+        <h2 class="card-title">Company Information</h2>
+        <div class="grid">
+          <div class="field span-2">
+            <label for="company_name">Legal Company Name *</label>
+            <input type="text" id="company_name" name="company_name" required />
+          </div>
+          <div class="field">
+            <label for="company_phone">Phone</label>
+            <input type="tel" id="company_phone" name="company_phone" />
+          </div>
+          <div class="field">
+            <label for="contact_person">Contact Person</label>
+            <input type="text" id="contact_person" name="contact_person" />
+          </div>
+
+          <div class="field span-2">
+            <label for="website">Website Address</label>
+            <input type="text" id="website" name="website" />
+          </div>
+          <div class="field">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+          <div class="field">
+            <label for="company_fax">Fax</label>
+            <input type="tel" id="company_fax" name="company_fax" />
+          </div>
+
+          <div class="field span-2">
+            <label for="cell_phone">Cell Phone</label>
+            <input type="tel" id="cell_phone" name="cell_phone" />
+          </div>
+
+          <div class="field span-2">
+            <label for="street_address">Business Street Address</label>
+            <input type="text" id="street_address" name="street_address" />
+          </div>
+          <div class="field">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" />
+          </div>
+          <div class="field">
+            <label for="state">State</label>
+            <input type="text" id="state" name="state" />
+          </div>
+
+          <div class="field">
+            <label for="zip_code">Zip Code</label>
+            <input type="text" id="zip_code" name="zip_code" />
+          </div>
+          <div class="field span-2">
+            <label>Entity Type</label>
+            <div class="radio-group">
+              <label><input type="radio" name="entity_type" value="CORP" /> Corp</label>
+              <label><input type="radio" name="entity_type" value="LLC" /> LLC</label>
+              <label><input type="radio" name="entity_type" value="PART" /> Partnership</label>
+              <label><input type="radio" name="entity_type" value="PROP" /> Sole Prop</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="tax_id">Fed. Tax ID #</label>
+            <input type="text" id="tax_id" name="tax_id" />
+          </div>
+          <div class="field span-2">
+            <label for="nature_of_business">Nature of Business</label>
+            <input type="text" id="nature_of_business" name="nature_of_business" />
+          </div>
+          <div class="field">
+            <label for="year_started">Year Started</label>
+            <input type="text" id="year_started" name="year_started" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Principals / Officers Information</h2>
+
+        <h3 class="subhead">Principal / Owner (1)</h3>
+        <div class="grid" style="margin-bottom: 24px;">
+          <div class="field span-2">
+            <label for="principal1_name">Full Name</label>
+            <input type="text" id="principal1_name" name="principal1_name" />
+          </div>
+          <div class="field span-2">
+            <label for="principal1_title">Company Title</label>
+            <input type="text" id="principal1_title" name="principal1_title" />
+          </div>
+
+          <div class="field">
+            <label for="principal1_ssn">Social Security Number</label>
+            <input type="text" id="principal1_ssn" name="principal1_ssn" />
+          </div>
+          <div class="field">
+            <label for="principal1_dob">Date of Birth</label>
+            <input type="date" id="principal1_dob" name="principal1_dob" />
+          </div>
+          <div class="field">
+            <label for="principal1_phone">Home Phone Number</label>
+            <input type="tel" id="principal1_phone" name="principal1_phone" />
+          </div>
+
+          <div class="field span-2">
+            <label for="principal1_address">Home Street Address</label>
+            <input type="text" id="principal1_address" name="principal1_address" />
+          </div>
+          <div class="field">
+            <label for="principal1_city">City</label>
+            <input type="text" id="principal1_city" name="principal1_city" />
+          </div>
+          <div class="field">
+            <label for="principal1_state">State</label>
+            <input type="text" id="principal1_state" name="principal1_state" />
+          </div>
+          <div class="field">
+            <label for="principal1_zip">Zip Code</label>
+            <input type="text" id="principal1_zip" name="principal1_zip" />
+          </div>
+        </div>
+
+        <h3 class="subhead">Principal / Owner (2)</h3>
+        <div class="grid">
+          <div class="field span-2">
+            <label for="principal2_name">Full Name</label>
+            <input type="text" id="principal2_name" name="principal2_name" />
+          </div>
+          <div class="field span-2">
+            <label for="principal2_title">Company Title</label>
+            <input type="text" id="principal2_title" name="principal2_title" />
+          </div>
+
+          <div class="field">
+            <label for="principal2_ssn">Social Security Number</label>
+            <input type="text" id="principal2_ssn" name="principal2_ssn" />
+          </div>
+          <div class="field">
+            <label for="principal2_dob">Date of Birth</label>
+            <input type="date" id="principal2_dob" name="principal2_dob" />
+          </div>
+          <div class="field">
+            <label for="principal2_phone">Home Phone Number</label>
+            <input type="tel" id="principal2_phone" name="principal2_phone" />
+          </div>
+
+          <div class="field span-2">
+            <label for="principal2_address">Home Street Address</label>
+            <input type="text" id="principal2_address" name="principal2_address" />
+          </div>
+          <div class="field">
+            <label for="principal2_city">City</label>
+            <input type="text" id="principal2_city" name="principal2_city" />
+          </div>
+          <div class="field">
+            <label for="principal2_state">State</label>
+            <input type="text" id="principal2_state" name="principal2_state" />
+          </div>
+          <div class="field">
+            <label for="principal2_zip">Zip Code</label>
+            <input type="text" id="principal2_zip" name="principal2_zip" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Dealer Information &amp; Equipment Description</h2>
+        <div class="grid">
+          <div class="field span-2">
+            <label for="dealer_name">Dealer Name</label>
+            <input type="text" id="dealer_name" name="dealer_name" />
+          </div>
+          <div class="field span-2">
+            <label for="dealer_address">Full Address</label>
+            <input type="text" id="dealer_address" name="dealer_address" />
+          </div>
+
+          <div class="field">
+            <label for="dealer_sales_person">Sales Person</label>
+            <input type="text" id="dealer_sales_person" name="dealer_sales_person" />
+          </div>
+          <div class="field">
+            <label for="dealer_phone">Phone</label>
+            <input type="tel" id="dealer_phone" name="dealer_phone" />
+          </div>
+
+          <div class="field">
+            <label for="equipment_year">Year</label>
+            <input type="text" id="equipment_year" name="equipment_year" />
+          </div>
+          <div class="field">
+            <label for="equipment_make_model">Make &amp; Model</label>
+            <input type="text" id="equipment_make_model" name="equipment_make_model" />
+          </div>
+          <div class="field">
+            <label for="equipment_cost">Cost $</label>
+            <input type="text" id="equipment_cost" name="equipment_cost" />
+          </div>
+
+          <div class="field span-full">
+            <label for="equipment_description">Equipment Description / Miles / Hours</label>
+            <textarea id="equipment_description" name="equipment_description"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Signature &amp; Authorization</h2>
+
+        <div class="consent">
+          By signing this form I/We hereby agree and give authorization to investigate my/our credit worthiness and payment
+          history from the information I/We supplied on this credit application. I/We give permission to any credit agency,
+          bank institution, or creditor to release any/all information as it pertains to my/our account(s).
+        </div>
+
+        <div class="grid" style="margin-bottom: 6px;">
+          <div class="field span-2">
+            <label for="primary_signature">Primary Applicant Signature (type full name) *</label>
+            <input type="text" id="primary_signature" name="primary_signature" required />
+            <span class="sig-note">Typing your full name here serves as your electronic signature.</span>
+          </div>
+          <div class="field span-2">
+            <label for="coapplicant_signature">Co-Applicant Signature (type full name)</label>
+            <input type="text" id="coapplicant_signature" name="coapplicant_signature" />
+          </div>
+        </div>
+
+        <div class="checkbox-row" style="margin-top: 18px;">
+          <input type="checkbox" id="ff-agree" required />
+          <label for="ff-agree">I have read and agree to the authorization above, and I am submitting this application electronically.</label>
+        </div>
+
+        <div class="submit-row">
+          <button type="submit" class="submit" id="submit-btn">Submit Application</button>
+          <span id="status"></span>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <div class="footer">signalboss.net/flexfinance</div>
+
+  <script>
+    const form = document.getElementById('ff-form');
+    const statusEl = document.getElementById('status');
+    const btn = document.getElementById('submit-btn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusEl.textContent = '';
+      statusEl.className = '';
+
+      const data = {};
+      new FormData(form).forEach((value, key) => { data[key] = value; });
+
+      btn.disabled = true;
+      btn.textContent = 'Submitting…';
+
+      try {
+        const res = await fetch('/api/flexfinance', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const json = await res.json();
+        if (json.ok) {
+          statusEl.textContent = 'Application submitted. We will be in touch shortly.';
+          statusEl.className = 'ok';
+          form.reset();
+          btn.textContent = 'Submitted';
+        } else {
+          statusEl.textContent = json.error || 'Something went wrong. Please try again.';
+          statusEl.className = 'err';
+          btn.disabled = false;
+          btn.textContent = 'Submit Application';
+        }
+      } catch (err) {
+        statusEl.textContent = 'Network error. Please try again.';
+        statusEl.className = 'err';
+        btn.disabled = false;
+        btn.textContent = 'Submit Application';
+      }
+    });
+  </script>
+
+</body>
+</html>
