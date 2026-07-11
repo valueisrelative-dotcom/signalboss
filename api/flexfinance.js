@@ -71,7 +71,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         from: "Signal Boss Flex Finance <onboarding@resend.dev>",
-        to: ["info@signalboss.net"],
+        to: ["joer@flexleasefinancial.com"],
         reply_to: email,
         subject: `💰 Equipment Credit Application — ${companyName}`,
         text,
