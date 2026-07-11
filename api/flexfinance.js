@@ -57,16 +57,6 @@ export default async function handler(req, res) {
     field("City:", body.principal2_city) +
     field("State:", body.principal2_state) +
     field("Zip Code:", body.principal2_zip) +
-    "\nDEALER INFORMATION & EQUIPMENT DESCRIPTION\n" +
-    "-------------------------------------------\n" +
-    field("Dealer Name:", body.dealer_name) +
-    field("Full Address:", body.dealer_address) +
-    field("Sales Person:", body.dealer_sales_person) +
-    field("Phone:", body.dealer_phone) +
-    field("Year:", body.equipment_year) +
-    field("Make & Model:", body.equipment_make_model) +
-    field("Equipment Description / Miles / Hours:", body.equipment_description) +
-    field("Cost $:", body.equipment_cost) +
     "\nSIGNATURES\n" +
     "----------\n" +
     field("Primary Applicant:", body.primary_signature) +
