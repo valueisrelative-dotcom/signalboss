@@ -19,20 +19,20 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --bg-deep:     #050810;
-      --bg-base:     #080c14;
-      --bg-card:     #0d1424;
-      --bg-card-alt: #101828;
-      --border:      #1a2540;
-      --border-lit:  #243656;
-      --text-primary: #f2f6fa;
-      --text-muted:   #9ab0c8;
-      --text-dim:     #6a82a0;
-      --gold:         #c9a84c;
-      --gold-light:   #e6c76a;
+      --bg-deep:     #f2e9d5;
+      --bg-base:     #ede1c7;
+      --bg-card:     #fbf6e9;
+      --bg-card-alt: #f4ecd8;
+      --border:      #ddceac;
+      --border-lit:  #c9b382;
+      --text-primary: #2c2415;
+      --text-muted:   #5c5138;
+      --text-dim:     #8a7c58;
+      --gold:         #9c7a2e;
+      --gold-light:   #b8933f;
       --gold-dim:     #7a6228;
-      --green:        #22c55e;
-      --red:          #ef4444;
+      --green:        #1a7f37;
+      --red:          #b3261e;
       --radius-sm:    6px;
       --radius-md:    12px;
       --radius-lg:    18px;
@@ -62,26 +62,7 @@
       padding: 16px 24px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
     }
-    .logo { display: flex; align-items: center; gap: 10px; }
-    .logo-mark {
-      width: 34px; height: 34px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, var(--gold) 0%, #8a6c2a 100%);
-      color: #050810;
-      font-family: var(--font-mono);
-      font-weight: 700;
-      font-size: 14px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .logo-text {
-      font-family: var(--font-mono);
-      font-size: 16px;
-      letter-spacing: 0.02em;
-      color: var(--text-primary);
-    }
-    .logo-text span { color: var(--gold); }
     .nav-tag {
       font-family: var(--font-mono);
       font-size: 12px;
@@ -104,7 +85,6 @@
     .hero-imgs img {
       width: 220px; max-width: 42vw; height: 130px; object-fit: cover;
       border-radius: var(--radius-md); border: 1px solid var(--border);
-      filter: saturate(0.92) brightness(0.95);
     }
     .hero h1 {
       font-family: var(--font-display);
@@ -219,8 +199,8 @@
 
     .submit-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
     button.submit {
-      background: linear-gradient(135deg, var(--gold) 0%, #8a6c2a 100%);
-      color: #050810;
+      background: linear-gradient(135deg, var(--gold) 0%, #7a6228 100%);
+      color: #fbf6e9;
       border: none;
       border-radius: var(--radius-sm);
       padding: 14px 32px;
@@ -253,10 +233,6 @@
 
   <nav>
     <div class="nav-inner">
-      <a href="/" class="logo">
-        <div class="logo-mark">SB</div>
-        <span class="logo-text">Signal<span>Boss</span></span>
-      </a>
       <span class="nav-tag">FLEXFINANCE</span>
     </div>
   </nav>
@@ -486,6 +462,11 @@
           By signing this form I/We hereby agree and give authorization to investigate my/our credit worthiness and payment
           history from the information I/We supplied on this credit application. I/We give permission to any credit agency,
           bank institution, or creditor to release any/all information as it pertains to my/our account(s).
+          <br /><br />
+          I/We understand that by typing my/our name(s) below and checking the box, I/We am/are signing this application
+          electronically, and that this electronic signature is legally binding and carries the same legal effect and
+          validity as a handwritten signature, as permitted under the U.S. Electronic Signatures in Global and National
+          Commerce Act (E-SIGN Act) and applicable state Uniform Electronic Transactions Act (UETA) law.
         </div>
 
         <div class="grid" style="margin-bottom: 6px;">
